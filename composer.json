@@ -1,0 +1,16 @@
+{
+    "name": "vendor/sales-scripts-php",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Nomokonov Ivan",
+            "email": "nomokonov.vana@yandex.ru"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^5.2",
+        "slim/slim": "4.7.0",
+        "slim/http": "^1.2",
+        "slim/psr7": "^1.3"
+    }
+}
