@@ -34,21 +34,10 @@ $app->post('/login', function (Request $request, Response $response) use ($dataB
     $user = new User($dataBase);
     $requestData = $request->getParsedBody();
     try {
-        $response->getBody()->write(json_encode($user->login($requestData['email'], $requestData['password'])));
+        $response->getBody()->write(json_encode($user->login($requestData['password'])));
         return $response;
     } catch (Exception $e) {
-        $response->getBody()->write(json_encode(array("message" => "Пользователь не найден")));
-        return $response->withStatus(401);
-    }
-});
-
-$app->post('/sign-up', function (Request $request, Response $response) use ($dataBase) {
-    $user = new User($dataBase);
-    try {
-        $response->getBody()->write(json_encode($user->create((object) $request->getParsedBody())));
-        return $response;
-    } catch (Exception $e) {
-        $response->getBody()->write(json_encode(array("message" => "Пользователь уже существует")));
+        $response->getBody()->write(json_encode(array("message" => "Неверный пароль")));
         return $response->withStatus(401);
     }
 });
@@ -74,18 +63,6 @@ $app->post('/delete-token', function (Request $request, Response $response) use 
         $response = new ResponseClass();
         $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
         return $response->withStatus(401);
-    }
-});
-
-$app->post('/update-password', function (Request $request, Response $response) use ($dataBase) {
-    try {
-        $user = new User($dataBase);
-        $response->getBody()->write(json_encode($user->getUpdateLink($request->getParsedBody()['email'])));
-        return $response;
-    } catch (Exception $e) {
-        $response = new ResponseClass();
-        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
-        return $response->withStatus(500);
     }
 });
 
@@ -224,48 +201,15 @@ $app->group('/', function (RouteCollectorProxy $group) use ($block, $script, $us
     });
 
     $group->group('user',  function (RouteCollectorProxy $userGroup) use ($user) {
-        $userGroup->get('', function (Request $request, Response $response) use ($user) {
-            $userId = $request->getAttribute('userId');
-            $response->getBody()->write(json_encode($user->read($userId)));
-            return $response;
-        });
 
         $userGroup->get('/check-admin', function (Request $request, Response $response) use ($user) {
             $userId = $request->getAttribute('userId');
             $response->getBody()->write(json_encode($user->checkAdmin($userId)));
             return $response;
         });
-
-        $userGroup->get('/tasks', function (Request $request, Response $response) use ($user) {
-            $userId = $request->getAttribute('userId');
-            $response->getBody()->write(json_encode($user->getUserTasks($userId)));
-            return $response;
-        });
-
-        $userGroup->post('/task', function (Request $request, Response $response) use ($user) {
-            $userId = $request->getAttribute('userId');
-            $response->getBody()->write(json_encode($user->addUserTask($userId, $request->getParsedBody())));
-            return $response;
-        });
-
-        $userGroup->delete('/task/{taskId}', function (Request $request, Response $response) use ($user) {
-            $routeContext = RouteContext::fromRequest($request);
-            $route = $routeContext->getRoute();
-            $response->getBody()->write(json_encode($user->removeUserTask($route->getArgument('taskId'))));
-            return $response;
-        });
     });
 
     $group->group('admin', function (RouteCollectorProxy $adminGroup) use ($script, $block, $user) {
-        $adminGroup->get('/users', function (Request $request, Response $response) use ($user) {
-            $response->getBody()->write(json_encode($user->getUsers()));
-            return $response;
-        });
-
-        $adminGroup->put('/user-scripts', function (Request $request, Response $response) use ($user) {
-            $response->getBody()->write(json_encode($user->setUserScripts($request->getParsedBody())));
-            return $response;
-        });
 
         $adminGroup->group('/script',  function (RouteCollectorProxy $scriptGroup) use ($script) {
             $scriptGroup->post('', function (Request $request, Response $response) use ($script) {
