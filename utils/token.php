@@ -8,8 +8,8 @@ class Token
 {
 
     // переменные, используемые для JWT 
-    private $authKey = "bj628KEx85";
-    private $refreshKey = "bO62L3gj9xo5";
+    private $authKey = "rfOBxlm5uN";
+    private $refreshKey = "1UGLyfcaKM";
     private $iss = "http://any-site.org";
     private $aud = "http://any-site.com";
     private $iat;

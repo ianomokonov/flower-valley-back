@@ -9,7 +9,7 @@ class User
     private $token;
     private $fileUploader;
     // private $baseUrl = 'http://localhost:4200/back';
-    private $baseUrl = 'http://stand1.progoff.ru/back';
+    private $baseUrl = 'http://stand2.progoff.ru/back';
 
     // конструктор класса User
     public function __construct(DataBase $dataBase)
@@ -19,31 +19,70 @@ class User
         $this->fileUploader = new FilesUpload();
     }
 
+    public function create($userData)
+    {
+        $userData = (object) $this->dataBase->stripAll((array)$userData);
+
+        // Вставляем запрос
+        $userData->password = password_hash($userData->password, PASSWORD_BCRYPT);
+
+        // if ($this->emailExists($userData->email)) {
+        //     throw new Exception('Пользователь уже существует');
+        // }
+        $query = $this->dataBase->genInsertQuery(
+            $userData,
+            $this->table
+        );
+
+        // подготовка запроса
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        if ($query[1][0] != null) {
+            $stmt->execute($query[1]);
+        }
+        $userId = $this->dataBase->db->lastInsertId();
+        if ($userId) {
+            $tokens = $this->token->encode(array("id" => $userId, "isAdmin" => true));
+            $this->addRefreshToken($tokens["refreshToken"], $userId);
+            return $tokens;
+        }
+        return null;
+    }
+
+    public function readShortView($userId)
+    {
+        $query = "SELECT u.id, u.name, surname, lastname FROM $this->table u WHERE u.id=$userId";
+        $user = $this->dataBase->db->query($query)->fetch();
+        return $user;
+    }
+
     public function checkAdmin($userId)
     {
         $query = "SELECT isAdmin FROM $this->table WHERE id = $userId";
         $stmt = $this->dataBase->db->query($query);
-        if ($stmt->fetch()['isAdmin'] == '1') {
+        if ($stmt->fetch()['isAdmin']) {
             return true;
         }
         return false;
     }
 
-    public function login($password)
+    public function login($email, $password)
     {
-        $access = file("../utils/user.php");
-        $passw = trim($access[1]);
-
-        if ($password != null || !password_verify($password, $passw)) {
-            if ($passw) {
-                $tokens = $this->token->encode(array("id" => 1, "isAdmin" => true));
-                $this->addRefreshToken($tokens["refreshToken"], 1);
+        if ($email != null) {
+            $sth = $this->dataBase->db->prepare("SELECT id, password FROM " . $this->table . " WHERE email = ? LIMIT 1");
+            $sth->execute(array($email));
+            $fullUser = $sth->fetch();
+            if ($fullUser) {
+                if (!password_verify($password, $fullUser['password'])) {
+                    throw new Exception("User not found", 404);
+                }
+                $tokens = $this->token->encode(array("id" => $fullUser['id']));
+                $this->addRefreshToken($tokens["refreshToken"], $fullUser['id']);
                 return $tokens;
             } else {
-                throw new Exception("Wrong password", 401);
+                throw new Exception("User not found", 404);
             }
         } else {
-            throw new Exception("Wrong password", 401);
+            return array("message" => "Введите данные для регистрации");
         }
     }
 
@@ -77,25 +116,29 @@ class User
         $this->dataBase->db->query($query);
     }
 
-    public function removeRefreshToken($userId)
+    public function removeRefreshToken($token)
     {
+        $userId = $this->token->decode($token, true)->data->id;
         $query = "DELETE FROM RefreshTokens WHERE userId = $userId";
         $this->dataBase->db->query($query);
     }
 
     public function refreshToken($token)
     {
-        $data = $this->token->decode($token, true)->data;
+        $userId = $this->token->decode($token, true)->data->id;
 
-        if (!$this->isRefreshTokenActual($token, $data->id)) {
+        if (!$this->isRefreshTokenActual($token, $userId)) {
             throw new Exception("Unauthorized", 401);
         }
-        $tokens = $this->token->encode((array)$data);
-        $this->addRefreshToken($tokens["refreshToken"], $data->id);
+
+        $this->removeRefreshToken($userId);
+
+        $tokens = $this->token->encode(array("id" => $userId));
+        $this->addRefreshToken($tokens[1], $userId);
         return $tokens;
     }
 
-    private function EmailExists(string $email)
+    private function emailExists(string $email)
     {
         $query = "SELECT id FROM " . $this->table . " WHERE email = ?";
 
@@ -109,7 +152,7 @@ class User
         $num = $stmt->rowCount();
 
         if ($num > 0) {
-            return true;
+            return $stmt->fetch()['id'] * 1;
         }
 
         return false;

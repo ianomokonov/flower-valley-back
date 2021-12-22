@@ -2,15 +2,41 @@
 //класс базы данных
 class DataBase
 {
-    private $dbname = "nomokoiw_scripts";
-    private $login = "nomokoiw_scripts";
-    private $password = "a33kvI&e";
+    private $dbname = "nomokoiw_efes";
+    private $login = "nomokoiw_efes";
+    private $password = "Cw11x&n1";
     public $db;
     public function __construct()
     {
         $this->db = new PDO("mysql:host=localhost;dbname=" . $this->dbname . ";charset=UTF8", $this->login, $this->password);
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    }
+
+    public function genSelectQuery($table, $whereStmts = [])
+    {
+        $whereStmts = (array) $whereStmts;
+        $res = array('SELECT * FROM ' . $table, array());
+
+        if (count($whereStmts) > 0) {
+            $res[0] = $res[0] . ' WHERE';
+
+            foreach ($whereStmts as $key => $value) {
+                if ($value == null) {
+                    $res[0] = $res[0] . " $key IS ? AND";
+                } else if (strpos($value, 'LIKE') || strpos($value, 'LIKE') == 0) {
+                    $res[0] = $res[0] . " $key $value AND";
+                } else {
+                    $res[0] = $res[0] . " $key=?,";
+                    $res[1][] = $value;
+                }
+            }
+            $res[0] = rtrim($res[0], ' AND');
+        }
+
+        $res[0] = $res[0] . ';';
+
+        return $res;
     }
 
     public function genInsertQuery($ins, $t)
@@ -29,7 +55,7 @@ class DataBase
         return $res;
     }
 
-    public function genUpdateQuery($data, $t, $id)
+    public function genUpdateQuery($data, $t, $id, $idField = "id")
     {
         $data = (array) $data;
         $keys = array_keys($data);
@@ -44,7 +70,7 @@ class DataBase
             }
         }
         $res[0] = rtrim($res[0], ', ');
-        $res[0] = $res[0] . ' WHERE Id = ' . $id;
+        $res[0] = $res[0] . ' WHERE ' . $idField . ' = ' . $id;
 
         return $res;
     }
@@ -55,5 +81,10 @@ class DataBase
             $object[$key] = htmlspecialchars(strip_tags($object[$key]));
         }
         return $object;
+    }
+
+    public function strip($param)
+    {
+        return htmlspecialchars(strip_tags($param));
     }
 }
