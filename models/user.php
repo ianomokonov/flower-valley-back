@@ -19,35 +19,6 @@ class User
         $this->fileUploader = new FilesUpload();
     }
 
-    public function create($userData)
-    {
-        $userData = (object) $this->dataBase->stripAll((array)$userData);
-
-        // Вставляем запрос
-        $userData->password = password_hash($userData->password, PASSWORD_BCRYPT);
-
-        // if ($this->emailExists($userData->email)) {
-        //     throw new Exception('Пользователь уже существует');
-        // }
-        $query = $this->dataBase->genInsertQuery(
-            $userData,
-            $this->table
-        );
-
-        // подготовка запроса
-        $stmt = $this->dataBase->db->prepare($query[0]);
-        if ($query[1][0] != null) {
-            $stmt->execute($query[1]);
-        }
-        $userId = $this->dataBase->db->lastInsertId();
-        if ($userId) {
-            $tokens = $this->token->encode(array("id" => $userId, "isAdmin" => true));
-            $this->addRefreshToken($tokens["refreshToken"], $userId);
-            return $tokens;
-        }
-        return null;
-    }
-
     public function readShortView($userId)
     {
         $query = "SELECT u.id, u.name, surname, lastname FROM $this->table u WHERE u.id=$userId";

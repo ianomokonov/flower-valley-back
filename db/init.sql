@@ -50,6 +50,5 @@ ALTER TABLE `RefreshTokens` ADD FOREIGN KEY (userId) REFERENCES `User` (`id`) ON
 -- Дамп данных таблицы `User`
 --
 
--- INSERT INTO `User` (`id`, `password`, `isAdmin`) VALUES
--- (1, '$2y$10$2KGKgW0BISA4QzlaY6ljNe61sVXHmRpQV8quzjLFr9ZJv3gRWI.la', b'1'),
--- (2, '$2y$10$JAIkLQvfbwEJ7KTwgcbDC.U20YdyJQ59Sb71FiVY8zIAyRCQCmgqC', b'1'),
+INSERT INTO `User` (`id`, `password`, `isAdmin`) VALUES
+(1, '$2y$10$XoQ9FN8HgxwIFjjDdcuCaOsMtXZagMQoNdWXIB1VMDzbigWh5oacW', b'1')
