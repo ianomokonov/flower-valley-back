@@ -63,7 +63,7 @@ CREATE TABLE `Category` (
 DROP TABLE IF EXISTS `Product`;
 		
 CREATE TABLE `Product` (
-  `id` VARCHAR(20) AUTO_INCREMENT,
+  `id` VARCHAR(20) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `price` FLOAT NOT NULL,
   `nds` INTEGER(255) NULL,

@@ -16,7 +16,7 @@ class Product
 
     public function read($id)
     {
-        $query = "SELECT * FROM Block b WHERE b.id=? ";
+        $query = "SELECT * FROM Product p WHERE p.id=? ";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $product = $stmt->fetch();
