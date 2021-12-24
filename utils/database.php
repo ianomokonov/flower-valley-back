@@ -6,6 +6,7 @@ class DataBase
     private $login = "nomokoiw_flower";
     private $password = "Cw11x&n1";
     public $db;
+    public $baseUrl = 'http://stand3.progoff.ru/back';
     public function __construct()
     {
         $this->db = new PDO("mysql:host=localhost;dbname=" . $this->dbname . ";charset=UTF8", $this->login, $this->password);

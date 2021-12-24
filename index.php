@@ -7,6 +7,7 @@ require_once 'vendor/autoload.php';
 require_once './utils/database.php';
 require_once './utils/token.php';
 require_once './models/user.php';
+require_once './models/product.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Psr7\Response as ResponseClass;
@@ -18,6 +19,7 @@ use Slim\Routing\RouteContext;
 
 $dataBase = new DataBase();
 $user = new User($dataBase);
+$product = new Product($dataBase);
 $token = new Token();
 $app = AppFactory::create();
 $app->setBasePath(rtrim($_SERVER['PHP_SELF'], '/index.php'));
@@ -62,42 +64,68 @@ $app->post('/delete-token', function (Request $request, Response $response) use 
     }
 });
 
-$app->group('/', function (RouteCollectorProxy $group) use ($user, $service) {
+$app->get('/product/{id}', function (Request $request, Response $response) use ($product) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($product->read($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(404);
+    }
+});
 
-    $group->group('user', function (RouteCollectorProxy $userGroup) use ($user) {
-        $userGroup->get('', function (Request $request, Response $response) use ($user) {
+$app->group('/', function (RouteCollectorProxy $group) use ($product) {
+
+    $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
+        $productGroup->post('', function (Request $request, Response $response) use ($product) {
             try {
-                $response->getBody()->write(json_encode($user->readShortView($request->getAttribute('userId'))));
+                $response->getBody()->write(json_encode($product->create($request->getParsedBody(), $_FILES)));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка загрузки пользователя")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания продукта")));
+                return $response->withStatus(401);
+            }
+        });
+
+        $productGroup->post('/{id}', function (Request $request, Response $response) use ($product) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($product->update($route->getArgument('id'), $request->getParsedBody(), $_FILES)));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования продукта")));
+                return $response->withStatus(401);
+            }
+        });
+
+        $productGroup->delete('/{id}', function (Request $request, Response $response) use ($product) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($product->delete($route->getArgument('id'))));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления продукта")));
                 return $response->withStatus(401);
             }
         });
     });
-
-    // $group->group('admin', function (RouteCollectorProxy $adminGroup) use ($dataBase) {
-    // })->add(function (Request $request, RequestHandler $handler) use ($dataBase) {
-    //     $userId = $request->getAttribute('userId');
-
-    //     $user = new User($dataBase);
-
-    //     if ($user->checkAdmin($userId)) {
-    //         return $handler->handle($request);
-    //     }
-
-    //     $response = new ResponseClass();
-    //     $response->getBody()->write(json_encode(array("message" => "Отказано в доступе к функционалу администратора")));
-    //     return $response->withStatus(403);
-    // });
-})->add(function (Request $request, RequestHandler $handler) use ($token) {
+})->add(function (Request $request, RequestHandler $handler) use ($token, $user) {
     try {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
         $userId = $token->decode($jwt)->data->id;
         $request = $request->withAttribute('userId', $userId);
-        $response = $handler->handle($request);
+        if ($user->checkAdmin($userId)) {
+            return $handler->handle($request);
+        }
 
-        return $response;
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => "Отказано в доступе к функционалу администратора")));
+        return $response->withStatus(403);
     } catch (Exception $e) {
         $response = new ResponseClass();
         echo json_encode($e);
