@@ -36,11 +36,10 @@ class User
         return false;
     }
 
-    public function login($email, $password)
+    public function login($password)
     {
-        if ($email != null) {
-            $sth = $this->dataBase->db->prepare("SELECT id, password FROM " . $this->table . " WHERE email = ? LIMIT 1");
-            $sth->execute(array($email));
+        if ($password != null) {
+            $sth = $this->dataBase->db->query("SELECT id, password FROM " . $this->table . " LIMIT 1");
             $fullUser = $sth->fetch();
             if ($fullUser) {
                 if (!password_verify($password, $fullUser['password'])) {
@@ -49,9 +48,8 @@ class User
                 $tokens = $this->token->encode(array("id" => $fullUser['id']));
                 $this->addRefreshToken($tokens["refreshToken"], $fullUser['id']);
                 return $tokens;
-            } else {
-                throw new Exception("User not found", 404);
             }
+            throw new Exception("User not found", 404);
         } else {
             return array("message" => "Введите данные для регистрации");
         }

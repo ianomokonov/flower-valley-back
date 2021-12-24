@@ -32,7 +32,7 @@ $app->post('/login', function (Request $request, Response $response) use ($dataB
     $user = new User($dataBase);
     $requestData = $request->getParsedBody();
     try {
-        $response->getBody()->write(json_encode($user->login($requestData['email'], $requestData['password'])));
+        $response->getBody()->write(json_encode($user->login($requestData['password'])));
         return $response;
     } catch (Exception $e) {
         $response->getBody()->write(json_encode(array("message" => "Пользователь не найден")));
