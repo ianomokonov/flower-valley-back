@@ -29,6 +29,8 @@ class Product
         $product['price'] = $product['price'] * 1;
         $product['nds'] = $product['nds'] * 1;
         $product['ndsMode'] = $product['ndsMode'] * 1;
+        $product['photos'] = $this->getPhotos($id);
+        $product['categories'] = $this->getCategories($id);
 
         return $product;
     }
@@ -135,5 +137,31 @@ class Product
         $stmt->execute(array($productId));
 
         return true;
+    }
+
+    private function getPhotos($productId)
+    {
+        $res = [];
+        $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=?");
+        $stmt->execute(array($productId));
+        while ($url = $stmt->fetch()) {
+            $res[] = $url['src'];
+        }
+
+        return $res;
+    }
+
+    private function getCategories($productId)
+    {
+        $res = [];
+        $stmt = $this->dataBase->db->prepare("select c.id, c.name, c.parentId, c.img from ProductCategory pc join Category c on c.id == pc.categoryId where productId=?");
+        $stmt->execute(array($productId));
+        while ($category = $stmt->fetch()) {
+            $category['id'] = $category['id'] * 1;
+            $category['parentId'] = $category['parentId'] * 1;
+            $res[] = $category;
+        }
+
+        return $res;
     }
 }
