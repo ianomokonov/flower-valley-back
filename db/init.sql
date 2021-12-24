@@ -40,6 +40,73 @@ CREATE TABLE `RefreshTokens` (
 );
 
 -- ---
+-- Table 'Category'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `Category`;
+		
+CREATE TABLE `Category` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `parentId` INTEGER(10) NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `img` VARCHAR(255) NULL,
+  `categoryOrder` INTEGER(10) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'Product'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `Product`;
+		
+CREATE TABLE `Product` (
+  `id` VARCHAR(20) AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `price` FLOAT NOT NULL,
+  `nds` INTEGER(255) NULL,
+  `ndsMode` INTEGER(255) NULL,
+  `volume` VARCHAR(255) NULL,
+  `note1` VARCHAR(255) NULL,
+  `note2` VARCHAR(255) NULL,
+  `coefficient` VARCHAR(255) NULL,
+  `pack` VARCHAR(255) NULL,
+  `description` TEXT NOT NULL,
+
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'ProductCategory'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `ProductCategory`;
+		
+CREATE TABLE `ProductCategory` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `productId` INTEGER(10) NOT NULL,
+  `categoryId` INTEGER(10) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'ProductImage'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `ProductImage`;
+		
+CREATE TABLE `ProductImage` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `src` VARCHAR(255) NOT NULL,
+  `productId` INTEGER(10) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
 -- Foreign Keys 
 -- ---
 
