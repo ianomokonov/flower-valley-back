@@ -27,9 +27,7 @@ $app->setBasePath(rtrim($_SERVER['PHP_SELF'], '/index.php'));
 // Add error middleware
 $app->addErrorMiddleware(true, true, true);
 // Add routess
-$app->post('/login', function (Request $request, Response $response) use ($dataBase) {
-
-    $user = new User($dataBase);
+$app->post('/login', function (Request $request, Response $response) use ($user) {
     $requestData = $request->getParsedBody();
     try {
         $response->getBody()->write(json_encode($user->login($requestData['password'])));

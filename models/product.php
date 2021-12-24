@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
-require_once __DIR__ . '/../models/script.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
 class Product
 {
@@ -37,28 +36,27 @@ class Product
 
     public function create($request, $photos)
     {
+
         $categoryIds = $request['categoryIds'];
         unset($request['categoryIds']);
         $request = $this->dataBase->stripAll((array)$request);
-
+        $request['price'] = $request['price'] * 1;
         $query = $this->dataBase->genInsertQuery($request, $this->table);
-
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
 
-        $productId = $this->dataBase->db->lastInsertId();
-
-        $this->setPhotos($productId, $photos);
-        $this->setCategories($productId, $categoryIds);
+        $this->setPhotos($request['id'], $photos);
+        $this->setCategories($request['id'], $categoryIds);
 
 
-        return $productId;
+        return $request['id'];
     }
 
     public function update($productId, $request, $photos)
     {
+        unset($request['id']);
         $categoryIds = $request['categoryIds'];
         unset($request['categoryIds']);
         $request = $this->dataBase->stripAll((array)$request);
@@ -67,8 +65,6 @@ class Product
 
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
-
-        $productId = $this->dataBase->db->lastInsertId();
 
         $this->setPhotos($productId, $photos);
         $this->setCategories($productId, $categoryIds);
@@ -154,7 +150,7 @@ class Product
     private function getCategories($productId)
     {
         $res = [];
-        $stmt = $this->dataBase->db->prepare("select c.id, c.name, c.parentId, c.img from ProductCategory pc join Category c on c.id == pc.categoryId where productId=?");
+        $stmt = $this->dataBase->db->prepare("select c.id, c.name, c.parentId, c.img from ProductCategory pc join Category c on c.id = pc.categoryId where productId=?");
         $stmt->execute(array($productId));
         while ($category = $stmt->fetch()) {
             $category['id'] = $category['id'] * 1;
