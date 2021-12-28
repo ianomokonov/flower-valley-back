@@ -118,7 +118,7 @@ ALTER TABLE `RefreshTokens` ADD FOREIGN KEY (userId) REFERENCES `User` (`id`) ON
 --
 
 INSERT INTO `User` (`id`, `password`, `isAdmin`) VALUES
-(1, '$2y$10$XoQ9FN8HgxwIFjjDdcuCaOsMtXZagMQoNdWXIB1VMDzbigWh5oacW', b'1')
+(1, '$2y$10$XoQ9FN8HgxwIFjjDdcuCaOsMtXZagMQoNdWXIB1VMDzbigWh5oacW', b'1');
 
 INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`) VALUES
 (1, NULL, 'Тюльпаны на 8 марта', '', 0),
