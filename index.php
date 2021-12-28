@@ -77,11 +77,9 @@ $app->get('/product/{id}', function (Request $request, Response $response) use (
     }
 });
 
-$app->get('/category/{id}', function (Request $request, Response $response) use ($category) {
+$app->get('/category/list', function (Request $request, Response $response) use ($category) {
     try {
-        $routeContext = RouteContext::fromRequest($request);
-        $route = $routeContext->getRoute();
-        $response->getBody()->write(json_encode($category->read($route->getArgument('id'))));
+        $response->getBody()->write(json_encode($category->getList()));
         return $response;
     } catch (Exception $e) {
         $response = new ResponseClass();
@@ -90,9 +88,11 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
-$app->get('/category/list', function (Request $request, Response $response) use ($category) {
+$app->get('/category/{id}', function (Request $request, Response $response) use ($category) {
     try {
-        $response->getBody()->write(json_encode($category->getList()));
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($category->read($route->getArgument('id'))));
         return $response;
     } catch (Exception $e) {
         $response = new ResponseClass();
