@@ -13,11 +13,13 @@ class Category
 
     public function read($id)
     {
-        $query = $this->dataBase->genSelectQuery($this->table, array("id" => $id));
-        $stmt = $this->dataBase->db->prepare($query[0]);
-        $stmt->execute($query[1]);
+        $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
         $category = $stmt->fetch();
-
+        if (!$category) {
+            throw new Exception("Category not found", 404);
+        }
         $category['products'] = $this->readProducts($id);
 
         return $category;

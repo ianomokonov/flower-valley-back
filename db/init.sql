@@ -87,7 +87,7 @@ DROP TABLE IF EXISTS `ProductCategory`;
 		
 CREATE TABLE `ProductCategory` (
   `id` INTEGER(10) AUTO_INCREMENT,
-  `productId` INTEGER(10) NOT NULL,
+  `productId` VARCHAR(20) NOT NULL,
   `categoryId` INTEGER(10) NOT NULL,
   PRIMARY KEY (`id`)
 );
@@ -119,3 +119,17 @@ ALTER TABLE `RefreshTokens` ADD FOREIGN KEY (userId) REFERENCES `User` (`id`) ON
 
 INSERT INTO `User` (`id`, `password`, `isAdmin`) VALUES
 (1, '$2y$10$XoQ9FN8HgxwIFjjDdcuCaOsMtXZagMQoNdWXIB1VMDzbigWh5oacW', b'1')
+
+INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`) VALUES
+(1, NULL, 'Тюльпаны на 8 марта', '', 0),
+(2, NULL, 'Рассада однолетних цветов', '', 0),
+(3, NULL, 'Многолетние растения', '', 0);
+
+INSERT INTO `Product` (`id`, `name`, `price`, `nds`, `ndsMode`, `volume`, `note1`, `note2`, `coefficient`, `pack`, `description`) VALUES
+('00~Pvjh01M94', 'Тестовый объект 1', 1000, 0, 0, '00~Pvjh0000F', '', '', '10', '00~Pvjh0000F', '123');
+
+INSERT INTO `ProductCategory` (`id`, `productId`, `categoryId`) VALUES
+(1, '00~Pvjh01M94', 1);
+
+INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
+(1, 'http://stand3.progoff.ru/back/Images/61cb5e96c156a_1.png', '00~Pvjh01M94');
