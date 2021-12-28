@@ -36,7 +36,6 @@ class Product
 
     public function create($request, $photos)
     {
-
         $categoryIds = $request['categoryIds'];
         unset($request['categoryIds']);
         $request = $this->dataBase->stripAll((array)$request);
@@ -46,7 +45,6 @@ class Product
         if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
-        $request['id'] = $this->dataBase->db->lastInsertId();
         $this->setPhotos($request['id'], $photos);
         $this->setCategories($request['id'], $categoryIds);
 

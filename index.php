@@ -8,6 +8,7 @@ require_once './utils/database.php';
 require_once './utils/token.php';
 require_once './models/user.php';
 require_once './models/product.php';
+require_once './models/category.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Psr7\Response as ResponseClass;
@@ -126,8 +127,8 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category)
             }
         });
     });
-    $group->group('category', function (RouteCollectorProxy $productGroup) use ($category) {
-        $productGroup->post('', function (Request $request, Response $response) use ($category) {
+    $group->group('category', function (RouteCollectorProxy $categoryGroup) use ($category) {
+        $categoryGroup->post('', function (Request $request, Response $response) use ($category) {
             try {
                 $response->getBody()->write(json_encode($category->create($request->getParsedBody())));
                 return $response;
@@ -137,7 +138,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category)
             }
         });
 
-        $productGroup->post('/{id}', function (Request $request, Response $response) use ($category) {
+        $categoryGroup->post('/{id}', function (Request $request, Response $response) use ($category) {
             try {
                 $routeContext = RouteContext::fromRequest($request);
                 $route = $routeContext->getRoute();
@@ -149,7 +150,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category)
             }
         });
 
-        $productGroup->delete('/{id}', function (Request $request, Response $response) use ($category) {
+        $categoryGroup->delete('/{id}', function (Request $request, Response $response) use ($category) {
             try {
                 $routeContext = RouteContext::fromRequest($request);
                 $route = $routeContext->getRoute();
