@@ -90,6 +90,17 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
+$app->get('/category/list', function (Request $request, Response $response) use ($category) {
+    try {
+        $response->getBody()->write(json_encode($category->getList()));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(404);
+    }
+});
+
 $app->group('/', function (RouteCollectorProxy $group) use ($product, $category) {
 
     $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
