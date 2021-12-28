@@ -46,7 +46,7 @@ class Product
         if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
-
+        $request['id'] = $this->dataBase->db->lastInsertId();
         $this->setPhotos($request['id'], $photos);
         $this->setCategories($request['id'], $categoryIds);
 
@@ -135,7 +135,7 @@ class Product
         return true;
     }
 
-    private function getPhotos($productId)
+    public function getPhotos($productId)
     {
         $res = [];
         $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=?");

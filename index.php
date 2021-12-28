@@ -20,6 +20,7 @@ use Slim\Routing\RouteContext;
 $dataBase = new DataBase();
 $user = new User($dataBase);
 $product = new Product($dataBase);
+$category = new Category($dataBase);
 $token = new Token();
 $app = AppFactory::create();
 $app->setBasePath(rtrim($_SERVER['PHP_SELF'], '/index.php'));
@@ -75,7 +76,20 @@ $app->get('/product/{id}', function (Request $request, Response $response) use (
     }
 });
 
-$app->group('/', function (RouteCollectorProxy $group) use ($product) {
+$app->get('/category/{id}', function (Request $request, Response $response) use ($category) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($category->read($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(404);
+    }
+});
+
+$app->group('/', function (RouteCollectorProxy $group) use ($product, $category) {
 
     $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
         $productGroup->post('', function (Request $request, Response $response) use ($product) {
@@ -105,6 +119,41 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product) {
                 $routeContext = RouteContext::fromRequest($request);
                 $route = $routeContext->getRoute();
                 $response->getBody()->write(json_encode($product->delete($route->getArgument('id'))));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления продукта")));
+                return $response->withStatus(401);
+            }
+        });
+    });
+    $group->group('category', function (RouteCollectorProxy $productGroup) use ($category) {
+        $productGroup->post('', function (Request $request, Response $response) use ($category) {
+            try {
+                $response->getBody()->write(json_encode($category->create($request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания продукта")));
+                return $response->withStatus(401);
+            }
+        });
+
+        $productGroup->post('/{id}', function (Request $request, Response $response) use ($category) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($category->update($route->getArgument('id'), $request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования продукта")));
+                return $response->withStatus(401);
+            }
+        });
+
+        $productGroup->delete('/{id}', function (Request $request, Response $response) use ($category) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($category->delete($route->getArgument('id'))));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления продукта")));

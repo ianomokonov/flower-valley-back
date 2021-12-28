@@ -1,79 +1,91 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
+require_once __DIR__ . '/product.php';
 class Category
 {
     private $dataBase;
     private $table = 'Category';
-    // private $baseUrl = 'http://localhost:4200/back';
-    private $baseUrl = 'http://stand1.progoff.ru/back';
 
     public function __construct(DataBase $dataBase)
     {
         $this->dataBase = $dataBase;
     }
-    public function getFolders($userId, $isAdmin)
+
+    public function read($id)
     {
-        $query = "SELECT s.id, s.name FROM UserScript us JOIN Script s ON us.scriptId = s.id WHERE us.userId=$userId AND s.isFolder=1";
-        if ($isAdmin) {
-            $query = "SELECT s.id, s.name FROM Script s WHERE s.isFolder=1";
-        }
-        $stmt = $this->dataBase->db->query($query);
-        $folders = [];
-        while ($folder = $stmt->fetch()) {
-            $folder['id'] =  $folder['id'] * 1;
-            $folders[] = $folder;
-        }
-        return $folders;
+        $query = $this->dataBase->genSelectQuery($this->table, array("id" => $id));
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        $stmt->execute($query[1]);
+        $category = $stmt->fetch();
+
+        $category['products'] = $this->readProducts($id);
+
+        return $category;
     }
 
-    public function create($userId, $request)
+    private function readProducts($id)
+    {
+        $query = "SELECT * FROM Product p WHERE p.categoryId=? ";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        $products = $stmt->fetchAll();
+
+        if (!count($products) > 0) {
+            return $products;
+        }
+
+        $productModel = new Product($this->dataBase);
+
+        foreach ($products as $key => $product) {
+            $product['id'] = $product['id'] * 1;
+            $product['price'] = $product['price'] * 1;
+            $product['nds'] = $product['nds'] * 1;
+            $product['ndsMode'] = $product['ndsMode'] * 1;
+            $product['photos'] = $productModel->getPhotos($product['id']);
+        }
+        return $products;
+    }
+
+    public function create($request)
     {
         $request = $this->dataBase->stripAll((array)$request);
-        $request['lastModifyUserId'] = $userId;
-        $query = $this->dataBase->genInsertQuery(
-            $request,
-            $this->table
-        );
-
-        // подготовка запроса
+        $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
-        if ($query[1][0] != null) {
+        if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
-        return $this->dataBase->db->lastInsertId();
+        $request['id'] = $this->dataBase->db->lastInsertId();
+
+
+        return $request['id'];
     }
 
-    public function update($userId, $scriptId, $request)
+    public function update($categoryId, $request)
     {
+        unset($request['id']);
         $request = $this->dataBase->stripAll((array)$request);
-        $request['lastModifyUserId'] = $userId;
-        $request['lastModifyDate'] = 'now()';
-        $query = $this->dataBase->genUpdateQuery(
-            $request,
-            $this->table,
-            $scriptId
-        );
+
+        $query = $this->dataBase->genUpdateQuery($request, $this->table, $categoryId);
 
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
+
         return true;
     }
 
-    public function delete($scriptId)
+    public function delete($categoryId)
     {
-        $query = "delete from Script where id=?";
+        $query = "delete from " . $this->table . " where id=?";
         $stmt = $this->dataBase->db->prepare($query);
-        $stmt->execute(array($scriptId));
+        $stmt->execute(array($categoryId));
         return true;
     }
 
-    public function sortBlocks($blocks)
+    public function getList()
     {
-        foreach ($blocks as $block) {
-            $query = "update Block set blockIndex=? where id=?";
-            $stmt = $this->dataBase->db->prepare($query);
-            $stmt->execute(array($block['index'], $block['id']));
-        }
-        return true;
+        $query = $this->dataBase->genSelectQuery($this->table);
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        $stmt->execute($query[1]);
+        return $stmt->fetchAll();
     }
 }
