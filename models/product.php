@@ -45,7 +45,7 @@ class Product
         if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
-        $this->setPhotos($request['id'], $photos);
+        $this->setPhotos($request['id'], $photos['photos']);
         $this->setCategories($request['id'], $categoryIds);
 
 
@@ -64,7 +64,7 @@ class Product
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
 
-        $this->setPhotos($productId, $photos);
+        $this->setPhotos($productId, $photos['photos']);
         $this->setCategories($productId, $categoryIds);
 
         return true;
@@ -84,17 +84,23 @@ class Product
     {
         $this->unsetPhotos($productId);
 
-        $res = [];
-        foreach ($photos as $key => $value) {
-            $imagePath = $this->dataBase->baseUrl . $this->fileUploader->upload($value, 'Images', uniqid());
-
-            $values = array("productId" => $productId, "src" =>  $imagePath);
+        $res = $this->fileUploader->upload($photos, 'Images', uniqid());
+        if (is_array($res)) {
+            foreach ($res as $key => $imagePath) {
+                $values = array("productId" => $productId, "src" =>  $this->dataBase->baseUrl . $imagePath);
+                $query = $this->dataBase->genInsertQuery($values, "ProductImage");
+                $stmt = $this->dataBase->db->prepare($query[0]);
+                if ($query[1][0]) {
+                    $stmt->execute($query[1]);
+                }
+            }
+        } else {
+            $values = array("productId" => $productId, "src" =>  $this->dataBase->baseUrl . $res);
             $query = $this->dataBase->genInsertQuery($values, "ProductImage");
             $stmt = $this->dataBase->db->prepare($query[0]);
             if ($query[1][0]) {
                 $stmt->execute($query[1]);
             }
-            $res[] = $imagePath;
         }
 
         return $res;

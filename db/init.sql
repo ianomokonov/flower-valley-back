@@ -102,7 +102,7 @@ DROP TABLE IF EXISTS `ProductImage`;
 CREATE TABLE `ProductImage` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `src` VARCHAR(255) NOT NULL,
-  `productId` INTEGER(10) NOT NULL,
+  `productId` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
