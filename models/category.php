@@ -27,7 +27,7 @@ class Category
 
     private function readProducts($id)
     {
-        $query = "SELECT * FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ";
+        $query = "SELECT p.id, p.name, p.price, p.valume, p.coefficient, p.pack, p.description FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $products = $stmt->fetchAll();

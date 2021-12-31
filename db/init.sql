@@ -131,5 +131,3 @@ INSERT INTO `Product` (`id`, `name`, `price`, `nds`, `ndsMode`, `volume`, `note1
 INSERT INTO `ProductCategory` (`id`, `productId`, `categoryId`) VALUES
 (1, '00~Pvjh01M94', 1);
 
-INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
-(1, 'http://stand3.progoff.ru/back/Images/61cb5e96c156a_1.png', '00~Pvjh01M94');
