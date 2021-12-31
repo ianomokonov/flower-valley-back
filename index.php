@@ -141,7 +141,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category)
     $group->group('category', function (RouteCollectorProxy $categoryGroup) use ($category) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($category) {
             try {
-                $response->getBody()->write(json_encode($category->create($request->getParsedBody())));
+                $response->getBody()->write(json_encode($category->create($request->getParsedBody(), $_FILES[0])));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания продукта")));
@@ -153,7 +153,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category)
             try {
                 $routeContext = RouteContext::fromRequest($request);
                 $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($category->update($route->getArgument('id'), $request->getParsedBody())));
+                $response->getBody()->write(json_encode($category->update($route->getArgument('id'), $request->getParsedBody(), $_FILES[0])));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования продукта")));

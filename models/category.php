@@ -1,17 +1,20 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/product.php';
+require_once __DIR__ . '/../utils/filesUpload.php';
 class Category
 {
     private $dataBase;
     private $table = 'Category';
+    private $fileUploader;
 
     public function __construct(DataBase $dataBase)
     {
         $this->dataBase = $dataBase;
+        $this->fileUploader = new FilesUpload();
     }
 
-    public function read($id)
+    public function read($id, $withProducts = true)
     {
         $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->dataBase->db->prepare($query);
@@ -20,7 +23,10 @@ class Category
         if (!$category) {
             throw new Exception("Category not found", 404);
         }
-        $category['products'] = $this->readProducts($id);
+        if ($withProducts) {
+            $category['products'] = $this->readProducts($id);
+        }
+
 
         return $category;
     }
@@ -48,25 +54,27 @@ class Category
         return $products;
     }
 
-    public function create($request)
-    {
+    public function create($request, $file)
+    {;
         $request = $this->dataBase->stripAll((array)$request);
+        $request['img'] = $this->fileUploader->upload($file, 'CategoryImages', uniqid());
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
-        $request['id'] = $this->dataBase->db->lastInsertId();
 
-
-        return $request['id'];
+        return $this->dataBase->db->lastInsertId();
     }
 
-    public function update($categoryId, $request)
+    public function update($categoryId, $request, $file)
     {
         unset($request['id']);
         $request = $this->dataBase->stripAll((array)$request);
-
+        if ($file) {
+            $this->removeCategoryImg($categoryId);
+            $request['img'] = $this->fileUploader->upload($file, 'CategoryImages', uniqid());
+        }
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $categoryId);
 
         $stmt = $this->dataBase->db->prepare($query[0]);
@@ -77,6 +85,7 @@ class Category
 
     public function delete($categoryId)
     {
+        $this->removeCategoryImg($categoryId);
         $query = "delete from " . $this->table . " where id=?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($categoryId));
@@ -89,5 +98,15 @@ class Category
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
         return $stmt->fetchAll();
+    }
+
+    private function removeCategoryImg($id)
+    {
+        $category = $this->read($id);
+        if (!$category['img']) {
+            return;
+        }
+
+        $this->fileUploader->removeFile($category['img'], $this->dataBase->baseUrl);
     }
 }
