@@ -45,7 +45,6 @@ class Category
         $productModel = new Product($this->dataBase);
 
         foreach ($products as $key => $product) {
-            $product['id'] = $product['id'] * 1;
             $product['price'] = $product['price'] * 1;
             $product['photos'] = $productModel->getPhotos($product['id']);
         }
