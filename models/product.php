@@ -54,8 +54,12 @@ class Product
     public function update($productId, $request, $photos)
     {
         unset($request['id']);
-        $categoryIds = $request['categoryIds'];
-        unset($request['categoryIds']);
+        if (isset($request['categoryIds'])) {
+            $categoryIds = $request['categoryIds'];
+            unset($request['categoryIds']);
+            $this->setCategories($productId, $categoryIds);
+        }
+
         $request = $this->dataBase->stripAll((array)$request);
         $request['price'] = $request['price'] * 1;
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $productId);
@@ -63,7 +67,7 @@ class Product
         $stmt->execute($query[1]);
 
         $this->setPhotos($productId, $photos['photos']);
-        $this->setCategories($productId, $categoryIds);
+
 
         return true;
     }

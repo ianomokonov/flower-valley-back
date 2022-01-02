@@ -48,8 +48,7 @@ class Category
         $result = [];
         foreach ($products as $key => $product) {
             $product['price'] = $product['price'] * 1;
-            $photos = $productModel->getPhotos($product['id']);
-            $product['photo'] = count($photos) ? $photos[0] : null;
+            $product['photos'] = $productModel->getPhotos($product['id']);
             $result[] = $product;
         }
         return $result;

@@ -29,8 +29,8 @@ class FilesUpload
 
     private function saveFile($file, $path, $prefix, $index = null)
     {
-        $name = $index == null ? $file['name'] : $file['name'][$index];
-        $tmp_name = $index == null ? $file['tmp_name'] : $file['tmp_name'][$index];
+        $name = $index === null ? $file['name'] : $file['name'][$index];
+        $tmp_name = $index === null ? $file['tmp_name'] : $file['tmp_name'][$index];
         $n = basename($prefix . "_" . $name);
         $d = $path . "/" . $n;
         if (move_uploaded_file($tmp_name, $d)) {
