@@ -44,7 +44,7 @@ class Product
         if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
-        $this->setPhotos($request['id'], $photos['photos']);
+        $this->setPhotos($request['id'], $photos);
         $this->setCategories($request['id'], $categoryIds);
 
 
@@ -66,7 +66,7 @@ class Product
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
 
-        $this->setPhotos($productId, $photos['photos']);
+        $this->setPhotos($productId, $photos);
 
 
         return true;
@@ -84,6 +84,10 @@ class Product
 
     private function setPhotos($productId, $photos)
     {
+        if (!isset($photos['photos'])) {
+            return;
+        }
+        $photos = $photos['photos'];
         $this->unsetPhotos($productId);
 
         $res = $this->fileUploader->upload($photos, 'Images', uniqid());
