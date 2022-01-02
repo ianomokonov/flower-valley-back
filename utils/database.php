@@ -71,7 +71,8 @@ class DataBase
             }
         }
         $res[0] = rtrim($res[0], ', ');
-        $res[0] = $res[0] . ' WHERE ' . $idField . ' = ' . $id;
+        $res[0] = $res[0] . ' WHERE ' . $idField . ' = ?';
+        $res[1][] = $id;
 
         return $res;
     }

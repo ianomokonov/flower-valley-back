@@ -38,17 +38,21 @@ class Category
         $stmt->execute(array($id));
         $products = $stmt->fetchAll();
 
-        if (!count($products) > 0) {
+
+
+        if (!$products || count($products) == 0) {
             return $products;
         }
 
         $productModel = new Product($this->dataBase);
-
+        $result = [];
         foreach ($products as $key => $product) {
             $product['price'] = $product['price'] * 1;
-            $product['photos'] = $productModel->getPhotos($product['id']);
+            $photos = $productModel->getPhotos($product['id']);
+            $product['photo'] = count($photos) ? $photos[0] : null;
+            $result[] = $product;
         }
-        return $products;
+        return $result;
     }
 
     public function create($request, $file)

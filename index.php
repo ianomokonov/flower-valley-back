@@ -122,7 +122,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category)
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования продукта")));
-                return $response->withStatus(401);
+                return $response->withStatus(500);
             }
         });
 

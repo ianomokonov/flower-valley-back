@@ -24,7 +24,6 @@ class Product
             return null;
         }
 
-        $product['id'] = $product['id'] * 1;
         $product['price'] = $product['price'] * 1;
         $product['nds'] = $product['nds'] * 1;
         $product['ndsMode'] = $product['ndsMode'] * 1;
@@ -58,9 +57,8 @@ class Product
         $categoryIds = $request['categoryIds'];
         unset($request['categoryIds']);
         $request = $this->dataBase->stripAll((array)$request);
-
+        $request['price'] = $request['price'] * 1;
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $productId);
-
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
 
