@@ -52,9 +52,9 @@ class Category
     }
 
     public function create($request, $file)
-    {;
+    {
         $request = $this->dataBase->stripAll((array)$request);
-        $request['img'] = $this->fileUploader->upload($file, 'CategoryImages', uniqid());
+        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
@@ -70,7 +70,7 @@ class Category
         $request = $this->dataBase->stripAll((array)$request);
         if ($file) {
             $this->removeCategoryImg($categoryId);
-            $request['img'] = $this->fileUploader->upload($file, 'CategoryImages', uniqid());
+            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
         }
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $categoryId);
 
