@@ -115,7 +115,7 @@ class Product
     private function setCategories($productId, $categoryIds)
     {
         $this->unsetCategories($productId);
-        foreach ($categoryIds as $key => $value) {
+        foreach ($categoryIds as $value) {
             $values = array("productId" => $productId, "categoryId" =>  $value);
             $query = $this->dataBase->genInsertQuery($values, "ProductCategory");
             $stmt = $this->dataBase->db->prepare($query[0]);
