@@ -250,4 +250,6 @@ INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
 (8, 'http://stand3.progoff.ru/back/Images/61d36c569e948_4.png', '00~Pvjh01M97'),
 (9, 'http://stand3.progoff.ru/back/Images/61d36c78adf12_1.png', '00~Pvjh01M99');
 
+INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`) VALUES (NULL, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.');
+
 
