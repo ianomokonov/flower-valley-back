@@ -69,8 +69,7 @@ class Category
 
     public function update($categoryId, $request, $file)
     {
-        unset($request['id']);
-        $request = $this->dataBase->stripAll((array)$request);
+        $request = $this->dataBase->stripAll((array)$request, true);
         if ($file) {
             $this->removeCategoryImg($categoryId);
             $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());

@@ -77,8 +77,11 @@ class DataBase
         return $res;
     }
 
-    public function stripAll($object)
+    public function stripAll($object, $unsetId = false)
     {
+        if ($unsetId && isset($object['id'])) {
+            unset($object['id']);
+        }
         foreach (array_keys((array)$object) as $key) {
             $object[$key] = htmlspecialchars(strip_tags($object[$key]));
         }
