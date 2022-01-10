@@ -17,6 +17,7 @@ class Product
     {
         $str = htmlspecialchars(strip_tags($str));
         $query = "SELECT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
+
         $stmt = $this->dataBase->db->query($query);
 
         $result = [];
@@ -24,7 +25,7 @@ class Product
         while ($p = $stmt->fetch()) {
             $p['price'] = $p['price'] * 1;
             $p['categoryId'] = $p['categoryId'] * 1;
-            $request[] = $p;
+            $result[] = $p;
         }
 
         return $result;
