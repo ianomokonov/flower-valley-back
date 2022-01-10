@@ -69,11 +69,10 @@ $app->post('/delete-token', function (Request $request, Response $response) use 
 });
 
 
-$app->get('/product/list/{searchString}', function (Request $request, Response $response) use ($product) {
+$app->get('/product/list', function (Request $request, Response $response) use ($product) {
     try {
-        $routeContext = RouteContext::fromRequest($request);
-        $route = $routeContext->getRoute();
-        $response->getBody()->write(json_encode($product->search($route->getArgument('searchString'))));
+        $query = $request->getQueryParams();
+        $response->getBody()->write(json_encode($product->search(isset($query['searchString']) ? $query['searchString'] : '')));
         return $response;
     } catch (Exception $e) {
         $response = new ResponseClass();
