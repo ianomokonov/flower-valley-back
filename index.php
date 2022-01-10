@@ -68,6 +68,20 @@ $app->post('/delete-token', function (Request $request, Response $response) use 
     }
 });
 
+
+$app->get('/product/list/{searchString}', function (Request $request, Response $response) use ($product) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($product->search($route->getArgument('searchString'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(404);
+    }
+});
+
 $app->get('/product/{id}', function (Request $request, Response $response) use ($product) {
     try {
         $routeContext = RouteContext::fromRequest($request);
