@@ -68,6 +68,17 @@ $app->post('/delete-token', function (Request $request, Response $response) use 
     }
 });
 
+$app->post('/product/order', function (Request $request, Response $response) use ($product) {
+    try {
+        $response->getBody()->write(json_encode($product->send($request->getParsedBody()['email'])));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(404);
+    }
+});
+
 
 $app->get('/product/list', function (Request $request, Response $response) use ($product) {
     try {

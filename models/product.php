@@ -31,6 +31,20 @@ class Product
         return $result;
     }
 
+
+    public function send($email)
+    {
+        $subject = "Тестовое сообщение";
+        $message = "<p>Test</p>";
+
+
+        // $headers  = "Content-type: text/html; charset=utf-8 \r\nFrom: info@car4crete.com\r\n";
+        $headers  = "Content-type: text/html; charset=utf-8 \r\n";
+
+        mail($email, $subject, $message, $headers);
+        mail('volik9925@yandex.ru', $subject, $message, $headers);
+    }
+
     public function read($id)
     {
         $query = "SELECT * FROM Product p WHERE p.id=? ";
