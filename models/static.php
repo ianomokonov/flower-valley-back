@@ -29,11 +29,14 @@ class StaticModel
 
     public function updateMain($request, $files)
     {
-        $request = $this->dataBase->stripAll((array)$request, true);
-        $query = $this->dataBase->genUpdateQuery($request, 'Static', 1);
+        if (count($request)) {
+            $request = $this->dataBase->stripAll((array)$request, true);
+            $query = $this->dataBase->genUpdateQuery($request, 'Static', 1);
 
-        $stmt = $this->dataBase->db->prepare($query[0]);
-        $stmt->execute($query[1]);
+            $stmt = $this->dataBase->db->prepare($query[0]);
+            $stmt->execute($query[1]);
+        }
+
         $this->setPhotos($files);
 
         return true;

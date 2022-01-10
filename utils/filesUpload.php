@@ -21,7 +21,7 @@ class FilesUpload
 
     public function removeFile($filelink, $baseUrl)
     {
-        $path = explode($baseUrl, $filelink);
+        $path = explode($baseUrl . '/', $filelink);
         if (isset($path[1]) && file_exists($path[1])) {
             unlink($path[1]);
         }
