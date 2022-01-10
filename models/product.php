@@ -32,17 +32,41 @@ class Product
     }
 
 
-    public function send($email)
+    public function send($request)
     {
-        $subject = "Тестовое сообщение";
-        $message = "<p>Test</p>";
+        $subject = "Заказ цветов";
+        $message = "<p>Супер заказ цветов на миллион денег</p>
+        <p><a href='" . $request['link'] . "'>Ссылка</a></p>";
 
 
-        // $headers  = "Content-type: text/html; charset=utf-8 \r\nFrom: info@car4crete.com\r\n";
-        $headers  = "Content-type: text/html; charset=utf-8 \r\n";
+        $headers  = "Content-type: text/html; charset=utf-8 \r\nFrom: info@progoff.ru\r\n";
+        // $headers  = "Content-type: text/html; charset=utf-8 \r\n";
 
-        mail($email, $subject, $message, $headers);
-        mail('volik9925@yandex.ru', $subject, $message, $headers);
+        mail($request['email'], $subject, $message, $headers);
+        mail('Volik9925@yandex.ru', $subject, $message, $headers);
+    }
+
+    private function readProducts($id)
+    {
+        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY p.id";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        $products = $stmt->fetchAll();
+
+
+
+        if (!$products || count($products) == 0) {
+            return $products;
+        }
+
+        $productModel = new Product($this->dataBase);
+        $result = [];
+        foreach ($products as $key => $product) {
+            $product['price'] = $product['price'] * 1;
+            $product['photos'] = $productModel->getPhotos($product['id']);
+            $result[] = $product;
+        }
+        return $result;
     }
 
     public function read($id)
