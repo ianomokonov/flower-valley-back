@@ -33,7 +33,7 @@ class Category
 
     private function readProducts($id)
     {
-        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY p.id";
+        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description, p.boxId FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY p.id";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $products = $stmt->fetchAll();
@@ -48,6 +48,7 @@ class Category
         $result = [];
         foreach ($products as $key => $product) {
             $product['price'] = $product['price'] * 1;
+            $product['boxId'] = $product['boxId'] * 1;
             $product['photos'] = $productModel->getPhotos($product['id']);
             $result[] = $product;
         }

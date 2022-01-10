@@ -16,7 +16,7 @@ class Product
     public function search($str)
     {
         $str = htmlspecialchars(strip_tags($str));
-        $query = "SELECT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
+        $query = "SELECT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName, p.boxId FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
 
         $stmt = $this->dataBase->db->query($query);
 
@@ -25,6 +25,7 @@ class Product
         while ($p = $stmt->fetch()) {
             $p['price'] = $p['price'] * 1;
             $p['categoryId'] = $p['categoryId'] * 1;
+            $p['boxId'] = $p['boxId'] * 1;
             $result[] = $p;
         }
 
@@ -46,29 +47,6 @@ class Product
         mail('Volik9925@yandex.ru', $subject, $message, $headers);
     }
 
-    private function readProducts($id)
-    {
-        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY p.id";
-        $stmt = $this->dataBase->db->prepare($query);
-        $stmt->execute(array($id));
-        $products = $stmt->fetchAll();
-
-
-
-        if (!$products || count($products) == 0) {
-            return $products;
-        }
-
-        $productModel = new Product($this->dataBase);
-        $result = [];
-        foreach ($products as $key => $product) {
-            $product['price'] = $product['price'] * 1;
-            $product['photos'] = $productModel->getPhotos($product['id']);
-            $result[] = $product;
-        }
-        return $result;
-    }
-
     public function read($id)
     {
         $query = "SELECT * FROM Product p WHERE p.id=? ";
@@ -83,6 +61,7 @@ class Product
         $product['price'] = $product['price'] * 1;
         $product['nds'] = $product['nds'] * 1;
         $product['ndsMode'] = $product['ndsMode'] * 1;
+        $product['boxId'] = $product['boxId'] * 1;
         $product['photos'] = $this->getPhotos($id);
         $product['categories'] = $this->getCategories($id);
 
