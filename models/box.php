@@ -28,8 +28,15 @@ class Box
     {
         $query = "SELECT * FROM " . $this->table;
         $stmt = $this->dataBase->db->query($query);
+        $result = [];
 
-        return $stmt->fetchAll();
+        while ($box = $stmt->fetch()) {
+            $box['id'] = $box['id'] * 1;
+            $box['volume'] = $box['volume'] * 1;
+            $box['price'] = $box['price'] * 1;
+            $result[] = $box;
+        }
+        return $result;
     }
 
     public function update($id, $request)

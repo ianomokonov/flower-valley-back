@@ -20,6 +20,8 @@ class Category
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $category = $stmt->fetch();
+        $category['parentId'] = $category['parentId'] * 1;
+        $category['id'] = $category['id'] * 1;
         if (!$category) {
             throw new Exception("Category not found", 404);
         }
@@ -49,6 +51,7 @@ class Category
         foreach ($products as $key => $product) {
             $product['price'] = $product['price'] * 1;
             $product['boxId'] = $product['boxId'] * 1;
+            $product['coefficient'] = $product['coefficient'] * 1;
             $product['photos'] = $productModel->getPhotos($product['id']);
             $result[] = $product;
         }
@@ -97,7 +100,13 @@ class Category
         $query = $this->dataBase->genSelectQuery($this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
-        return $stmt->fetchAll();
+        $result = [];
+        while ($category = $stmt->fetch()) {
+            $category['parentId'] = $category['parentId'] * 1;
+            $category['id'] = $category['id'] * 1;
+            $result[] = $category;
+        }
+        return $result;
     }
 
     private function removeCategoryImg($id)

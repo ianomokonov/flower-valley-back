@@ -62,6 +62,7 @@ class Product
         $product['nds'] = $product['nds'] * 1;
         $product['ndsMode'] = $product['ndsMode'] * 1;
         $product['boxId'] = $product['boxId'] * 1;
+        $product['coefficient'] = $product['coefficient'] * 1;
         $product['photos'] = $this->getPhotos($id);
         $product['categories'] = $this->getCategories($id);
 

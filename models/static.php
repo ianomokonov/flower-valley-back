@@ -44,7 +44,7 @@ class StaticModel
         $query = "SELECT * FROM Video";
         $stmt = $this->dataBase->db->query($query);
 
-        return $stmt->fetchAll();
+        return $this->setNumIds($stmt->fetchAll());
     }
 
     public function createVideo($request)
@@ -96,7 +96,7 @@ class StaticModel
         $query = "SELECT * FROM Comment";
         $stmt = $this->dataBase->db->query($query);
 
-        return $stmt->fetchAll();
+        return $this->setNumIds($stmt->fetchAll());
     }
 
     public function updateComment($id, $request, $file)
@@ -128,7 +128,7 @@ class StaticModel
         $query = "SELECT * FROM Client";
         $stmt = $this->dataBase->db->query($query);
 
-        return $stmt->fetchAll();
+        return $this->setNumIds($stmt->fetchAll());
     }
 
     public function createClient($request, $file)
@@ -228,5 +228,16 @@ class StaticModel
         $stmt->execute(array($id));
 
         return true;
+    }
+
+    private function setNumIds($arr)
+    {
+        $res = [];
+        foreach ($arr as $obj) {
+            $obj['id'] = $obj['id'] * 1;
+            $res[] = $obj;
+        }
+
+        return $res;
     }
 }
