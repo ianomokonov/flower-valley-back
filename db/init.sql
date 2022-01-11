@@ -70,7 +70,7 @@ CREATE TABLE `Product` (
   `coefficient` INTEGER(20) NULL,
   `pack` VARCHAR(255) NULL,
   `description` TEXT NOT NULL,
-  `isPopular` BIT(1) DEFAULT 0
+  `isPopular` BIT(1) DEFAULT 0,
 
 
   PRIMARY KEY (`id`)
