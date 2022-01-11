@@ -70,6 +70,7 @@ CREATE TABLE `Product` (
   `coefficient` INTEGER(20) NULL,
   `pack` VARCHAR(255) NULL,
   `description` TEXT NOT NULL,
+  `isPopular` BIT(1) DEFAULT 0
 
 
   PRIMARY KEY (`id`)
@@ -129,6 +130,9 @@ CREATE TABLE `Static` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL,
   `routerLink` VARCHAR(255) NOT NULL,
+  `label` VARCHAR(255) NOT NULL,
+  `autoPlay` INTEGER(10) NOT NULL,
+  `isUserCanLeaf` BIT(1) NOT NULL,
   `description` TEXT NOT NULL,
   PRIMARY KEY (`id`)
 );
@@ -157,7 +161,8 @@ DROP TABLE IF EXISTS `Comment`;
 CREATE TABLE `Comment` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `img` VARCHAR(255) NOT NULL,
-  `link` VARCHAR(255) NOT NULL,
+  `autoPlay` INTEGER(10) NOT NULL,
+  `isUserCanLeaf` BIT(1) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -171,7 +176,8 @@ DROP TABLE IF EXISTS `Client`;
 CREATE TABLE `Client` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `img` VARCHAR(255) NOT NULL,
-  `link` VARCHAR(255) NOT NULL,
+  `autoPlay` INTEGER(10) NOT NULL,
+  `isUserCanLeaf` BIT(1) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -250,6 +256,6 @@ INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
 (8, 'http://stand3.progoff.ru/back/Images/61d36c569e948_4.png', '00~Pvjh01M97'),
 (9, 'http://stand3.progoff.ru/back/Images/61d36c78adf12_1.png', '00~Pvjh01M99');
 
-INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`) VALUES (NULL, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.');
+INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`, `label`, `autoPlay`, `isUserCanLeaf`) VALUES (NULL, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.', 'Каталог тюльпанов', 10, 1);
 
 

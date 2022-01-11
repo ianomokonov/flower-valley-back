@@ -16,7 +16,7 @@ class Product
     public function search($str)
     {
         $str = htmlspecialchars(strip_tags($str));
-        $query = "SELECT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName, p.boxId FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
+        $query = "SELECT DISTINCT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName, p.boxId FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
 
         $stmt = $this->dataBase->db->query($query);
 
@@ -26,6 +26,25 @@ class Product
             $p['price'] = $p['price'] * 1;
             $p['categoryId'] = $p['categoryId'] * 1;
             $p['boxId'] = $p['boxId'] * 1;
+            $result[] = $p;
+        }
+
+        return $result;
+    }
+
+    public function getPopular()
+    {
+        $query = "SELECT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName, p.boxId, p.coefficient FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.isPopular";
+
+        $stmt = $this->dataBase->db->query($query);
+
+        $result = [];
+
+        while ($p = $stmt->fetch()) {
+            $p['price'] = $p['price'] * 1;
+            $p['categoryId'] = $p['categoryId'] * 1;
+            $p['boxId'] = $p['boxId'] * 1;
+            $p['coefficient'] = $p['coefficient'] * 1;
             $result[] = $p;
         }
 
@@ -63,6 +82,7 @@ class Product
         $product['ndsMode'] = $product['ndsMode'] * 1;
         $product['boxId'] = $product['boxId'] * 1;
         $product['coefficient'] = $product['coefficient'] * 1;
+        $product['isPopular'] = $product['isPopular'] == '1';
         $product['photos'] = $this->getPhotos($id);
         $product['categories'] = $this->getCategories($id);
 

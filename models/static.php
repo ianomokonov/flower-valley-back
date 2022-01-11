@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
+require_once __DIR__ . '/product.php';
 class StaticModel
 {
     private $dataBase;
@@ -15,12 +16,13 @@ class StaticModel
     {
         $query = "SELECT * FROM Static";
         $stmt = $this->dataBase->db->query($query);
-
+        $product = new Product($this->dataBase);
         $result = array(
             'main' => $stmt->fetch(),
             'videos' => $this->readVideos(),
             'comments' => $this->readComments(),
             'clients' => $this->readClients(),
+            'popular' => $product->getPopular(),
         );
 
 
