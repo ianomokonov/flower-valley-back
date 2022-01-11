@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
+require_once __DIR__ . '/category.php';
 class Product
 {
     private $dataBase;
@@ -16,15 +17,19 @@ class Product
     public function search($str)
     {
         $str = htmlspecialchars(strip_tags($str));
-        $query = "SELECT DISTINCT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName, p.boxId FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
+        $query = "SELECT DISTINCT p.id, p.name, p.price, p.boxId FROM Product p WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
 
         $stmt = $this->dataBase->db->query($query);
 
         $result = [];
 
+        $category = new Category($this->dataBase);
+
         while ($p = $stmt->fetch()) {
+            $c = $category->readFirst($p['id']);
+            $p['categoryId'] = $c['id'];
+            $p['categoryName'] = $c['name'];
             $p['price'] = $p['price'] * 1;
-            $p['categoryId'] = $p['categoryId'] * 1;
             $p['boxId'] = $p['boxId'] * 1;
             $result[] = $p;
         }
@@ -34,22 +39,26 @@ class Product
 
     public function getPopular()
     {
-        $query = "SELECT p.id, p.name, p.price, c.id as categoryId, c.name as categoryName, p.boxId, p.coefficient FROM Product p LEFT JOIN ProductCategory pc ON pc.productId = p.id LEFT JOIN Category c ON c.id = pc.categoryId WHERE p.isPopular";
+        $query = "SELECT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.isPopular";
 
         $stmt = $this->dataBase->db->query($query);
-
+        $category = new Category($this->dataBase);
         $result = [];
 
         while ($p = $stmt->fetch()) {
             $p['price'] = $p['price'] * 1;
-            $p['categoryId'] = $p['categoryId'] * 1;
             $p['boxId'] = $p['boxId'] * 1;
+            $c = $category->readFirst($p['id']);
+            $p['categoryId'] = $c['id'];
+            $p['categoryName'] = $c['name'];
             $p['coefficient'] = $p['coefficient'] * 1;
             $result[] = $p;
         }
 
         return $result;
     }
+
+
 
 
     public function send($request)
