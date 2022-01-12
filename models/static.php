@@ -36,6 +36,8 @@ class StaticModel
     {
         if (count($request)) {
             $request = $this->dataBase->stripAll((array)$request, true);
+            $request['autoPlay'] = $request['autoPlay'] * 1;
+            $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
             $query = $this->dataBase->genUpdateQuery($request, 'Static', 1);
 
             $stmt = $this->dataBase->db->prepare($query[0]);
@@ -96,7 +98,9 @@ class StaticModel
 
     public function createComment($request, $file)
     {
-        $request = $this->dataBase->stripAll((array)$request);
+        $request = $this->dataBase->stripAll((array)$request, true);
+        $request['autoPlay'] = $request['autoPlay'] * 1;
+        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
         $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
         $query = $this->dataBase->genInsertQuery($request, 'Comment');
         $stmt = $this->dataBase->db->prepare($query[0]);
@@ -118,6 +122,8 @@ class StaticModel
     public function updateComment($id, $request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request, true);
+        $request['autoPlay'] = $request['autoPlay'] * 1;
+        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
         if ($file) {
             $this->removeImg('Comment', $id);
             $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
@@ -149,7 +155,9 @@ class StaticModel
 
     public function createClient($request, $file)
     {
-        $request = $this->dataBase->stripAll((array)$request);
+        $request = $this->dataBase->stripAll((array)$request, true);
+        $request['autoPlay'] = $request['autoPlay'] * 1;
+        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
         $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
         $query = $this->dataBase->genInsertQuery($request, 'Client');
         $stmt = $this->dataBase->db->prepare($query[0]);
@@ -163,6 +171,8 @@ class StaticModel
     public function updateClient($id, $request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request, true);
+        $request['autoPlay'] = $request['autoPlay'] * 1;
+        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
         if ($file) {
             $this->removeImg('Client', $id);
             $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
