@@ -17,8 +17,10 @@ class StaticModel
         $query = "SELECT * FROM Static";
         $stmt = $this->dataBase->db->query($query);
         $product = new Product($this->dataBase);
+        $static = $stmt->fetch();
+        $static['isUserCanLeaf'] = $static['isUserCanLeaf'] == '1';
         $result = array(
-            'main' => $stmt->fetch(),
+            'main' => $static,
             'videos' => $this->readVideos(),
             'comments' => $this->readComments(),
             'clients' => $this->readClients(),
@@ -240,6 +242,9 @@ class StaticModel
         $res = [];
         foreach ($arr as $obj) {
             $obj['id'] = $obj['id'] * 1;
+            if (isset($obj['isUserCanLeaf'])) {
+                $obj['isUserCanLeaf'] = $obj['isUserCanLeaf'] == '1';
+            }
             $res[] = $obj;
         }
 
