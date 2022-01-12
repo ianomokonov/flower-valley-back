@@ -182,6 +182,19 @@ CREATE TABLE `Client` (
 );
 
 -- ---
+-- Table 'ContactPhoto'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `ContactPhoto`;
+		
+CREATE TABLE `ContactPhoto` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `img` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
 -- Table 'Video'
 -- 
 -- ---

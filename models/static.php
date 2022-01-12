@@ -175,6 +175,51 @@ class StaticModel
         return true;
     }
 
+    public function readContactPhotos()
+    {
+        $query = "SELECT * FROM ContactPhoto";
+        $stmt = $this->dataBase->db->query($query);
+
+        return $this->setNumIds($stmt->fetchAll());
+    }
+
+    public function createContactPhoto($request, $file)
+    {
+        $request = $this->dataBase->stripAll((array)$request);
+        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+        $query = $this->dataBase->genInsertQuery($request, 'ContactPhoto');
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        if ($query[1][0]) {
+            $stmt->execute($query[1]);
+        }
+
+        return $this->dataBase->db->lastInsertId();
+    }
+
+    public function updateContactPhoto($id, $request, $file)
+    {
+        $request = $this->dataBase->stripAll((array)$request, true);
+        if ($file) {
+            $this->removeImg('ContactPhoto', $id);
+            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+        }
+        $query = $this->dataBase->genUpdateQuery($request, 'ContactPhoto', $id);
+
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        $stmt->execute($query[1]);
+
+        return true;
+    }
+
+    public function deleteContactPhoto($id)
+    {
+        $this->removeImg('ContactPhoto', $id);
+        $query = "delete from ContactPhoto where id=?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        return true;
+    }
+
     private function removeImg($table, $id)
     {
         $object = $this->readObj($table, $id);
