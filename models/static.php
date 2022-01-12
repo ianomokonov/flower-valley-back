@@ -19,6 +19,7 @@ class StaticModel
         $product = new Product($this->dataBase);
         $static = $stmt->fetch();
         $static['isUserCanLeaf'] = $static['isUserCanLeaf'] == '1';
+        $static['photos'] = $this->readPhotos();
         $result = array(
             'main' => $static,
             'videos' => $this->readVideos(),
@@ -44,6 +45,14 @@ class StaticModel
         $this->setPhotos($files);
 
         return true;
+    }
+
+    private function readPhotos()
+    {
+        $query = "SELECT id, src FROM StaticPhoto";
+        $stmt = $this->dataBase->db->query($query);
+
+        return $this->setNumIds($stmt->fetchAll());
     }
 
     private function readVideos()
