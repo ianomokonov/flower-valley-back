@@ -179,7 +179,6 @@ CREATE TABLE `Video` (
   `description` TEXT NOT NULL,
   PRIMARY KEY (`id`)
 );
-);
 
 -- ---
 -- Table 'Sale'
