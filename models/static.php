@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
-require_once __DIR__ . '/product.php';
+require_once __DIR__ . '/sale.php';
 class StaticModel
 {
     private $dataBase;
@@ -15,11 +15,15 @@ class StaticModel
     public function read()
     {
         $product = new Product($this->dataBase);
+        $sale = new Sale($this->dataBase);
+        $sales = $this->readStatic(4);
+        $sales['items'] = $sale->getList();
         $result = array(
             'main' => $this->readStatic(1),
-            'videos' => $this->readVideos(),
             'comments' => $this->readStatic(2),
             'clients' => $this->readStatic(3),
+            'sales' => $sales,
+            'videos' => $this->readVideos(),
             'popular' => $product->getPopular(),
         );
 
