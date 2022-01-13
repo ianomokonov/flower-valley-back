@@ -265,4 +265,8 @@ INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (2, 1000, 1);
 INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (3, 1000, 1);
 INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (4, 1000, 1);
 
+INSERT INTO `Sale` (`id`, `img`, `title`, `description`, `productId`, `discount`, `categoryId`) VALUES
+(1, 'http://stand3.progoff.ru/back/Images/61d35e969fdf5_1.png', 'Заголовк', 'Описание', NULL, 10, 3),
+(2, 'http://stand3.progoff.ru/back/Images/61d35e969fdf5_1.png', 'Заголовк', 'Описание', '00~Pvjh01M94', 10, NULL);
+
 

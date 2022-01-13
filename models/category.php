@@ -25,7 +25,7 @@ class Category
         $category = $stmt->fetch();
         $category['parentId'] = $category['parentId'] * 1;
         $category['id'] = $category['id'] * 1;
-        $category['sale'] = $this->sale->getSale($category['id'], true);
+
         if (!$category) {
             throw new Exception("Category not found", 404);
         }
@@ -76,10 +76,11 @@ class Category
 
         $productModel = new Product($this->dataBase);
         $result = [];
-        foreach ($products as $key => $product) {
+        foreach ($products as $product) {
             $product['price'] = $product['price'] * 1;
             $product['boxId'] = $product['boxId'] * 1;
             $product['coefficient'] = $product['coefficient'] * 1;
+            $product['sale'] = $this->sale->getSale($product['id'], false);
             $product['photos'] = $productModel->getPhotos($product['id']);
             $result[] = $product;
         }
