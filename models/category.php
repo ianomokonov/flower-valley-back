@@ -25,6 +25,7 @@ class Category
         $category = $stmt->fetch();
         $category['parentId'] = $category['parentId'] * 1;
         $category['id'] = $category['id'] * 1;
+        $category['isSpecial'] = $category['isSpecial'] == '1';
 
         if (!$category) {
             throw new Exception("Category not found", 404);
@@ -135,6 +136,7 @@ class Category
         $result = [];
         while ($category = $stmt->fetch()) {
             $category['parentId'] = $category['parentId'] * 1;
+            $category['isSpecial'] = $category['isSpecial'] == '1';
             $category['sale'] = $this->sale->getSale($category['id'], true);
             $category['id'] = $category['id'] * 1;
             $result[] = $category;
