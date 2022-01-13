@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
 require_once __DIR__ . '/sale.php';
+require_once __DIR__ . '/product.php';
 class StaticModel
 {
     private $dataBase;

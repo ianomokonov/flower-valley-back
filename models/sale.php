@@ -37,6 +37,28 @@ class Sale
         return $result;
     }
 
+    public function getSale($id, $isCategory)
+    {
+        $query = "SELECT * FROM Sale ";
+        if ($isCategory) {
+            $query = $query . "WHERE categoryId = ?";
+        } else {
+            $query = $query . "WHERE productId = ?";
+        }
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        $sale = $stmt->fetch();
+        if (!$sale) {
+            return null;
+        }
+        $sale['id'] = $sale['id'] * 1;
+        $sale['discount'] = $sale['discount'] * 1;
+        $sale['productId'] = $sale['productId'] * 1;
+        $sale['categoryId'] = $sale['categoryId'] * 1;
+
+        return $sale;
+    }
+
     public function createSale($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request);

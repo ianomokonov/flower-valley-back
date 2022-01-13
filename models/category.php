@@ -1,17 +1,20 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/product.php';
+require_once __DIR__ . '/sale.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
 class Category
 {
     private $dataBase;
     private $table = 'Category';
     private $fileUploader;
+    private $sale;
 
     public function __construct(DataBase $dataBase)
     {
         $this->dataBase = $dataBase;
         $this->fileUploader = new FilesUpload();
+        $this->sale = new Sale($this->dataBase);
     }
 
     public function read($id, $withProducts = true)
@@ -22,6 +25,7 @@ class Category
         $category = $stmt->fetch();
         $category['parentId'] = $category['parentId'] * 1;
         $category['id'] = $category['id'] * 1;
+        $category['sale'] = $this->sale->getSale($category['id'], true);
         if (!$category) {
             throw new Exception("Category not found", 404);
         }
@@ -127,6 +131,7 @@ class Category
         $result = [];
         while ($category = $stmt->fetch()) {
             $category['parentId'] = $category['parentId'] * 1;
+            $category['sale'] = $this->sale->getSale($category['id'], true);
             $category['id'] = $category['id'] * 1;
             $result[] = $category;
         }

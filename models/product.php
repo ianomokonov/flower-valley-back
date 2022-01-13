@@ -2,16 +2,19 @@
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
 require_once __DIR__ . '/category.php';
+require_once __DIR__ . '/sale.php';
 class Product
 {
     private $dataBase;
     private $table = 'Product';
     private $fileUploader;
+    private $sale;
 
     public function __construct(DataBase $dataBase)
     {
         $this->dataBase = $dataBase;
         $this->fileUploader = new FilesUpload();
+        $this->sale = new Sale($dataBase);
     }
 
     public function search($str)
@@ -31,6 +34,7 @@ class Product
             $p['categoryName'] = $c['name'];
             $p['price'] = $p['price'] * 1;
             $p['boxId'] = $p['boxId'] * 1;
+            $p['sale'] = $this->sale->getSale($p['id'], false);
             $result[] = $p;
         }
 
@@ -53,6 +57,7 @@ class Product
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
             $p['coefficient'] = $p['coefficient'] * 1;
+            $p['sale'] = $this->sale->getSale($p['id'], false);
             $result[] = $p;
         }
 
@@ -95,6 +100,7 @@ class Product
         $product['isPopular'] = $product['isPopular'] == '1';
         $product['photos'] = $this->getPhotos($id);
         $product['categories'] = $this->getCategories($id);
+        $p['sale'] = $this->sale->getSale($product['id'], false);
 
         return $product;
     }
@@ -215,7 +221,7 @@ class Product
     {
         $res = [];
         $stmt = null;
-        if($firstOnly){
+        if ($firstOnly) {
             $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=? LIMIT 1");
         } else {
             $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=?");
