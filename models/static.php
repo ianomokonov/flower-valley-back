@@ -187,14 +187,13 @@ class StaticModel
 
     private function setPhotos($id, $deleteIds, $photos)
     {
+        if ($deleteIds && count($deleteIds) > 0) {
+            $this->unsetPhotos($deleteIds);
+        }
         if (!$photos || !isset($photos['photos'])) {
             return;
         }
         $photos = $photos['photos'];
-        if ($deleteIds && count($deleteIds) > 0) {
-            $this->unsetPhotos($deleteIds);
-        }
-
 
         $res = $this->fileUploader->upload($photos, 'MainImages', uniqid());
         if (is_array($res)) {
