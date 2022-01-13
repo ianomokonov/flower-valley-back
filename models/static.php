@@ -16,7 +16,7 @@ class StaticModel
     {
         $product = new Product($this->dataBase);
         $sale = new Sale($this->dataBase);
-        $sales = $this->readStatic(4);
+        $sales = $this->readStatic(4, false);
         $sales['items'] = $sale->getList();
         $result = array(
             'main' => $this->readStatic(1),
@@ -33,7 +33,7 @@ class StaticModel
 
 
 
-    private function readStatic($id)
+    private function readStatic($id, $getPhotos = true)
     {
         $query = "SELECT * FROM Static WHERE id = ?";
         $stmt = $this->dataBase->db->prepare($query);
@@ -43,7 +43,10 @@ class StaticModel
             return null;
         }
         $result = $this->setNumId($static);
-        $result['photos'] = $this->readPhotos($id);
+        if ($getPhotos) {
+            $result['photos'] = $this->readPhotos($id);
+        }
+
         return $result;
     }
 
