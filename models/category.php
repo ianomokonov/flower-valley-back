@@ -117,6 +117,9 @@ class Category
 
     public function delete($categoryId)
     {
+        if($this->isSpecial($categoryId)){
+            throw new Exception("Невозможно удалить базовую категорию", 409);
+        }
         $this->removeCategoryImg($categoryId);
         $query = "delete from " . $this->table . " where id=?";
         $stmt = $this->dataBase->db->prepare($query);
@@ -147,5 +150,13 @@ class Category
         }
 
         $this->fileUploader->removeFile($category['img'], $this->dataBase->baseUrl);
+    }
+
+    private function isSpecial($id)
+    {
+        $query = "SELECT * FROM Category WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        return $stmt->fetch()['isSpecial'] == '1';
     }
 }
