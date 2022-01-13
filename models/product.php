@@ -100,7 +100,7 @@ class Product
         $product['isPopular'] = $product['isPopular'] == '1';
         $product['photos'] = $this->getPhotos($id);
         $product['categories'] = $this->getCategories($id);
-        $p['sale'] = $this->sale->getSale($product['id'], false);
+        $product['sale'] = $this->sale->getSale($product['id'], false);
 
         return $product;
     }
