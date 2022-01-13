@@ -239,7 +239,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
     $group->group('main', function (RouteCollectorProxy $categoryGroup) use ($static) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
-                $response->getBody()->write(json_encode($static->updateMain($request->getParsedBody(), $_FILES)));
+                $response->getBody()->write(json_encode($static->updateStatic(1, $request->getParsedBody(), $_FILES)));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка измнения банера")));
@@ -251,34 +251,10 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
     $group->group('comment', function (RouteCollectorProxy $categoryGroup) use ($static) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
-                $response->getBody()->write(json_encode($static->createComment($request->getParsedBody(), $_FILES['img'])));
+                $response->getBody()->write(json_encode($static->updateStatic(2, $request->getParsedBody(), $_FILES)));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания комментария")));
-                return $response->withStatus(401);
-            }
-        });
-
-        $categoryGroup->post('/{id}', function (Request $request, Response $response) use ($static) {
-            try {
-                $routeContext = RouteContext::fromRequest($request);
-                $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($static->updateComment($route->getArgument('id'), $request->getParsedBody(), $_FILES['img'])));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования комментария")));
-                return $response->withStatus(401);
-            }
-        });
-
-        $categoryGroup->delete('/{id}', function (Request $request, Response $response) use ($static) {
-            try {
-                $routeContext = RouteContext::fromRequest($request);
-                $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($static->deleteComment($route->getArgument('id'))));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления комментария")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования отзывов")));
                 return $response->withStatus(401);
             }
         });
@@ -287,34 +263,10 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
     $group->group('client', function (RouteCollectorProxy $categoryGroup) use ($static) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
-                $response->getBody()->write(json_encode($static->createClient($request->getParsedBody(), $_FILES['img'])));
+                $response->getBody()->write(json_encode($static->updateStatic(3, $request->getParsedBody(), $_FILES)));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания клиента")));
-                return $response->withStatus(401);
-            }
-        });
-
-        $categoryGroup->post('/{id}', function (Request $request, Response $response) use ($static) {
-            try {
-                $routeContext = RouteContext::fromRequest($request);
-                $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($static->updateClient($route->getArgument('id'), $request->getParsedBody(), $_FILES['img'])));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования клиента")));
-                return $response->withStatus(401);
-            }
-        });
-
-        $categoryGroup->delete('/{id}', function (Request $request, Response $response) use ($static) {
-            try {
-                $routeContext = RouteContext::fromRequest($request);
-                $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($static->deleteClient($route->getArgument('id'))));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления клиента")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования клиентов")));
                 return $response->withStatus(401);
             }
         });

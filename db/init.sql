@@ -128,9 +128,9 @@ DROP TABLE IF EXISTS `Static`;
 		
 CREATE TABLE `Static` (
   `id` INTEGER(10) AUTO_INCREMENT,
-  `title` VARCHAR(255) NOT NULL,
-  `routerLink` VARCHAR(255) NOT NULL,
-  `label` VARCHAR(255) NOT NULL,
+  `title` VARCHAR(255) NULL,
+  `routerLink` VARCHAR(255) NULL,
+  `label` VARCHAR(255) NULL,
   `autoPlay` INTEGER(10) NOT NULL,
   `isUserCanLeaf` BIT(1) NOT NULL,
   `description` TEXT NOT NULL,
@@ -148,36 +148,6 @@ CREATE TABLE `StaticPhoto` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `src` VARCHAR(255) NOT NULL,
   `staticId` INTEGER(10) NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
--- ---
--- Table 'Comment'
--- 
--- ---
-
-DROP TABLE IF EXISTS `Comment`;
-		
-CREATE TABLE `Comment` (
-  `id` INTEGER(10) AUTO_INCREMENT,
-  `img` VARCHAR(255) NOT NULL,
-  `autoPlay` INTEGER(10) NOT NULL,
-  `isUserCanLeaf` BIT(1) NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
--- ---
--- Table 'Client'
--- 
--- ---
-
-DROP TABLE IF EXISTS `Client`;
-		
-CREATE TABLE `Client` (
-  `id` INTEGER(10) AUTO_INCREMENT,
-  `img` VARCHAR(255) NOT NULL,
-  `autoPlay` INTEGER(10) NOT NULL,
-  `isUserCanLeaf` BIT(1) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -269,6 +239,8 @@ INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
 (8, 'http://stand3.progoff.ru/back/Images/61d36c569e948_4.png', '00~Pvjh01M97'),
 (9, 'http://stand3.progoff.ru/back/Images/61d36c78adf12_1.png', '00~Pvjh01M99');
 
-INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`, `label`, `autoPlay`, `isUserCanLeaf`) VALUES (NULL, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.', 'Каталог тюльпанов', 10, 1);
+INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`, `label`, `autoPlay`, `isUserCanLeaf`) VALUES (1, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.', 'Каталог тюльпанов', 10, 1);
+INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (2, 10, 1);
+INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (3, 10, 1);
 
 

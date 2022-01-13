@@ -14,17 +14,12 @@ class StaticModel
 
     public function read()
     {
-        $query = "SELECT * FROM Static";
-        $stmt = $this->dataBase->db->query($query);
         $product = new Product($this->dataBase);
-        $static = $stmt->fetch();
-        $static['isUserCanLeaf'] = $static['isUserCanLeaf'] == '1';
-        $static['photos'] = $this->readPhotos();
         $result = array(
-            'main' => $static,
+            'main' => $this->readStatic(1),
             'videos' => $this->readVideos(),
-            'comments' => $this->readComments(),
-            'clients' => $this->readClients(),
+            'comments' => $this->readStatic(2),
+            'clients' => $this->readStatic(3),
             'popular' => $product->getPopular(),
         );
 
@@ -32,27 +27,50 @@ class StaticModel
         return $result;
     }
 
-    public function updateMain($request, $files)
+
+
+    private function readStatic($id)
     {
+        $query = "SELECT * FROM Static WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        $static = $stmt->fetch();
+        if (!$static) {
+            return null;
+        }
+        $result = $this->setNumId($static);
+        $result['photos'] = $this->readPhotos($id);
+        return $result;
+    }
+
+    public function updateStatic($id, $request, $files)
+    {
+        $deleteIds = [];
+        if (isset($request['deleteIds'])) {
+            $deleteIds = $request['deleteIds'];
+            unset($request['deleteIds']);
+        }
+
         if (count($request)) {
             $request = $this->dataBase->stripAll((array)$request, true);
             $request['autoPlay'] = $request['autoPlay'] * 1;
             $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
-            $query = $this->dataBase->genUpdateQuery($request, 'Static', 1);
+            $query = $this->dataBase->genUpdateQuery($request, 'Static', $id);
 
             $stmt = $this->dataBase->db->prepare($query[0]);
             $stmt->execute($query[1]);
         }
 
-        $this->setPhotos($files);
+        $this->setPhotos($id, $deleteIds, $files);
 
         return true;
     }
 
-    private function readPhotos()
+    private function readPhotos($id)
     {
-        $query = "SELECT id, src FROM StaticPhoto";
-        $stmt = $this->dataBase->db->query($query);
+        $query = "SELECT id, src FROM StaticPhoto WHERE staticId=?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
 
         return $this->setNumIds($stmt->fetchAll());
     }
@@ -91,104 +109,6 @@ class StaticModel
     public function deleteVideo($id)
     {
         $query = "delete from Video where id=?";
-        $stmt = $this->dataBase->db->prepare($query);
-        $stmt->execute(array($id));
-        return true;
-    }
-
-    public function createComment($request, $file)
-    {
-        $request = $this->dataBase->stripAll((array)$request, true);
-        $request['autoPlay'] = $request['autoPlay'] * 1;
-        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
-        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
-        $query = $this->dataBase->genInsertQuery($request, 'Comment');
-        $stmt = $this->dataBase->db->prepare($query[0]);
-        if ($query[1][0]) {
-            $stmt->execute($query[1]);
-        }
-
-        return $this->dataBase->db->lastInsertId();
-    }
-
-    private function readComments()
-    {
-        $query = "SELECT * FROM Comment";
-        $stmt = $this->dataBase->db->query($query);
-
-        return $this->setNumIds($stmt->fetchAll());
-    }
-
-    public function updateComment($id, $request, $file)
-    {
-        $request = $this->dataBase->stripAll((array)$request, true);
-        $request['autoPlay'] = $request['autoPlay'] * 1;
-        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
-        if ($file) {
-            $this->removeImg('Comment', $id);
-            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
-        }
-        $query = $this->dataBase->genUpdateQuery($request, 'Comment', $id);
-
-        $stmt = $this->dataBase->db->prepare($query[0]);
-        $stmt->execute($query[1]);
-
-        return true;
-    }
-
-    public function deleteComment($id)
-    {
-        $this->removeImg('Comment', $id);
-        $query = "delete from Comment where id=?";
-        $stmt = $this->dataBase->db->prepare($query);
-        $stmt->execute(array($id));
-        return true;
-    }
-
-    private function readClients()
-    {
-        $query = "SELECT * FROM Client";
-        $stmt = $this->dataBase->db->query($query);
-
-        return $this->setNumIds($stmt->fetchAll());
-    }
-
-    public function createClient($request, $file)
-    {
-        $request = $this->dataBase->stripAll((array)$request, true);
-        $request['autoPlay'] = $request['autoPlay'] * 1;
-        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
-        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
-        $query = $this->dataBase->genInsertQuery($request, 'Client');
-        $stmt = $this->dataBase->db->prepare($query[0]);
-        if ($query[1][0]) {
-            $stmt->execute($query[1]);
-        }
-
-        return $this->dataBase->db->lastInsertId();
-    }
-
-    public function updateClient($id, $request, $file)
-    {
-        $request = $this->dataBase->stripAll((array)$request, true);
-        $request['autoPlay'] = $request['autoPlay'] * 1;
-        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
-        if ($file) {
-            $this->removeImg('Client', $id);
-            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
-        }
-        $query = $this->dataBase->genUpdateQuery($request, 'Client', $id);
-
-        $stmt = $this->dataBase->db->prepare($query[0]);
-        $stmt->execute($query[1]);
-
-        return true;
-    }
-
-    public function deleteClient($id)
-    {
-        $this->removeImg('Client', $id);
-        $query = "delete from Client where id=?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         return true;
@@ -257,18 +177,18 @@ class StaticModel
         return $stmt->fetch();
     }
 
-    private function setPhotos($photos)
+    private function setPhotos($id, $deleteIds, $photos)
     {
         if (!isset($photos['photos'])) {
             return;
         }
         $photos = $photos['photos'];
-        $this->unsetPhotos(1);
+        $this->unsetPhotos($deleteIds);
 
         $res = $this->fileUploader->upload($photos, 'MainImages', uniqid());
         if (is_array($res)) {
-            foreach ($res as $key => $imagePath) {
-                $values = array("staticId" => 1, "src" =>  $this->dataBase->baseUrl . $imagePath);
+            foreach ($res as $imagePath) {
+                $values = array("staticId" => $id, "src" =>  $this->dataBase->baseUrl . $imagePath);
                 $query = $this->dataBase->genInsertQuery($values, "StaticPhoto");
                 $stmt = $this->dataBase->db->prepare($query[0]);
                 if ($query[1][0]) {
@@ -287,16 +207,15 @@ class StaticModel
         return $res;
     }
 
-    private function unsetPhotos($id)
+    private function unsetPhotos($ids)
     {
-        $stmt = $this->dataBase->db->prepare("select src from StaticPhoto where staticId=?");
-        $stmt->execute(array($id));
+        $ids = implode(", ", $ids);
+        $stmt = $this->dataBase->db->query("select src from StaticPhoto where id IN ($ids)");
         while ($url = $stmt->fetch()) {
             $this->fileUploader->removeFile($url['src'], $this->dataBase->baseUrl);
         }
 
-        $stmt = $this->dataBase->db->prepare("delete from StaticPhoto where staticId=?");
-        $stmt->execute(array($id));
+        $stmt = $this->dataBase->db->query("delete from StaticPhoto where id IN ($ids)");
 
         return true;
     }
@@ -305,13 +224,22 @@ class StaticModel
     {
         $res = [];
         foreach ($arr as $obj) {
-            $obj['id'] = $obj['id'] * 1;
-            if (isset($obj['isUserCanLeaf'])) {
-                $obj['isUserCanLeaf'] = $obj['isUserCanLeaf'] == '1';
-            }
-            $res[] = $obj;
+            $res[] = $this->setNumId($obj);
         }
 
         return $res;
+    }
+
+    private function setNumId($obj)
+    {
+        $obj['id'] = $obj['id'] * 1;
+        if (isset($obj['isUserCanLeaf'])) {
+            $obj['isUserCanLeaf'] = $obj['isUserCanLeaf'] == '1';
+        }
+        if (isset($obj['autoPlay'])) {
+            $obj['autoPlay'] = $obj['autoPlay'] * 1;
+        }
+
+        return $obj;
     }
 }
