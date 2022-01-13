@@ -183,7 +183,10 @@ class StaticModel
             return;
         }
         $photos = $photos['photos'];
-        $this->unsetPhotos($deleteIds);
+        if ($deleteIds && count($deleteIds) > 0) {
+            $this->unsetPhotos($deleteIds);
+        }
+
 
         $res = $this->fileUploader->upload($photos, 'MainImages', uniqid());
         if (is_array($res)) {

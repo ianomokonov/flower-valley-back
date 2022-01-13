@@ -47,6 +47,7 @@ CREATE TABLE `Category` (
   `name` VARCHAR(255) NOT NULL,
   `img` VARCHAR(255) NULL,
   `categoryOrder` INTEGER(10) NOT NULL,
+  `isSpecial` BIT(1) DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 
@@ -204,11 +205,11 @@ INSERT INTO `User` (`id`, `password`, `isAdmin`) VALUES
 INSERT INTO `Box` (`id`, `volume`, `price`, `name`) VALUES
 (1, 10, 24, 'Тестовая каробка');
 
-INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`) VALUES
-(1, 0, 'Тюльпаны на 8 марта', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf2b5eca_1.png', 0),
-(2, 0, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', 0),
-(3, 0, 'Многолетние растения', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2150941_4.png', 0),
-(4, 0, 'Рассада овощей', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2c1ea64_6.png', 0);
+INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`, `isSpecial`) VALUES
+(1, 0, 'Тюльпаны на 8 марта', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf2b5eca_1.png', 0, 1),
+(2, 0, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', 0, 1),
+(3, 0, 'Многолетние растения', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2150941_4.png', 0, 0),
+(4, 0, 'Рассада овощей', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2c1ea64_6.png', 0, 0);
 
 INSERT INTO `Product` (`id`, `boxId`, `name`, `price`, `nds`, `ndsMode`, `volume`, `note1`, `note2`, `coefficient`, `pack`, `description`) VALUES
 ('00~Pvjh01M94', 1, 'Тестовый объект 1', 1000, NULL, NULL, '00~Pvjh0000F', NULL, NULL, '10', '00~Pvjh0000F', '123'),
@@ -239,8 +240,8 @@ INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
 (8, 'http://stand3.progoff.ru/back/Images/61d36c569e948_4.png', '00~Pvjh01M97'),
 (9, 'http://stand3.progoff.ru/back/Images/61d36c78adf12_1.png', '00~Pvjh01M99');
 
-INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`, `label`, `autoPlay`, `isUserCanLeaf`) VALUES (1, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.', 'Каталог тюльпанов', 10, 1);
-INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (2, 10, 1);
-INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (3, 10, 1);
+INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`, `label`, `autoPlay`, `isUserCanLeaf`) VALUES (1, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.', 'Каталог тюльпанов', 1000, 1);
+INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (2, 1000, 1);
+INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (3, 1000, 1);
 
 
