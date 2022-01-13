@@ -193,6 +193,7 @@ CREATE TABLE `Sale` (
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NOT NULL,
   `productId` VARCHAR(20) NULL,
+  `discount` FLOAT NOT NULL,
   `categoryId` INTEGER(10) NULL,
   PRIMARY KEY (`id`)
 );
