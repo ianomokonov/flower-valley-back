@@ -179,7 +179,7 @@ class StaticModel
 
     private function setPhotos($id, $deleteIds, $photos)
     {
-        if (!isset($photos['photos'])) {
+        if (!$photos || !isset($photos['photos'])) {
             return;
         }
         $photos = $photos['photos'];

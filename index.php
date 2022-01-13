@@ -11,6 +11,7 @@ require_once './models/product.php';
 require_once './models/category.php';
 require_once './models/box.php';
 require_once './models/static.php';
+require_once './models/sale.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Psr7\Response as ResponseClass;
@@ -22,6 +23,7 @@ use Slim\Routing\RouteContext;
 
 $dataBase = new DataBase();
 $user = new User($dataBase);
+$sale = new Sale($dataBase);
 $product = new Product($dataBase);
 $category = new Category($dataBase);
 $static = new StaticModel($dataBase);
@@ -162,7 +164,7 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
-$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static) {
+$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale) {
 
     $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
         $productGroup->post('', function (Request $request, Response $response) use ($product) {
@@ -244,6 +246,51 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка измнения банера")));
                 return $response->withStatus(401);
+            }
+        });
+    });
+
+    $group->group('sale', function (RouteCollectorProxy $saleGroup) use ($static, $sale) {
+        $saleGroup->post('/config', function (Request $request, Response $response) use ($static) {
+            try {
+                $response->getBody()->write(json_encode($static->updateStatic(4, $request->getParsedBody(), false)));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка измнения конфигурации акций")));
+                return $response->withStatus(401);
+            }
+        });
+        $saleGroup->post('', function (Request $request, Response $response) use ($sale) {
+            try {
+                $response->getBody()->write(json_encode($sale->createSale($request->getParsedBody(), isset($_FILES['img']) ? $_FILES['img'] : false)));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка добавления акции")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $saleGroup->post('/{id}', function (Request $request, Response $response) use ($sale) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($sale->updateSale($route->getArgument('id'), $request->getParsedBody(), isset($_FILES['img']) ? $_FILES['img'] : false)));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования акции")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $saleGroup->delete('/{id}', function (Request $request, Response $response) use ($sale) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($sale->deleteSale($route->getArgument('id'))));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления акции")));
+                return $response->withStatus(500);
             }
         });
     });

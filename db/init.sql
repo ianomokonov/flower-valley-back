@@ -179,6 +179,24 @@ CREATE TABLE `Video` (
   `description` TEXT NOT NULL,
   PRIMARY KEY (`id`)
 );
+);
+
+-- ---
+-- Table 'Sale'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `Sale`;
+		
+CREATE TABLE `Sale` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `img` VARCHAR(255) NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT NOT NULL,
+  `productId` VARCHAR(20) NOT NULL,
+  `categoryId` INTEGER(10) NOT NULL,
+  PRIMARY KEY (`id`)
+);
 
 
 
@@ -191,6 +209,8 @@ ALTER TABLE `Category` ADD FOREIGN KEY (parentId) REFERENCES `Category` (`id`) O
 ALTER TABLE `Product` ADD FOREIGN KEY (boxId) REFERENCES `Box` (`id`);
 ALTER TABLE `ProductCategory` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
 ALTER TABLE `ProductCategory` ADD FOREIGN KEY (categoryId) REFERENCES `Category` (`id`) ON DELETE CASCADE;
+ALTER TABLE `Sale` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
+ALTER TABLE `Sale` ADD FOREIGN KEY (categoryId) REFERENCES `Category` (`id`) ON DELETE CASCADE;
 ALTER TABLE `ProductImage` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
 ALTER TABLE `StaticPhoto` ADD FOREIGN KEY (staticId) REFERENCES `Static` (`id`) ON DELETE CASCADE;
 
@@ -243,5 +263,6 @@ INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
 INSERT INTO `Static` (`id`, `title`, `routerLink`, `description`, `label`, `autoPlay`, `isUserCanLeaf`) VALUES (1, 'Тюльпаны оптом', 'tyulpany-na-8-marta', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper duis libero, arcu sed. Aliquet ut sit vestibulum auctor id. Maecenas vel mollis et viverra aenean cursus. Consequat felis nec ultricies vel, massa, est nunc. Purus at a nisl.', 'Каталог тюльпанов', 1000, 1);
 INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (2, 1000, 1);
 INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (3, 1000, 1);
+INSERT INTO `Static` (`id`, `autoPlay`, `isUserCanLeaf`) VALUES (4, 1000, 1);
 
 
