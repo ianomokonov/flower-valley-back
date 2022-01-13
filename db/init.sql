@@ -192,8 +192,8 @@ CREATE TABLE `Sale` (
   `img` VARCHAR(255) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NOT NULL,
-  `productId` VARCHAR(20) NOT NULL,
-  `categoryId` INTEGER(10) NOT NULL,
+  `productId` VARCHAR(20) NULL,
+  `categoryId` INTEGER(10) NULL,
   PRIMARY KEY (`id`)
 );
 
