@@ -397,7 +397,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $response->getBody()->write(json_encode($category->create($request->getParsedBody(), $_FILES['img'])));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания продукта")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания категории")));
                 return $response->withStatus(401);
             }
         });
@@ -409,7 +409,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $response->getBody()->write(json_encode($category->update($route->getArgument('id'), $request->getParsedBody(), $_FILES['img'])));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования продукта")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования категории")));
                 return $response->withStatus(401);
             }
         });
@@ -421,7 +421,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $response->getBody()->write(json_encode($category->delete($route->getArgument('id'))));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления продукта")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Невозможно удалить базовую категорию")));
                 return $response->withStatus(401);
             }
         });
