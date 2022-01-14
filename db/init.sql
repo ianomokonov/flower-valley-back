@@ -227,9 +227,9 @@ INSERT INTO `Box` (`id`, `volume`, `price`, `name`) VALUES
 
 INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`, `isSpecial`) VALUES
 (1, 0, 'Тюльпаны на 8 марта', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf2b5eca_1.png', 0, b'1'),
-(2, 0, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', 0, b'1'),
-(3, 0, 'Многолетние растения', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2150941_4.png', 0, b'0'),
-(4, 0, 'Рассада овощей', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2c1ea64_6.png', 0, b'0');
+(2, 0, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', 1, b'1'),
+(3, 0, 'Многолетние растения', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2150941_4.png', 2, b'0'),
+(4, 0, 'Рассада овощей', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2c1ea64_6.png', 3, b'0');
 
 INSERT INTO `Product` (`id`, `boxId`, `name`, `price`, `nds`, `ndsMode`, `volume`, `note1`, `note2`, `coefficient`, `pack`, `description`, `isPopular`) VALUES
 ('00~Pvjh01M94', 1, 'Тестовый объект 1', 1000, NULL, NULL, '00~Pvjh0000F', NULL, NULL, 10, '00~Pvjh0000F', '123', b'0'),

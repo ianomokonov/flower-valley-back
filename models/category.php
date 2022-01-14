@@ -52,11 +52,12 @@ class Category
 
     public function readSimle($id)
     {
-        $query = "SELECT c.id, c.name FROM Category c WHERE c.id = ? LIMIT 1";
+        $query = "SELECT c.id, c.name, c.categoryOrder FROM Category c WHERE c.id = ? LIMIT 1";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $category = $stmt->fetch();
         $category['id'] = $category['id'] * 1;
+        $category['categoryOrder'] = $category['categoryOrder'] * 1;
 
 
         return $category;
@@ -128,16 +129,19 @@ class Category
         return true;
     }
 
-    public function getList()
+    public function getList($withSale = true)
     {
         $query = $this->dataBase->genSelectQuery($this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
         $result = [];
         while ($category = $stmt->fetch()) {
-            $category['parentId'] = $category['parentId'] * 1;
+            $category['parentId'] = $category['parentId'] * 1;  
+            $category['categoryOrder'] = $category['categoryOrder'] * 1;  
             $category['isSpecial'] = $category['isSpecial'] == '1';
-            $category['sale'] = $this->sale->getSale($category['id'], true);
+            if($withSale){
+                $category['sale'] = $this->sale->getSale($category['id'], true);
+            }
             $category['id'] = $category['id'] * 1;
             $result[] = $category;
         }
