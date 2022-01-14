@@ -107,6 +107,21 @@ CREATE TABLE `ProductCategory` (
 );
 
 -- ---
+-- Table 'ProductPrice'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `ProductPrice`;
+		
+CREATE TABLE `ProductPrice` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `productId` VARCHAR(20) NOT NULL,
+  `countFrom` INTEGER(10) NOT NULL,
+  `price` FLOAT NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
 -- Table 'ProductImage'
 -- 
 -- ---
@@ -213,6 +228,7 @@ ALTER TABLE `Sale` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DE
 ALTER TABLE `Sale` ADD FOREIGN KEY (categoryId) REFERENCES `Category` (`id`) ON DELETE CASCADE;
 ALTER TABLE `ProductImage` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
 ALTER TABLE `StaticPhoto` ADD FOREIGN KEY (staticId) REFERENCES `Static` (`id`) ON DELETE CASCADE;
+ALTER TABLE `ProductPrice` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
 
 
 --

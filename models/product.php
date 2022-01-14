@@ -52,6 +52,7 @@ class Product
         while ($p = $stmt->fetch()) {
             $p['price'] = $p['price'] * 1;
             $p['boxId'] = $p['boxId'] * 1;
+            $product['prices'] = $this->getPrice($p['id']);
             $p['photos'] = $this->getPhotos($p['id'], true);
             $c = $category->readFirst($p['id']);
             $p['categoryId'] = $c['id'];
@@ -93,6 +94,7 @@ class Product
         }
 
         $product['price'] = $product['price'] * 1;
+        $product['prices'] = $this->getPrice($product['id']);
         $product['nds'] = $product['nds'] * 1;
         $product['ndsMode'] = $product['ndsMode'] * 1;
         $product['boxId'] = $product['boxId'] * 1;
@@ -229,6 +231,21 @@ class Product
         $stmt->execute(array($productId));
         while ($url = $stmt->fetch()) {
             $res[] = $url['src'];
+        }
+
+        return $res;
+    }
+
+    public function getPrice($productId)
+    {
+        $res = [];
+        $stmt = $this->dataBase->db->prepare("select * from ProductPrice where productId=?");
+        $stmt->execute(array($productId));
+        while ($price = $stmt->fetch()) {
+            $price['id'] = $price['id'] * 1;
+            $price['price'] = $price['price'] * 1;
+            $price['countFrom'] = $price['countFrom'] * 1;
+            $res[] = $price;
         }
 
         return $res;

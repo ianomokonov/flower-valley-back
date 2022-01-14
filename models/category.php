@@ -80,6 +80,7 @@ class Category
         $result = [];
         foreach ($products as $product) {
             $product['price'] = $product['price'] * 1;
+            $product['prices'] = $productModel->getPrice($product['id']);
             $product['boxId'] = $product['boxId'] * 1;
             $product['coefficient'] = $product['coefficient'] * 1;
             $product['sale'] = $this->sale->getSale($product['id'], false);
