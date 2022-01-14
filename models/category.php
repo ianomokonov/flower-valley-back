@@ -93,6 +93,7 @@ class Category
     {
         $request = $this->dataBase->stripAll((array)$request);
         $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
+        $request['categoryOrder'] = count($this->getList(false));
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
@@ -119,7 +120,7 @@ class Category
 
     public function delete($categoryId)
     {
-        if($this->isSpecial($categoryId)){
+        if ($this->isSpecial($categoryId)) {
             throw new Exception("Невозможно удалить базовую категорию", 409);
         }
         $this->removeCategoryImg($categoryId);
@@ -136,10 +137,10 @@ class Category
         $stmt->execute($query[1]);
         $result = [];
         while ($category = $stmt->fetch()) {
-            $category['parentId'] = $category['parentId'] * 1;  
-            $category['categoryOrder'] = $category['categoryOrder'] * 1;  
+            $category['parentId'] = $category['parentId'] * 1;
+            $category['categoryOrder'] = $category['categoryOrder'] * 1;
             $category['isSpecial'] = $category['isSpecial'] == '1';
-            if($withSale){
+            if ($withSale) {
                 $category['sale'] = $this->sale->getSale($category['id'], true);
             }
             $category['id'] = $category['id'] * 1;
