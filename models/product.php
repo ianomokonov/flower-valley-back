@@ -110,7 +110,9 @@ class Product
     public function create($request, $photos)
     {
         $categoryIds = $request['categoryIds'];
+        $prices = $request['prices'];
         unset($request['categoryIds']);
+        unset($request['prices']);
         $request = $this->dataBase->stripAll((array)$request);
         $request['price'] = $request['price'] * 1;
         $query = $this->dataBase->genInsertQuery($request, $this->table);
@@ -120,6 +122,7 @@ class Product
         }
         $this->setPhotos($request['id'], $photos);
         $this->setCategories($request['id'], $categoryIds);
+        $this->setCategories($request['id'], $prices);
 
 
         return $request['id'];
@@ -132,6 +135,11 @@ class Product
             $categoryIds = $request['categoryIds'];
             unset($request['categoryIds']);
             $this->setCategories($productId, $categoryIds);
+        }
+        if (isset($request['prices'])) {
+            $prices = $request['prices'];
+            unset($request['prices']);
+            $this->setPrices($productId, $prices);
         }
 
         $request = $this->dataBase->stripAll((array)$request);
@@ -149,7 +157,8 @@ class Product
     public function delete($productId)
     {
         $this->unsetPhotos($productId);
-        $this->unsetCategories($productId);
+        $this->unsetItems($productId, "ProductCategory");
+        $this->unsetItems($productId, "ProductPrice");
         $query = "delete from " . $this->table . " where id=?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($productId));
@@ -188,7 +197,7 @@ class Product
 
     private function setCategories($productId, $categoryIds)
     {
-        $this->unsetCategories($productId);
+        $this->unsetItems($productId, "ProductCategory");
         foreach ($categoryIds as $value) {
             $values = array("productId" => $productId, "categoryId" =>  $value);
             $query = $this->dataBase->genInsertQuery($values, "ProductCategory");
@@ -199,9 +208,22 @@ class Product
         }
     }
 
-    private function unsetCategories($productId)
+    private function setPrices($productId, $prices)
     {
-        $stmt = $this->dataBase->db->prepare("delete from ProductCategory where productId=?");
+        $this->unsetItems($productId, "ProductPrice");
+        foreach ($prices as $value) {
+            $value['productId'] = $productId;
+            $query = $this->dataBase->genInsertQuery($value, "ProductPrice");
+            $stmt = $this->dataBase->db->prepare($query[0]);
+            if ($query[1][0]) {
+                $stmt->execute($query[1]);
+            }
+        }
+    }
+
+    private function unsetItems($productId, $table)
+    {
+        $stmt = $this->dataBase->db->prepare("delete from $table where productId=?");
         $stmt->execute(array($productId));
     }
 
