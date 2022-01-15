@@ -240,7 +240,7 @@ class Product
     {
         $stmt = null;
         if ($all) {
-            $stmt = $this->dataBase->db->query("select src from ProductImage where productId=$ids");
+            $stmt = $this->dataBase->db->query("select src from ProductImage where productId='$ids'");
         } else {
             $ids = implode(", ", $ids);
             $stmt = $this->dataBase->db->query("select src from ProductImage where id IN ($ids)");
@@ -251,7 +251,7 @@ class Product
         }
 
         if ($all) {
-            $stmt = $this->dataBase->db->query("delete from ProductImage where productId=$ids");
+            $stmt = $this->dataBase->db->query("delete from ProductImage where productId='$ids'");
         } else {
             $stmt = $this->dataBase->db->query("delete from ProductImage where id IN ($ids)");
         }
