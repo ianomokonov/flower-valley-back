@@ -180,7 +180,6 @@ class Product
             return;
         }
         $photos = $photos['photos'];
-        $this->unsetPhotos($productId);
 
         $res = $this->fileUploader->upload($photos, 'Images', uniqid());
         if (is_array($res)) {
