@@ -122,7 +122,7 @@ class Product
         }
         $this->setPhotos($request['id'], $photos);
         $this->setCategories($request['id'], $categoryIds);
-        $this->setCategories($request['id'], $prices);
+        $this->setPrices($request['id'], $prices);
 
 
         return $request['id'];
@@ -131,6 +131,10 @@ class Product
     public function update($productId, $request, $photos)
     {
         unset($request['id']);
+        if (isset($request['images'])) {
+            unset($request['images']);
+        }
+
         if (isset($request['categoryIds'])) {
             $categoryIds = $request['categoryIds'];
             unset($request['categoryIds']);
@@ -212,6 +216,7 @@ class Product
     {
         $this->unsetItems($productId, "ProductPrice");
         foreach ($prices as $value) {
+            $value = json_decode($value);
             $value['productId'] = $productId;
             $query = $this->dataBase->genInsertQuery($value, "ProductPrice");
             $stmt = $this->dataBase->db->prepare($query[0]);
