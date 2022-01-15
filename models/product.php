@@ -120,7 +120,7 @@ class Product
         if ($query[1][0]) {
             $stmt->execute($query[1]);
         }
-        $this->setPhotos($request['id'], $photos);
+        $this->setPhotos($request['id'], [], $photos);
         $this->setCategories($request['id'], $categoryIds);
         $this->setPrices($request['id'], $prices);
 
@@ -131,8 +131,10 @@ class Product
     public function update($productId, $request, $photos)
     {
         unset($request['id']);
-        if (isset($request['images'])) {
-            unset($request['images']);
+        $deleteIds = [];
+        if (isset($request['deleteIds'])) {
+            $deleteIds = $request['deleteIds'];
+            unset($request['deleteIds']);
         }
 
         if (isset($request['categoryIds'])) {
@@ -152,7 +154,7 @@ class Product
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
 
-        $this->setPhotos($productId, $photos);
+        $this->setPhotos($productId, $deleteIds, $photos);
 
 
         return true;
@@ -169,8 +171,11 @@ class Product
         return true;
     }
 
-    private function setPhotos($productId, $photos)
+    private function setPhotos($productId, $deleteIds, $photos)
     {
+        if ($deleteIds && count($deleteIds) > 0) {
+            $this->unsetPhotos($deleteIds);
+        }
         if (!isset($photos['photos'])) {
             return;
         }
@@ -216,7 +221,7 @@ class Product
     {
         $this->unsetItems($productId, "ProductPrice");
         foreach ($prices as $value) {
-            $value = json_decode($value);
+            $value = json_decode($value, true);
             $value['productId'] = $productId;
             $query = $this->dataBase->genInsertQuery($value, "ProductPrice");
             $stmt = $this->dataBase->db->prepare($query[0]);
@@ -232,16 +237,15 @@ class Product
         $stmt->execute(array($productId));
     }
 
-    private function unsetPhotos($productId)
+    private function unsetPhotos($ids)
     {
-        $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=?");
-        $stmt->execute(array($productId));
+        $ids = implode(", ", $ids);
+        $stmt = $this->dataBase->db->query("select src from ProductImage where id IN ($ids)");
         while ($url = $stmt->fetch()) {
             $this->fileUploader->removeFile($url['src'], $this->dataBase->baseUrl);
         }
 
-        $stmt = $this->dataBase->db->prepare("delete from ProductImage where productId=?");
-        $stmt->execute(array($productId));
+        $stmt = $this->dataBase->db->query("delete from ProductImage where id IN ($ids)");
 
         return true;
     }
@@ -253,11 +257,12 @@ class Product
         if ($firstOnly) {
             $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=? LIMIT 1");
         } else {
-            $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=?");
+            $stmt = $this->dataBase->db->prepare("select id, src from ProductImage where productId=?");
         }
         $stmt->execute(array($productId));
         while ($url = $stmt->fetch()) {
-            $res[] = $url['src'];
+            $url['id'] = $url['id'] * 1;
+            $res[] = $url;
         }
 
         return $res;
