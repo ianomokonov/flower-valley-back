@@ -162,7 +162,7 @@ class Product
 
     public function delete($productId)
     {
-        $this->unsetPhotos($productId);
+        $this->unsetPhotos($productId, true);
         $this->unsetItems($productId, "ProductCategory");
         $this->unsetItems($productId, "ProductPrice");
         $query = "delete from " . $this->table . " where id=?";
@@ -236,15 +236,27 @@ class Product
         $stmt->execute(array($productId));
     }
 
-    private function unsetPhotos($ids)
+    private function unsetPhotos($ids, $all = false)
     {
-        $ids = implode(", ", $ids);
-        $stmt = $this->dataBase->db->query("select src from ProductImage where id IN ($ids)");
+        $stmt = null;
+        if ($all) {
+            $stmt = $this->dataBase->db->query("select src from ProductImage where productId=$ids");
+        } else {
+            $ids = implode(", ", $ids);
+            $stmt = $this->dataBase->db->query("select src from ProductImage where id IN ($ids)");
+        }
+
         while ($url = $stmt->fetch()) {
             $this->fileUploader->removeFile($url['src'], $this->dataBase->baseUrl);
         }
 
-        $stmt = $this->dataBase->db->query("delete from ProductImage where id IN ($ids)");
+        if ($all) {
+            $stmt = $this->dataBase->db->query("delete from ProductImage where productId=$ids");
+        } else {
+            $stmt = $this->dataBase->db->query("delete from ProductImage where id IN ($ids)");
+        }
+
+
 
         return true;
     }
