@@ -62,7 +62,7 @@ class StaticModel
         if (count($request)) {
             $request = $this->dataBase->stripAll((array)$request, true);
             $request['autoPlay'] = $request['autoPlay'] * 1;
-            $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
+            $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true' || $request['isUserCanLeaf'] == true;
             $query = $this->dataBase->genUpdateQuery($request, 'Static', $id);
 
             $stmt = $this->dataBase->db->prepare($query[0]);
