@@ -92,7 +92,7 @@ class Category
 
     public function setSteps($categoryId, $steps)
     {
-        $categoryId = $this->readParentCategoryId($categoryId);
+        $categoryId = $this->readParentCategory($categoryId)['id'];
         $this->unsetItems($categoryId, "CategoryStep");
         foreach ($steps as $value) {
             $value['categoryId'] = $categoryId;
@@ -114,7 +114,7 @@ class Category
     {
         $query = "SELECT id, countFrom FROM CategoryStep WHERE categoryId = ? ORDER BY countFrom";
         $stmt = $this->dataBase->db->prepare($query);
-        $stmt->execute(array($this->readParentCategoryId($id)));
+        $stmt->execute(array($this->readParentCategory($id)['id']));
         $result = [];
         while ($step = $stmt->fetch()) {
 
@@ -126,19 +126,22 @@ class Category
         return $result;
     }
 
-    private function readParentCategoryId($id)
+    public function readParentCategory($id)
     {
-        $query = "SELECT c.id, c.parentId FROM Category c WHERE c.id = ?";
+        $query = "SELECT c.id, c.parentId, c.isTulip FROM Category c WHERE c.id = ?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
 
         $category = $stmt->fetch();
 
         if (!$category['parentId']) {
-            return $category['id'] * 1;
+            $category['id'] = $category['id'] * 1;
+            $category['parentId'] = $category['parentId'] * 1;
+            $category['isTulip'] = $category['isTulip'] == '1';
+            return $category;
         }
 
-        return $this->readParentCategoryId($category['parentId']);
+        return $this->readParentCategory($category['parentId']);
     }
 
     public function create($request, $file)

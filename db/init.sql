@@ -337,8 +337,12 @@ INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
 
 
 INSERT INTO `ProductPrice` (`id`, `productId`, `countFrom`, `price`) VALUES
-(6, '00~Pvjh01MFD', 500, 45),
-(7, '00~Pvjh01MFD', 1000, 40);
+(1, '00~Pvjh01MFD', 500, 45),
+(2, '00~Pvjh01MFD', 1000, 40);
+
+INSERT INTO `CategoryStep` (`id`, `categoryId`, `countFrom`) VALUES
+(1, 1, 500),
+(2, 1, 1000);
 
 INSERT INTO `Static` (`id`, `title`, `routerLink`, `label`, `autoPlay`, `isUserCanLeaf`, `description`) VALUES
 (1, 'Агрофирма Цветочная Долина', 'tyulpany-na-8-marta', 'Каталог тюльпанов', 5, b'1', 'Тепличное хозяйство Агрофирма «Цветочная Долина» является признанным производителем цветочной продукции широкого ассортимента. Наш принцип - индивидуальный подход к клиенту и постоянный контроль качества продукции на каждом этапе выполнения работ. Наша Агрофирма старается удовлетворить запросы самых взыскательных клиентов, как профессионалов цветочного бизнеса, так и садоводов-любителей.'),

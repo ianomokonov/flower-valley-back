@@ -300,9 +300,10 @@ class Product
         $stmt->execute(array($productId));
         while ($category = $stmt->fetch()) {
             $category['id'] = $category['id'] * 1;
-            $category['isTulip'] = $category['isTulip'] == '1';
+            $parent = $this->category->readParentCategory($category['id']);
+            $category['isTulip'] = $parent['isTulip'];
             if ($category['isTulip']) {
-                $category['steps'] = $this->category->readSteps($category['id']);
+                $category['steps'] = $this->category->readSteps($parent['id']);
             }
 
             $category['parentId'] = $category['parentId'] * 1;
