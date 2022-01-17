@@ -27,6 +27,9 @@ class Category
         $category['id'] = $category['id'] * 1;
         $category['isSpecial'] = $category['isSpecial'] == '1';
         $category['isTulip'] = $category['isTulip'] == '1';
+        if ($category['isTulip']) {
+            $category['steps'] = $this->readSteps($category['id']);
+        }
 
         if (!$category) {
             throw new Exception("Category not found", 404);
