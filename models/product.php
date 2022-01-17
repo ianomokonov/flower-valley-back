@@ -99,9 +99,8 @@ class Product
         $product['boxId'] = $product['boxId'] * 1;
         $product['coefficient'] = $product['coefficient'] * 1;
         $product['isPopular'] = $product['isPopular'] == '1';
-        $product['isTulip'] = $product['isTulip'] == '1';
         $product['photos'] = $this->getPhotos($id);
-        $product['categories'] = $this->getCategories($id, $product['isTulip']);
+        $product['categories'] = $this->getCategories($id);
         $product['sale'] = $this->sale->getSale($product['id'], false);
 
         return $product;
@@ -294,14 +293,15 @@ class Product
         return $res;
     }
 
-    private function getCategories($productId, $withSteps)
+    private function getCategories($productId)
     {
         $res = [];
-        $stmt = $this->dataBase->db->prepare("select c.id, c.name, c.parentId, c.img from ProductCategory pc join Category c on c.id = pc.categoryId where productId=?");
+        $stmt = $this->dataBase->db->prepare("select c.id, c.name, c.parentId, c.img, c.isTulip  from ProductCategory pc join Category c on c.id = pc.categoryId where productId=?");
         $stmt->execute(array($productId));
         while ($category = $stmt->fetch()) {
             $category['id'] = $category['id'] * 1;
-            if ($withSteps) {
+            $category['isTulip'] = $category['isTulip'] == '1';
+            if ($category['isTulip']) {
                 $category['steps'] = $this->category->readSteps($category['id']);
             }
 
