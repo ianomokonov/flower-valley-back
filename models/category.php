@@ -26,6 +26,7 @@ class Category
         $category['parentId'] = $category['parentId'] * 1;
         $category['id'] = $category['id'] * 1;
         $category['isSpecial'] = $category['isSpecial'] == '1';
+        $category['isTulip'] = $category['isTulip'] == '1';
 
         if (!$category) {
             throw new Exception("Category not found", 404);
