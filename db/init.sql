@@ -118,6 +118,7 @@ CREATE TABLE `ProductCategory` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `productId` VARCHAR(20) NOT NULL,
   `categoryId` INTEGER(10) NOT NULL,
+  `productOrder` INTEGER(10) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -260,13 +261,13 @@ INSERT INTO `Box` (`id`, `name`, `volume`, `price`) VALUES
 
 INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`, `isSpecial`, `isTulip`) VALUES
 (1, NULL, 'Тюльпаны на 8 марта', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf2b5eca_1.png', 1, b'1', b'1'),
-(2, NULL, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', NULL, b'1', NULL),
+(2, NULL, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', 2, b'1', NULL),
 (3, NULL, 'Многолетние растения', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2150941_4.png', 3, NULL, NULL),
 (4, NULL, 'Рассада овощей', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2c1ea64_6.png', 4, NULL, NULL),
-(5, 2, 'Бархатцы', 'http://stand3.progoff.ru/back/CategoryImages/61e2a5443c001_strong-gold.png', 4, b'0', NULL),
-(6, NULL, 'Ампельные растения а кашпо', 'http://stand3.progoff.ru/back/CategoryImages/61e2a94d4599b_IMG_3543.jpg', 1, NULL, NULL),
-(8, 2, 'Агератум', 'http://stand3.progoff.ru/back/CategoryImages/61e4787f3ab5e_strong-gold.png', 6, b'0', NULL),
-(9, 2, 'Иберис', 'http://stand3.progoff.ru/back/CategoryImages/61e478a901e3c_strong-gold.png', 7, b'0', NULL);
+(5, 2, 'Бархатцы', 'http://stand3.progoff.ru/back/CategoryImages/61e2a5443c001_strong-gold.png', 5, b'0', NULL),
+(6, NULL, 'Ампельные растения а кашпо', 'http://stand3.progoff.ru/back/CategoryImages/61e2a94d4599b_IMG_3543.jpg', 6, NULL, NULL),
+(8, 2, 'Агератум', 'http://stand3.progoff.ru/back/CategoryImages/61e4787f3ab5e_strong-gold.png', 7, b'0', NULL),
+(9, 2, 'Иберис', 'http://stand3.progoff.ru/back/CategoryImages/61e478a901e3c_strong-gold.png', 8, b'0', NULL);
 
 INSERT INTO `Product` (`id`, `boxId`, `name`, `price`, `nds`, `ndsMode`, `volume`, `note1`, `note2`, `coefficient`, `pack`, `description`, `isPopular`) VALUES
 ('00~Pvjh01M96', 1, 'Тестовый объект 2', 20, NULL, NULL, '00~Pvjh0000F', 'Горшок 25см', 'null', 1, '00~Pvjh0000F', '«Petra» – уникальный сорт кротона, сегодня считающийся одним из наиболее известных и часто продаваемых. У этого растения крупные яйцевидные листья до 30 см в длину формируют компактную, удивительно орнаментальную крону. Отличительная черта сорта – доминирование только зеленого и желтого окрасов и очень толстые прожилки, расположенные по центру листовой пластины и отходящие от нее «ребрами» с выемчатым краем. Только на очень старых листьях кротона края листовой пластины и центральная жилка приобретают легкий красноватый тон.', b'1'),
@@ -289,28 +290,28 @@ INSERT INTO `Product` (`id`, `boxId`, `name`, `price`, `nds`, `ndsMode`, `volume
 ('00~Pvjh01MFS', 1, 'Никон (махровый)', 40, 0, 0, '00~Pvjh0000F', '', '', 20, '00~Pvjh0000F', 'Тюльпаны НИКОН высотой 45-50 см., бокал крупный. Тюльпаны ярко желтого цвета.', b'1'),
 ('00~Pvjh01MFT', 1, 'Престо (махровый)', 40, 0, 0, '00~Pvjh0000F', '', '', 20, '00~Pvjh0000F', 'Тюльпаны сорта ПРЕСТО достигают 45-50 см в высоту. Класс – Махровые. Цвет бутонов – насышенно красный.', b'1');
 
-INSERT INTO `ProductCategory` (`id`, `productId`, `categoryId`) VALUES
-(6, '00~Pvjh01M97', 4),
-(7, '00~Pvjh01M97', 3),
-(69, '00~Pvjh01MFE', 5),
-(71, '00~Pvjh01MFF', 1),
-(73, '00~Pvjh01MFD', 1),
-(74, '00~Pvjh01MFG', 1),
-(75, '00~Pvjh01MFH', 1),
-(76, '00~Pvjh01MFI', 1),
-(77, '00~Pvjh01MFJ', 1),
-(78, '00~Pvjh01MFK', 1),
-(79, '00~Pvjh01MFL', 1),
-(80, '00~Pvjh01MFM', 1),
-(81, '00~Pvjh01MFN', 1),
-(82, '00~Pvjh01MFO', 1),
-(83, '00~Pvjh01MFP', 1),
-(84, '00~Pvjh01MFQ', 1),
-(85, '00~Pvjh01MFR', 1),
-(86, '00~Pvjh01MFS', 1),
-(87, '00~Pvjh01MFT', 1),
-(90, '00~Pvjh01M96', 2),
-(91, '00~Pvjh01M96', 3);
+INSERT INTO `ProductCategory` (`id`, `productId`, `categoryId`, `productOrder`) VALUES
+(6, '00~Pvjh01M97', 4, 1),
+(7, '00~Pvjh01M97', 3, 1),
+(69, '00~Pvjh01MFE', 5, 1),
+(71, '00~Pvjh01MFF', 1, 1),
+(73, '00~Pvjh01MFD', 1, 2),
+(74, '00~Pvjh01MFG', 1, 3),
+(75, '00~Pvjh01MFH', 1, 4),
+(76, '00~Pvjh01MFI', 1, 5),
+(77, '00~Pvjh01MFJ', 1, 6),
+(78, '00~Pvjh01MFK', 1, 7),
+(79, '00~Pvjh01MFL', 1, 8),
+(80, '00~Pvjh01MFM', 1, 9),
+(81, '00~Pvjh01MFN', 1, 10),
+(82, '00~Pvjh01MFO', 1, 11),
+(83, '00~Pvjh01MFP', 1, 12),
+(84, '00~Pvjh01MFQ', 1, 13),
+(85, '00~Pvjh01MFR', 1, 14),
+(86, '00~Pvjh01MFS', 1, 15),
+(87, '00~Pvjh01MFT', 1, 16),
+(90, '00~Pvjh01M96', 2, 1),
+(91, '00~Pvjh01M96', 3, 2);
 
 INSERT INTO `ProductImage` (`id`, `src`, `productId`) VALUES
 (5, 'http://stand3.progoff.ru/back/Images/61d36be0bdf17_2.png', '00~Pvjh01M96'),

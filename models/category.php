@@ -67,9 +67,19 @@ class Category
         return $category;
     }
 
+    public function sortCategories($categories)
+    {
+        foreach ($categories as $category) {
+            $query = "update Category set categoryOrder=? where id=?";
+            $stmt = $this->dataBase->db->prepare($query);
+            $stmt->execute(array($category['categoryOrder'], $category['id']));
+        }
+        return true;
+    }
+
     private function readProducts($id)
     {
-        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description, p.boxId FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY p.id";
+        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description, p.boxId, pc as productCategoryId, pc.productOrder FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY pc.productOrder";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $products = $stmt->fetchAll();
@@ -86,6 +96,8 @@ class Category
             $product['price'] = $product['price'] * 1;
             $product['prices'] = $productModel->getPrice($product['id']);
             $product['boxId'] = $product['boxId'] * 1;
+            $product['productOrder'] = $product['productOrder'] * 1;
+            $product['productCategoryId'] = $product['productCategoryId'] * 1;
             $product['coefficient'] = $product['coefficient'] * 1;
             $product['sale'] = $this->sale->getSale($product['id'], false);
             $product['photos'] = $productModel->getPhotos($product['id']);

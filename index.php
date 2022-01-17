@@ -177,6 +177,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
+        $productGroup->post('/order', function (Request $request, Response $response) use ($product) {
+            try {
+                $response->getBody()->write(json_encode($product->sortProducts($request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки продуктов")));
+                return $response->withStatus(401);
+            }
+        });
+
         $productGroup->post('/{id}', function (Request $request, Response $response) use ($product) {
             try {
                 $routeContext = RouteContext::fromRequest($request);
@@ -402,14 +412,12 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
-        $categoryGroup->post('/{id}', function (Request $request, Response $response) use ($category) {
+        $categoryGroup->post('/order', function (Request $request, Response $response) use ($category) {
             try {
-                $routeContext = RouteContext::fromRequest($request);
-                $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($category->update($route->getArgument('id'), $request->getParsedBody(), $_FILES['img'])));
+                $response->getBody()->write(json_encode($category->sortCategories($request->getParsedBody())));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования категории")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки категории")));
                 return $response->withStatus(401);
             }
         });
@@ -423,6 +431,18 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования шагов")));
+                return $response->withStatus(401);
+            }
+        });
+
+        $categoryGroup->post('/{id}', function (Request $request, Response $response) use ($category) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($category->update($route->getArgument('id'), $request->getParsedBody(), $_FILES['img'])));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования категории")));
                 return $response->withStatus(401);
             }
         });

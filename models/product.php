@@ -170,6 +170,16 @@ class Product
         return true;
     }
 
+    public function sortProducts($products)
+    {
+        foreach ($products as $product) {
+            $query = "update ProductCategory set productOrder=? where id=?";
+            $stmt = $this->dataBase->db->prepare($query);
+            $stmt->execute(array($product['productOrder'], $product['productCategoryId']));
+        }
+        return true;
+    }
+
     private function setPhotos($productId, $deleteIds, $photos)
     {
         if ($deleteIds && count($deleteIds) > 0) {
