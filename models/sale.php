@@ -63,6 +63,7 @@ class Sale
     {
         $request = $this->dataBase->stripAll((array)$request);
         $request['discount'] = $request['discount'] * 1;
+        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
         $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
         $query = $this->dataBase->genInsertQuery($request, 'Sale');
         $stmt = $this->dataBase->db->prepare($query[0]);
@@ -77,6 +78,7 @@ class Sale
     {
         $request = $this->dataBase->stripAll((array)$request, true);
         $request['discount'] = $request['discount'] * 1;
+        $request['isUserCanLeaf'] = $request['isUserCanLeaf'] == 'true';
         if ($file) {
             $this->removeImg('Sale', $id);
             $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
