@@ -53,6 +53,20 @@ CREATE TABLE `Category` (
 );
 
 -- ---
+-- Table 'CategoryStep'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `CategoryStep`;
+		
+CREATE TABLE `CategoryStep` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `categoryId` INTEGER(10) NOT NULL,
+  `countFrom` INTEGER(10) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
 -- Table 'Product'
 -- 
 -- ---
@@ -230,6 +244,7 @@ ALTER TABLE `Sale` ADD FOREIGN KEY (categoryId) REFERENCES `Category` (`id`) ON 
 ALTER TABLE `ProductImage` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
 ALTER TABLE `StaticPhoto` ADD FOREIGN KEY (staticId) REFERENCES `Static` (`id`) ON DELETE CASCADE;
 ALTER TABLE `ProductPrice` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
+ALTER TABLE `CategoryStep` ADD FOREIGN KEY (categoryId) REFERENCES `Category` (`id`) ON DELETE CASCADE;
 
 
 --

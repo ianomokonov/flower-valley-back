@@ -9,12 +9,14 @@ class Product
     private $table = 'Product';
     private $fileUploader;
     private $sale;
+    private $category;
 
     public function __construct(DataBase $dataBase)
     {
         $this->dataBase = $dataBase;
         $this->fileUploader = new FilesUpload();
         $this->sale = new Sale($dataBase);
+        $this->category = new Category($this->dataBase);
     }
 
     public function search($str)
@@ -26,10 +28,8 @@ class Product
 
         $result = [];
 
-        $category = new Category($this->dataBase);
-
         while ($p = $stmt->fetch()) {
-            $c = $category->readFirst($p['id']);
+            $c = $this->category->readFirst($p['id']);
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
             $p['price'] = $p['price'] * 1;
@@ -46,7 +46,6 @@ class Product
         $query = "SELECT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.isPopular";
 
         $stmt = $this->dataBase->db->query($query);
-        $category = new Category($this->dataBase);
         $result = [];
 
         while ($p = $stmt->fetch()) {
@@ -54,7 +53,7 @@ class Product
             $p['boxId'] = $p['boxId'] * 1;
             $product['prices'] = $this->getPrice($p['id']);
             $p['photos'] = $this->getPhotos($p['id'], true);
-            $c = $category->readFirst($p['id']);
+            $c = $this->category->readFirst($p['id']);
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
             $p['coefficient'] = $p['coefficient'] * 1;
@@ -301,6 +300,7 @@ class Product
         $stmt->execute(array($productId));
         while ($category = $stmt->fetch()) {
             $category['id'] = $category['id'] * 1;
+            $category['steps'] = $this->category->readSteps($category['id']);
             $category['parentId'] = $category['parentId'] * 1;
             $res[] = $category;
         }

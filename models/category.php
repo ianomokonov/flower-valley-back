@@ -90,6 +90,37 @@ class Category
         return $result;
     }
 
+    public function readSteps($id)
+    {
+        $query = "SELECT id, countFrom FROM CategoryStep WHERE categoryId = ? ORDER BY countFrom";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($this->readParentCategoryId($id)));
+        $result = [];
+        while ($step = $stmt->fetch()) {
+
+            $step['id'] = $step['id'] * 1;
+            $step['countFrom'] = $step['countFrom'] * 1;
+            $result[] = $step;
+        }
+
+        return $result;
+    }
+
+    private function readParentCategoryId($id)
+    {
+        $query = "SELECT c.id, c.parentId FROM Category c WHERE c.id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+
+        $category = $stmt->fetch();
+
+        if (!$category['parentId']) {
+            return $category['id'] * 1;
+        }
+
+        return $this->readParentCategoryId($category['parentId']);
+    }
+
     public function create($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request);

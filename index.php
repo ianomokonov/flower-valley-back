@@ -12,6 +12,7 @@ require_once './models/category.php';
 require_once './models/box.php';
 require_once './models/static.php';
 require_once './models/sale.php';
+require_once './models/step.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Psr7\Response as ResponseClass;
@@ -26,6 +27,7 @@ $user = new User($dataBase);
 $sale = new Sale($dataBase);
 $product = new Product($dataBase);
 $category = new Category($dataBase);
+$step = new Step($dataBase);
 $static = new StaticModel($dataBase);
 $box = new Box($dataBase);
 $token = new Token();
@@ -164,7 +166,7 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
-$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale) {
+$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale, $step) {
 
     $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
         $productGroup->post('', function (Request $request, Response $response) use ($product) {
@@ -233,6 +235,42 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления коробки")));
+                return $response->withStatus(401);
+            }
+        });
+    });
+
+    $group->group('step', function (RouteCollectorProxy $stepGroup) use ($step) {
+        $stepGroup->post('', function (Request $request, Response $response) use ($step) {
+            try {
+                $response->getBody()->write(json_encode($step->create($request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания шага")));
+                return $response->withStatus(401);
+            }
+        });
+
+        $stepGroup->post('/{id}', function (Request $request, Response $response) use ($step) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($step->update($route->getArgument('id'), $request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования шага")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $stepGroup->delete('/{id}', function (Request $request, Response $response) use ($step) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($step->delete($route->getArgument('id'))));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления шага")));
                 return $response->withStatus(401);
             }
         });
