@@ -79,7 +79,7 @@ class Category
 
     private function readProducts($id)
     {
-        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description, p.boxId, pc as productCategoryId, pc.productOrder FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY pc.productOrder";
+        $query = "SELECT p.id, p.name, p.price, p.volume, p.coefficient, p.pack, p.description, p.boxId, pc.id as productCategoryId, pc.productOrder FROM Product p JOIN ProductCategory pc ON p.id = pc.productId WHERE pc.categoryId=? ORDER BY pc.productOrder";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $products = $stmt->fetchAll();
