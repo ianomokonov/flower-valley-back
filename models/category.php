@@ -90,6 +90,26 @@ class Category
         return $result;
     }
 
+    public function setSteps($categoryId, $steps)
+    {
+        $categoryId = $this->readParentCategoryId($categoryId);
+        $this->unsetItems($categoryId, "CategoryStep");
+        foreach ($steps as $value) {
+            $value['categoryId'] = $categoryId;
+            $query = $this->dataBase->genInsertQuery($value, "CategoryStep");
+            $stmt = $this->dataBase->db->prepare($query[0]);
+            if ($query[1][0]) {
+                $stmt->execute($query[1]);
+            }
+        }
+    }
+
+    private function unsetItems($categoryId, $table)
+    {
+        $stmt = $this->dataBase->db->prepare("delete from $table where categoryId=?");
+        $stmt->execute(array($categoryId));
+    }
+
     public function readSteps($id)
     {
         $query = "SELECT id, countFrom FROM CategoryStep WHERE categoryId = ? ORDER BY countFrom";
