@@ -48,6 +48,7 @@ CREATE TABLE `Category` (
   `img` VARCHAR(255) NULL,
   `categoryOrder` INTEGER(10) DEFAULT 0,
   `isSpecial` BIT(1) DEFAULT 0,
+  `isTulip` BIT(1) DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 
@@ -242,15 +243,15 @@ INSERT INTO `Box` (`id`, `name`, `volume`, `price`) VALUES
 (1, 'Транспортировочная коробка 600х400х400', 500, 150),
 (2, 'Транспортировочная коробка для кассеты 54 ячейки', 54, 60);
 
-INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`, `isSpecial`) VALUES
-(1, NULL, 'Тюльпаны на 8 марта', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf2b5eca_1.png', 1, b'1'),
-(2, NULL, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', NULL, b'1'),
-(3, NULL, 'Многолетние растения', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2150941_4.png', 3, NULL),
-(4, NULL, 'Рассада овощей', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2c1ea64_6.png', 4, NULL),
-(5, 2, 'Бархатцы', 'http://stand3.progoff.ru/back/CategoryImages/61e2a5443c001_strong-gold.png', 4, b'0'),
-(6, NULL, 'Ампельные растения а кашпо', 'http://stand3.progoff.ru/back/CategoryImages/61e2a94d4599b_IMG_3543.jpg', 1, NULL),
-(8, 2, 'Агератум', 'http://stand3.progoff.ru/back/CategoryImages/61e4787f3ab5e_strong-gold.png', 6, b'0'),
-(9, 2, 'Иберис', 'http://stand3.progoff.ru/back/CategoryImages/61e478a901e3c_strong-gold.png', 7, b'0');
+INSERT INTO `Category` (`id`, `parentId`, `name`, `img`, `categoryOrder`, `isSpecial`, `isTulip`) VALUES
+(1, NULL, 'Тюльпаны на 8 марта', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf2b5eca_1.png', 1, b'1', b'1'),
+(2, NULL, 'Рассада однолетних цветов', 'http://stand3.progoff.ru/back/CategoryImages/61d36bf97b905_2.png', NULL, b'1', NULL),
+(3, NULL, 'Многолетние растения', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2150941_4.png', 3, NULL, NULL),
+(4, NULL, 'Рассада овощей', 'http://stand3.progoff.ru/back/CategoryImages/61d36c2c1ea64_6.png', 4, NULL, NULL),
+(5, 2, 'Бархатцы', 'http://stand3.progoff.ru/back/CategoryImages/61e2a5443c001_strong-gold.png', 4, b'0', NULL),
+(6, NULL, 'Ампельные растения а кашпо', 'http://stand3.progoff.ru/back/CategoryImages/61e2a94d4599b_IMG_3543.jpg', 1, NULL, NULL),
+(8, 2, 'Агератум', 'http://stand3.progoff.ru/back/CategoryImages/61e4787f3ab5e_strong-gold.png', 6, b'0', NULL),
+(9, 2, 'Иберис', 'http://stand3.progoff.ru/back/CategoryImages/61e478a901e3c_strong-gold.png', 7, b'0', NULL);
 
 INSERT INTO `Product` (`id`, `boxId`, `name`, `price`, `nds`, `ndsMode`, `volume`, `note1`, `note2`, `coefficient`, `pack`, `description`, `isPopular`) VALUES
 ('00~Pvjh01M96', 1, 'Тестовый объект 2', 20, NULL, NULL, '00~Pvjh0000F', 'Горшок 25см', 'null', 1, '00~Pvjh0000F', '«Petra» – уникальный сорт кротона, сегодня считающийся одним из наиболее известных и часто продаваемых. У этого растения крупные яйцевидные листья до 30 см в длину формируют компактную, удивительно орнаментальную крону. Отличительная черта сорта – доминирование только зеленого и желтого окрасов и очень толстые прожилки, расположенные по центру листовой пластины и отходящие от нее «ребрами» с выемчатым краем. Только на очень старых листьях кротона края листовой пластины и центральная жилка приобретают легкий красноватый тон.', b'1'),
