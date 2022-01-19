@@ -149,6 +149,7 @@ class Product
 
         $request = $this->dataBase->stripAll((array)$request);
         $request['price'] = $request['price'] * 1;
+        $request['isPopular'] = $request['isPopular'] == 'true';
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $productId);
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
