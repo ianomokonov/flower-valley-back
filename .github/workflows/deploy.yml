@@ -18,7 +18,7 @@ jobs:
       - run: composer install && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand3/public_html/back # полный путь до папки, куда нужно скопировать файлы
 
         # Deploy db
-      - name: Deploy database
-        run: |
-          sudo /etc/init.d/mysql start
-          mysql -h nomokoiw.beget.tech -unomokoiw_flower -pL7v4__YR nomokoiw_flower < db/init.sql
+      # - name: Deploy database
+      #   run: |
+      #     sudo /etc/init.d/mysql start
+      #     mysql -h nomokoiw.beget.tech -unomokoiw_flower -pL7v4__YR nomokoiw_flower < db/init.sql
