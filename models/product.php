@@ -51,7 +51,7 @@ class Product
         while ($p = $stmt->fetch()) {
             $p['price'] = $p['price'] * 1;
             $p['boxId'] = $p['boxId'] * 1;
-            $product['prices'] = $this->getPrice($p['id']);
+            $p['prices'] = $this->getPrice($p['id']);
             $p['photos'] = $this->getPhotos($p['id'], true);
             $c = $this->category->readFirst($p['id']);
             $p['categoryId'] = $c['id'];
