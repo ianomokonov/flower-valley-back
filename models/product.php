@@ -114,6 +114,8 @@ class Product
         unset($request['prices']);
         $request = $this->dataBase->stripAll((array)$request);
         $request['price'] = $request['price'] * 1;
+        $request['nds'] = $request['nds'] * 1;
+        $request['ndsMode'] = $request['ndsMode'] * 1;
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
@@ -149,6 +151,8 @@ class Product
 
         $request = $this->dataBase->stripAll((array)$request);
         $request['price'] = $request['price'] * 1;
+        $request['nds'] = $request['nds'] * 1;
+        $request['ndsMode'] = $request['ndsMode'] * 1;
         $request['isPopular'] = $request['isPopular'] == 'true';
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $productId);
         $stmt = $this->dataBase->db->prepare($query[0]);
