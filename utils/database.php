@@ -84,13 +84,13 @@ class DataBase
             unset($object['id']);
         }
         foreach (array_keys((array)$object) as $key) {
-            $object[$key] = htmlspecialchars(strip_tags($object[$key], ['span', 'strong', 'p', 'i', 'b', 'div', 'a']));
+            $object[$key] = strip_tags($object[$key], ['span', 'strong', 'p', 'i', 'b', 'div', 'a']);
         }
         return $object;
     }
 
     public function strip($param)
     {
-        return htmlspecialchars(strip_tags($param));
+        return strip_tags($param);
     }
 }
