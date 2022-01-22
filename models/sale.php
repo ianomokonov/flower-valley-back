@@ -23,7 +23,6 @@ class Sale
             $sale['id'] = $sale['id'] * 1;
             $sale['discount'] = $sale['discount'] * 1;
             if ($sale['productId']) {
-                $sale['productId'] = $sale['productId'] * 1;
                 $sale['category'] = $category->readFirst($sale['productId']);
                 $result[] = $sale;
                 continue;
@@ -51,10 +50,6 @@ class Sale
         if (!$sale) {
             return null;
         }
-        $sale['id'] = $sale['id'] * 1;
-        $sale['discount'] = $sale['discount'] * 1;
-        $sale['productId'] = $sale['productId'] * 1;
-        $sale['categoryId'] = $sale['categoryId'] * 1;
 
         return $sale;
     }
