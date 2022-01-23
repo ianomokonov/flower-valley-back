@@ -327,4 +327,13 @@ class Product
 
         return $res;
     }
+    
+    public function getCurrentPrice($productId)
+    {
+        $query = "SELECT price FROM Product WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($productId));
+        $price = $stmt->fetch();
+        return $price['price'];
+    }
 }

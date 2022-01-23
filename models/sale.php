@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
 require_once __DIR__ . '/category.php';
+require_once __DIR__ . '/product.php';
 class Sale
 {
     private $dataBase;
@@ -19,11 +20,13 @@ class Sale
 
         $result = [];
         $category = new Category($this->dataBase);
+        $product = new Product($this->dataBase);
         while ($sale = $stmt->fetch()) {
             $sale['id'] = $sale['id'] * 1;
             $sale['discount'] = $sale['discount'] * 1;
             if ($sale['productId']) {
                 $sale['category'] = $category->readFirst($sale['productId']);
+                $sale['currentPrice'] = $product->getCurrentPrice($sale['productId']);
                 $result[] = $sale;
                 continue;
             }
