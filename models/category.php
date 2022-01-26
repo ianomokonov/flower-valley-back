@@ -225,13 +225,11 @@ class Category
         $stmt->execute($query[1]);
         $result = [];
         while ($category = $stmt->fetch()) {
-            $category['parentId'] = $category['parentId'] * 1;
-            $category['categoryOrder'] = $category['categoryOrder'] * 1;
-            $category['isSpecial'] = $category['isSpecial'] == '1';
+            $category['isTulip'] = $category['categoryOrder'] == 1;
+            $category['isSeedling'] = $category['categoryOrder'] == 2;
             if ($withSale) {
                 $category['sale'] = $this->sale->getSale($category['id'], true);
             }
-            $category['id'] = $category['id'] * 1;
             $result[] = $category;
         }
         return $result;
