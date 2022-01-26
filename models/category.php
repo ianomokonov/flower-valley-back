@@ -3,6 +3,12 @@ require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/product.php';
 require_once __DIR__ . '/sale.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
+
+abstract class CategoryType
+{
+    const Tulip = 1;
+    const Seedling = 2;
+}
 class Category
 {
     private $dataBase;
@@ -25,8 +31,8 @@ class Category
         $category = $stmt->fetch();
         $category['parentId'] = $category['parentId'] * 1;
         $category['id'] = $category['id'] * 1;
-        $category['isSeedling'] = $category['categoryType'] == 2;
-        $category['isTulip'] = $category['categoryType'] == 1;
+        $category['isSeedling'] = $category['categoryType'] == CategoryType::Seedling;
+        $category['isTulip'] = $category['categoryType'] == CategoryType::Tulip;
         if ($category['isTulip']) {
             $category['steps'] = $this->readSteps($category['id']);
         }
@@ -153,8 +159,8 @@ class Category
         if (!$category['parentId']) {
             $category['id'] = $category['id'] * 1;
             $category['parentId'] = $category['parentId'] * 1;
-            $category['isTulip'] = $category['categoryType'] == 1;
-            $category['isSeedling'] = $category['categoryType'] == 2;
+            $category['isTulip'] = $category['categoryType'] == CategoryType::Tulip;
+            $category['isSeedling'] = $category['categoryType'] == CategoryType::Seedling;
             return $category;
         }
 
@@ -167,11 +173,11 @@ class Category
         $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
         $request['categoryOrder'] = count($this->getList(false));
         if (isset($request['isSeedling'])) {
-            $request['categoryType'] = $request['isSeedling'] == 'true' ? 2 : null;
+            $request['categoryType'] = $request['isSeedling'] == 'true' ? CategoryType::Seedling : null;
             unset($request['isSeedling']);
         }
         if (isset($request['isTulip'])) {
-            $request['categoryType'] = $request['isTulip'] == 'true' ? 1 : null;
+            $request['categoryType'] = $request['isTulip'] == 'true' ? CategoryType::Tulip : null;
             unset($request['isTulip']);
         }
         $query = $this->dataBase->genInsertQuery($request, $this->table);
@@ -187,11 +193,11 @@ class Category
     {
         $request = $this->dataBase->stripAll((array)$request, true);
         if (isset($request['isSeedling'])) {
-            $request['categoryType'] = $request['isSeedling'] == 'true' ? 2 : null;
+            $request['categoryType'] = $request['isSeedling'] == 'true' ? CategoryType::Seedling : null;
             unset($request['isSeedling']);
         }
         if (isset($request['isTulip'])) {
-            $request['categoryType'] = $request['isTulip'] == 'true' ? 1 : null;
+            $request['categoryType'] = $request['isTulip'] == 'true' ? CategoryType::Tulip : null;
             unset($request['isTulip']);
         }
         if ($file) {
@@ -225,8 +231,8 @@ class Category
         $stmt->execute($query[1]);
         $result = [];
         while ($category = $stmt->fetch()) {
-            $category['isTulip'] = $category['categoryType'] == 1;
-            $category['isSeedling'] = $category['categoryType'] == 2;
+            $category['isTulip'] = $category['categoryType'] == CategoryType::Tulip;
+            $category['isSeedling'] = $category['categoryType'] == CategoryType::Seedling;
             if ($withSale) {
                 $category['sale'] = $this->sale->getSale($category['id'], true);
             }
@@ -270,6 +276,6 @@ class Category
         $query = "SELECT * FROM Category WHERE id = ?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
-        return $stmt->fetch()['isSpecial'] == '1';
+        return $stmt->fetch()['categoryType'] == CategoryType::Tulip;
     }
 }
