@@ -225,8 +225,8 @@ class Category
         $stmt->execute($query[1]);
         $result = [];
         while ($category = $stmt->fetch()) {
-            $category['isTulip'] = $category['categoryOrder'] == 1;
-            $category['isSeedling'] = $category['categoryOrder'] == 2;
+            $category['isTulip'] = $category['categoryType'] == 1;
+            $category['isSeedling'] = $category['categoryType'] == 2;
             if ($withSale) {
                 $category['sale'] = $this->sale->getSale($category['id'], true);
             }
