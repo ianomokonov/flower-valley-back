@@ -100,7 +100,7 @@ class Product
         $product['coefficient'] = $product['coefficient'] * 1;
         $product['isPopular'] = $product['isPopular'] == '1';
         $product['photos'] = $this->getPhotos($id);
-        $product['categories'] = $this->getCategories($id);
+        $product['categories'] = $this->category->getProductCategories($id);
         $product['sale'] = $this->sale->getSale($product['id'], false);
 
         return $product;
@@ -303,26 +303,6 @@ class Product
             $price['price'] = $price['price'] * 1;
             $price['countFrom'] = $price['countFrom'] * 1;
             $res[] = $price;
-        }
-
-        return $res;
-    }
-
-    private function getCategories($productId)
-    {
-        $res = [];
-        $stmt = $this->dataBase->db->prepare("select c.id, c.name, c.parentId, c.img, c.isTulip  from ProductCategory pc join Category c on c.id = pc.categoryId where productId=?");
-        $stmt->execute(array($productId));
-        while ($category = $stmt->fetch()) {
-            $category['id'] = $category['id'] * 1;
-            $parent = $this->category->readParentCategory($category['id']);
-            $category['isTulip'] = $parent['isTulip'];
-            if ($category['isTulip']) {
-                $category['steps'] = $this->category->readSteps($parent['id']);
-            }
-
-            $category['parentId'] = $category['parentId'] * 1;
-            $res[] = $category;
         }
 
         return $res;

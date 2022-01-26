@@ -25,8 +25,8 @@ class Category
         $category = $stmt->fetch();
         $category['parentId'] = $category['parentId'] * 1;
         $category['id'] = $category['id'] * 1;
-        $category['isSpecial'] = $category['isSpecial'] == '1';
-        $category['isTulip'] = $category['isTulip'] == '1';
+        $category['isSeedling'] = $category['categoryType'] == 2;
+        $category['isTulip'] = $category['categoryType'] == 1;
         if ($category['isTulip']) {
             $category['steps'] = $this->readSteps($category['id']);
         }
@@ -144,7 +144,7 @@ class Category
 
     public function readParentCategory($id)
     {
-        $query = "SELECT c.id, c.parentId, c.isTulip FROM Category c WHERE c.id = ?";
+        $query = "SELECT c.id, c.parentId, c.categoryType FROM Category c WHERE c.id = ?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
 
@@ -153,7 +153,8 @@ class Category
         if (!$category['parentId']) {
             $category['id'] = $category['id'] * 1;
             $category['parentId'] = $category['parentId'] * 1;
-            $category['isTulip'] = $category['isTulip'] == '1';
+            $category['isTulip'] = $category['categoryType'] == 1;
+            $category['isSeedling'] = $category['categoryType'] == 2;
             return $category;
         }
 
@@ -165,6 +166,14 @@ class Category
         $request = $this->dataBase->stripAll((array)$request);
         $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
         $request['categoryOrder'] = count($this->getList(false));
+        if (isset($request['isSeedling'])) {
+            $request['categoryType'] = $request['isSeedling'] == 'true' ? 2 : null;
+            unset($request['isSeedling']);
+        }
+        if (isset($request['isTulip'])) {
+            $request['categoryType'] = $request['isTulip'] == 'true' ? 1 : null;
+            unset($request['isTulip']);
+        }
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
@@ -177,6 +186,14 @@ class Category
     public function update($categoryId, $request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request, true);
+        if (isset($request['isSeedling'])) {
+            $request['categoryType'] = $request['isSeedling'] == 'true' ? 2 : null;
+            unset($request['isSeedling']);
+        }
+        if (isset($request['isTulip'])) {
+            $request['categoryType'] = $request['isTulip'] == 'true' ? 1 : null;
+            unset($request['isTulip']);
+        }
         if ($file) {
             $this->removeCategoryImg($categoryId);
             $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
@@ -218,6 +235,26 @@ class Category
             $result[] = $category;
         }
         return $result;
+    }
+
+
+
+    public function getProductCategories($productId)
+    {
+        $res = [];
+        $stmt = $this->dataBase->db->prepare("select c.id, c.name, c.parentId, c.img from ProductCategory pc join Category c on c.id = pc.categoryId where productId=?");
+        $stmt->execute(array($productId));
+        while ($category = $stmt->fetch()) {
+            $parent = $this->readParentCategory($category['id']);
+            $category['isTulip'] = $parent['isTulip'];
+            $category['isSeedling'] = $parent['isSeedling'];
+            if ($category['isTulip']) {
+                $category['steps'] = $this->category->readSteps($parent['id']);
+            }
+            $res[] = $category;
+        }
+
+        return $res;
     }
 
     private function removeCategoryImg($id)
