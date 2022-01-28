@@ -70,15 +70,47 @@ class Product
     public function send($request)
     {
         $subject = "Заказ цветов";
-        $message = "<p>Супер заказ цветов на миллион денег</p>
-        <p><a href='" . $request['link'] . "'>Ссылка</a></p>";
+        $message = "
+        <h2>Заказ №" . uniqid() . "</h2>
+        <h6>Данные клиента</h6>
+        <p>ФИО: " . $request['fullName'] . "</p>
+        <p>Телефон: " . $request['phone'] . "</p>
+        <p>Адрес доставки: " . $request['address'] . "</p>
+        <hr/>
+        <table>
+        <thead>
+        <tr>
+            <td>Товар</td>
+            <td>Цена</td>
+            <td>Кол-во</td>
+            <td>Стоимость</td>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $sum = 0;
+
+        foreach ($request['products'] as $product) {
+            $stmt = $this->dataBase->db->prepare("SELECT * FROM Product where id=?");
+            $stmt->execute(array($product['id']));
+            $p = $stmt->fetch();
+            $sum += 1 * $product['count'] * $product['price'];
+            $message = $message . "<tr>
+                <td>" . $p['name'] . "</td>
+                <td>" . $product['price'] . "</td>
+                <td>" . $product['count'] . "</td>
+                <td>" . $product['count'] * $product['price'] . "</td>
+            </tr>";
+        }
+
+        $message = $message . "</tbody></table><hr/> <h3>Сумма заказа: " . $sum . "руб.</h3>";
 
 
         $headers  = "Content-type: text/html; charset=utf-8 \r\nFrom: info@progoff.ru\r\n";
         // $headers  = "Content-type: text/html; charset=utf-8 \r\n";
 
         mail($request['email'], $subject, $message, $headers);
-        mail('Volik9925@yandex.ru', $subject, $message, $headers);
+        mail('nomokonov.vana@yandex.ru', $subject, $message, $headers);
     }
 
     public function read($id)
@@ -307,7 +339,7 @@ class Product
 
         return $res;
     }
-    
+
     public function getCurrentPrice($productId)
     {
         $query = "SELECT price FROM Product WHERE id = ?";
