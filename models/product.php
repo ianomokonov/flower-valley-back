@@ -72,7 +72,7 @@ class Product
         $subject = "Заказ цветов";
         $message = "
         <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
-        <h6>Данные клиента</h6>
+        <h3>Данные клиента</h3>
         <p>ФИО: " . $request['fullName'] . "</p>
         <p>Телефон: " . $request['phone'] . "</p>
         <p>Адрес доставки: " . $request['address'] . "</p>
