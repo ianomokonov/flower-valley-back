@@ -71,7 +71,7 @@ class Product
     {
         $subject = "Заказ цветов";
         $message = "
-        <h2>Заказ №" . uniqid() . "</h2>
+        <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
         <h6>Данные клиента</h6>
         <p>ФИО: " . $request['fullName'] . "</p>
         <p>Телефон: " . $request['phone'] . "</p>
@@ -80,10 +80,10 @@ class Product
         <table>
         <thead>
         <tr>
-            <td>Товар</td>
-            <td>Цена</td>
-            <td>Кол-во</td>
-            <td>Стоимость</td>
+            <td style='padding: 5px 10px'>Товар</td>
+            <td style='padding: 5px 10px'>Цена</td>
+            <td style='padding: 5px 10px'>Кол-во</td>
+            <td style='padding: 5px 10px'>Стоимость</td>
         </tr>
         </thead>
         <tbody>
@@ -96,10 +96,10 @@ class Product
             $p = $stmt->fetch();
             $sum += 1 * $product['count'] * $product['price'];
             $message = $message . "<tr>
-                <td>" . $p['name'] . "</td>
-                <td>" . $product['price'] . "</td>
-                <td>" . $product['count'] . "</td>
-                <td>" . $product['count'] * $product['price'] . "</td>
+                <td style='padding: 5px 10px'>" . $p['name'] . "</td>
+                <td style='padding: 5px 10px'>" . $product['price'] . "</td>
+                <td style='padding: 5px 10px'>" . $product['count'] . "</td>
+                <td style='padding: 5px 10px'>" . $product['count'] * $product['price'] . "</td>
             </tr>";
         }
 
