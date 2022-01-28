@@ -110,7 +110,7 @@ class Product
         // $headers  = "Content-type: text/html; charset=utf-8 \r\n";
 
         mail($request['email'], $subject, $message, $headers);
-        mail('nomokonov.vana@yandex.ru', $subject, $message, $headers);
+        mail('lepingrapes@yandex.ru', $subject, $message, $headers);
     }
 
     public function read($id)
