@@ -70,6 +70,7 @@ class Product
     public function send($request)
     {
         $subject = "Заказ цветов";
+        
         $message = "
         <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
         <h3>Данные клиента</h3>
@@ -102,10 +103,19 @@ class Product
                 <td style='padding: 5px 10px'>" . $product['count'] * $product['price'] . "</td>
             </tr>";
         }
+        $message = $message . "</tbody></table><hr/> <h3>Сумма товаров: " . $sum . "руб.</h3>";
 
-        $message = $message . "</tbody></table><hr/> <h3>Сумма заказа: " . $sum . "руб.</h3>";
+        if (isset($request['boxesPrice'])) {
+            $sum += 1 * $request['boxesPrice'];
+            $message = $message . "<h3>Стоимость коробок: " . $request['boxesPrice'] . "руб.</h3>";
+        }
+        
+        if (isset($request['deliveryPrice'])) {
+            $sum += 1 * $request['deliveryPrice'];
+            $message = $message . "<h3>Стоимость доставки: " . $request['deliveryPrice'] . "руб.</h3>";
+        }
 
-
+        $message = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
         $headers  = "Content-type: text/html; charset=utf-8 \r\nFrom: info@progoff.ru\r\n";
         // $headers  = "Content-type: text/html; charset=utf-8 \r\n";
 
