@@ -253,7 +253,7 @@ class Category
             $category['isTulip'] = $parent['isTulip'];
             $category['isSeedling'] = $parent['isSeedling'];
             if ($category['isTulip']) {
-                $category['steps'] = $this->category->readSteps($parent['id']);
+                $category['steps'] = $this->readSteps($parent['id']);
             }
             $res[] = $category;
         }
