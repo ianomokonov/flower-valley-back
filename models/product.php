@@ -70,7 +70,7 @@ class Product
     public function send($request)
     {
         $subject = "Заказ цветов";
-        
+
         $message = "
         <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
         <h3>Данные клиента</h3>
@@ -109,7 +109,7 @@ class Product
             $sum += 1 * $request['boxesPrice'];
             $message = $message . "<h3>Стоимость коробок: " . $request['boxesPrice'] . "руб.</h3>";
         }
-        
+
         if (isset($request['deliveryPrice'])) {
             $sum += 1 * $request['deliveryPrice'];
             $message = $message . "<h3>Стоимость доставки: " . $request['deliveryPrice'] . "руб.</h3>";
@@ -158,6 +158,7 @@ class Product
         $request['price'] = $request['price'] * 1;
         $request['nds'] = $request['nds'] * 1;
         $request['ndsMode'] = $request['ndsMode'] * 1;
+        $request['isPopular'] =  $request['isPopular'] == 'true';
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
