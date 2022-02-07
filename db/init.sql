@@ -48,6 +48,7 @@ CREATE TABLE `Category` (
   `img` VARCHAR(255) NULL,
   `categoryOrder` INTEGER(10) DEFAULT 0,
   `categoryType` INTEGER(1) DEFAULT 0,
+  `isBlocked` BIT(1) DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 
