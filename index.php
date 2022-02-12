@@ -211,6 +211,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
+        $productGroup->post('/order-popular', function (Request $request, Response $response) use ($product) {
+            try {
+                $response->getBody()->write(json_encode($product->sortPopularProducts($request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки продуктов")));
+                return $response->withStatus(401);
+            }
+        });
+
         $productGroup->post('/{id}', function (Request $request, Response $response) use ($product) {
             try {
                 $routeContext = RouteContext::fromRequest($request);

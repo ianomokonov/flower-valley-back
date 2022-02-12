@@ -74,7 +74,7 @@ CREATE TABLE `CategoryStep` (
 DROP TABLE IF EXISTS `Product`;
 		
 CREATE TABLE `Product` (
-  `id` VARCHAR(20) NOT NULL,
+  `id` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `boxId` INTEGER(10) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `price` FLOAT NOT NULL,
@@ -87,6 +87,7 @@ CREATE TABLE `Product` (
   `pack` VARCHAR(255) NULL,
   `description` TEXT NOT NULL,
   `isPopular` BIT(1) DEFAULT 0,
+  `popularOrder` INTEGER(10) NULL,
 
 
   PRIMARY KEY (`id`)

@@ -43,7 +43,7 @@ class Product
 
     public function getPopular()
     {
-        $query = "SELECT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.isPopular";
+        $query = "SELECT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.isPopular ORDER BY p.popularOrder";
 
         $stmt = $this->dataBase->db->query($query);
         $result = [];
@@ -159,6 +159,12 @@ class Product
         $request['nds'] = $request['nds'] * 1;
         $request['ndsMode'] = $request['ndsMode'] * 1;
         $request['isPopular'] =  $request['isPopular'] == 'true';
+        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
+            throw new Exception("Ошибка добавления товара. Укажите порядковый номер популярного товара.", 409);
+        }
+        if (!$request['isPopular']) {
+            $request['popularOrder'] = null;
+        }
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
@@ -197,6 +203,12 @@ class Product
         $request['nds'] = $request['nds'] * 1;
         $request['ndsMode'] = $request['ndsMode'] * 1;
         $request['isPopular'] = $request['isPopular'] == 'true';
+        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
+            throw new Exception("Ошибка редактирования товара. Укажите порядковый номер популярного товара.", 409);
+        }
+        if (!$request['isPopular']) {
+            $request['popularOrder'] = null;
+        }
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $productId);
         $stmt = $this->dataBase->db->prepare($query[0]);
         $stmt->execute($query[1]);
@@ -224,6 +236,16 @@ class Product
             $query = "update ProductCategory set productOrder=? where id=?";
             $stmt = $this->dataBase->db->prepare($query);
             $stmt->execute(array($product['productOrder'], $product['productCategoryId']));
+        }
+        return true;
+    }
+
+    public function sortPopularProducts($products)
+    {
+        foreach ($products as $product) {
+            $query = "update Product set popularOrder=? where id=?";
+            $stmt = $this->dataBase->db->prepare($query);
+            $stmt->execute(array($product['order'], $product['id']));
         }
         return true;
     }
