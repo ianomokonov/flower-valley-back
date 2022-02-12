@@ -25,6 +25,7 @@ class StaticModel
             'clients' => $this->readStatic(3),
             'sales' => $sales,
             'videos' => $this->readVideos(),
+            'media' => $this->readMedia(),
             'popular' => $product->getPopular(),
         );
 
@@ -99,7 +100,7 @@ class StaticModel
 
         $video = $stmt->fetch();
 
-        if(!$video){
+        if (!$video) {
             return null;
         }
 
@@ -132,6 +133,66 @@ class StaticModel
     public function deleteVideo($id)
     {
         $query = "delete from Video where id=?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        return true;
+    }
+
+    private function readMedia()
+    {
+        $query = "SELECT * FROM Media";
+        $stmt = $this->dataBase->db->query($query);
+
+        return $stmt->fetchAll();
+    }
+
+    public function readMediaById($id)
+    {
+        $query = "SELECT * FROM Media WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+
+        $media = $stmt->fetch();
+
+        if (!$media) {
+            return null;
+        }
+
+        return $media;
+    }
+
+    public function createMedia($request, $file)
+    {
+        $request = $this->dataBase->stripAll((array)$request, true);
+        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+        $query = $this->dataBase->genInsertQuery($request, 'Media');
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        if ($query[1][0]) {
+            $stmt->execute($query[1]);
+        }
+
+        return $this->dataBase->db->lastInsertId();
+    }
+
+    public function updateMedia($id, $request, $file)
+    {
+        $request = $this->dataBase->stripAll((array)$request, true);
+        if ($file) {
+            $this->removeImg('Media', $id);
+            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+        }
+
+        $query = $this->dataBase->genUpdateQuery($request, 'Media', $id);
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        $stmt->execute($query[1]);
+
+        return true;
+    }
+
+    public function deleteMedia($id)
+    {
+        $this->removeImg('Media', $id);
+        $query = "delete from Media where id=?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         return true;

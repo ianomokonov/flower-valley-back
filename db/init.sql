@@ -213,6 +213,21 @@ CREATE TABLE `Video` (
 );
 
 -- ---
+-- Table 'Media'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `Media`;
+		
+CREATE TABLE `Media` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `img` VARCHAR(255) NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `link` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
 -- Table 'Sale'
 -- 
 -- ---

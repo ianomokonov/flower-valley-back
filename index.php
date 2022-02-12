@@ -163,6 +163,18 @@ $app->get('/video/{id}', function (Request $request, Response $response) use ($s
         return $response->withStatus(404);
     }
 });
+$app->get('/media/{id}', function (Request $request, Response $response) use ($static) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($static->readMediaById($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(500);
+    }
+});
 
 $app->get('/contact-photos', function (Request $request, Response $response) use ($static) {
     try {
@@ -391,6 +403,42 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $routeContext = RouteContext::fromRequest($request);
                 $route = $routeContext->getRoute();
                 $response->getBody()->write(json_encode($static->deleteContactPhoto($route->getArgument('id'))));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления фотографии")));
+                return $response->withStatus(500);
+            }
+        });
+    });
+
+    $group->group('contact-photo', function (RouteCollectorProxy $mediaGroup) use ($static) {
+        $mediaGroup->post('', function (Request $request, Response $response) use ($static) {
+            try {
+                $response->getBody()->write(json_encode($static->createMedia($request->getParsedBody(), $_FILES['img'])));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка добавления СМИ")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $mediaGroup->post('/{id}', function (Request $request, Response $response) use ($static) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($static->updateMedia($route->getArgument('id'), $request->getParsedBody(), $_FILES['img'])));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования СМИ")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $mediaGroup->delete('/{id}', function (Request $request, Response $response) use ($static) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($static->deleteMedia($route->getArgument('id'))));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления фотографии")));
