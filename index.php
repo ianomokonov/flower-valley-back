@@ -411,7 +411,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('contact-photo', function (RouteCollectorProxy $mediaGroup) use ($static) {
+    $group->group('media', function (RouteCollectorProxy $mediaGroup) use ($static) {
         $mediaGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
                 $response->getBody()->write(json_encode($static->createMedia($request->getParsedBody(), $_FILES['img'])));
