@@ -91,6 +91,21 @@ class StaticModel
         return $this->setNumIds($stmt->fetchAll());
     }
 
+    public function readVideoById($id)
+    {
+        $query = "SELECT * FROM Video WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+
+        $video = $stmt->fetch();
+
+        if(!$video){
+            return null;
+        }
+
+        return $video;
+    }
+
     public function createVideo($request)
     {
         $request = $this->dataBase->stripAll((array)$request, true);

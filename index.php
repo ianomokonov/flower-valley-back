@@ -139,6 +139,30 @@ $app->get('/main-info', function (Request $request, Response $response) use ($st
         return $response->withStatus(404);
     }
 });
+$app->get('/sale/{id}', function (Request $request, Response $response) use ($sale) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($sale->getSaleById($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(404);
+    }
+});
+$app->get('/video/{id}', function (Request $request, Response $response) use ($static) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($static->readVideoById($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(404);
+    }
+});
 
 $app->get('/contact-photos', function (Request $request, Response $response) use ($static) {
     try {

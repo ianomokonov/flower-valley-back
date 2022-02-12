@@ -57,6 +57,19 @@ class Sale
         return $sale;
     }
 
+    public function getSaleById($id)
+    {
+        $query = "SELECT * FROM Sale WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        $sale = $stmt->fetch();
+        if (!$sale) {
+            return null;
+        }
+
+        return $sale;
+    }
+
     public function createSale($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request);
