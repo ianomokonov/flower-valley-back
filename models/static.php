@@ -164,7 +164,10 @@ class StaticModel
     public function createMedia($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request, true);
-        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+        if ($file) {
+            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+        }
+
         $query = $this->dataBase->genInsertQuery($request, 'Media');
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
