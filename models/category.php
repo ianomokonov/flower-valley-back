@@ -150,7 +150,7 @@ class Category
 
     public function readParentCategory($id)
     {
-        $query = "SELECT c.id, c.parentId, c.categoryType FROM Category c WHERE c.id = ?";
+        $query = "SELECT c.id, c.parentId, c.categoryType, c.name FROM Category c WHERE c.id = ?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
 

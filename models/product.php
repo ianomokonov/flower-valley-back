@@ -30,7 +30,7 @@ class Product
         $result = [];
 
         while ($p = $stmt->fetch()) {
-            $c = $this->category->readFirst($p['id']);
+            $c = $this->category->readParentCategory($this->category->readFirst($p['id'])['id']);
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
             $p['prices'] = $this->getPrice($p['id']);
@@ -47,7 +47,7 @@ class Product
 
         $stmt = $this->dataBase->db->query($query);
 
-        if($raw){
+        if ($raw) {
             return $stmt->fetchAll();
         }
 
