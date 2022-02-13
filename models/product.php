@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
-// require_once __DIR__ . '/../utils/mailer.php';
+require_once __DIR__ . '/../utils/mailer.php';
 require_once __DIR__ . '/category.php';
 require_once __DIR__ . '/sale.php';
 class Product
@@ -11,7 +11,6 @@ class Product
     private $fileUploader;
     private $sale;
     private $category;
-    private $mailer;
 
     public function __construct(DataBase $dataBase)
     {
@@ -19,7 +18,6 @@ class Product
         $this->fileUploader = new FilesUpload();
         $this->sale = new Sale($dataBase);
         $this->category = new Category($this->dataBase);
-        // $this->mailer = new Mailer();
     }
 
     public function search($str)
@@ -72,55 +70,56 @@ class Product
 
     public function send($request)
     {
-        // $this->mailer->mail->Subject = "Заказ цветов";
+        $mailer = new Mailer();
+        $mailer->mail->Subject = "Заказ цветов";
 
-        // $message = "
-        // <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
-        // <h3>Данные клиента</h3>
-        // <p>ФИО: " . $request['fullName'] . "</p>
-        // <p>Телефон: " . $request['phone'] . "</p>
-        // <p>Адрес доставки: " . $request['address'] . "</p>
-        // <hr/>
-        // <table>
-        // <thead>
-        // <tr>
-        //     <td style='padding: 5px 10px'>Товар</td>
-        //     <td style='padding: 5px 10px'>Цена</td>
-        //     <td style='padding: 5px 10px'>Кол-во</td>
-        //     <td style='padding: 5px 10px'>Стоимость</td>
-        // </tr>
-        // </thead>
-        // <tbody>
-        // ";
-        // $sum = 0;
+        $message = "
+        <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
+        <h3>Данные клиента</h3>
+        <p>ФИО: " . $request['fullName'] . "</p>
+        <p>Телефон: " . $request['phone'] . "</p>
+        <p>Адрес доставки: " . $request['address'] . "</p>
+        <hr/>
+        <table>
+        <thead>
+        <tr>
+            <td style='padding: 5px 10px'>Товар</td>
+            <td style='padding: 5px 10px'>Цена</td>
+            <td style='padding: 5px 10px'>Кол-во</td>
+            <td style='padding: 5px 10px'>Стоимость</td>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $sum = 0;
 
-        // foreach ($request['products'] as $product) {
-        //     $stmt = $this->dataBase->db->prepare("SELECT * FROM Product where id=?");
-        //     $stmt->execute(array($product['id']));
-        //     $p = $stmt->fetch();
-        //     $sum += 1 * $product['count'] * $product['price'];
-        //     $message = $message . "<tr>
-        //         <td style='padding: 5px 10px'>" . $p['name'] . "</td>
-        //         <td style='padding: 5px 10px'>" . $product['price'] . "</td>
-        //         <td style='padding: 5px 10px'>" . $product['count'] . "</td>
-        //         <td style='padding: 5px 10px'>" . $product['count'] * $product['price'] . "</td>
-        //     </tr>";
-        // }
-        // $message = $message . "</tbody></table><hr/> <h3>Сумма товаров: " . $sum . "руб.</h3>";
+        foreach ($request['products'] as $product) {
+            $stmt = $this->dataBase->db->prepare("SELECT * FROM Product where id=?");
+            $stmt->execute(array($product['id']));
+            $p = $stmt->fetch();
+            $sum += 1 * $product['count'] * $product['price'];
+            $message = $message . "<tr>
+                <td style='padding: 5px 10px'>" . $p['name'] . "</td>
+                <td style='padding: 5px 10px'>" . $product['price'] . "</td>
+                <td style='padding: 5px 10px'>" . $product['count'] . "</td>
+                <td style='padding: 5px 10px'>" . $product['count'] * $product['price'] . "</td>
+            </tr>";
+        }
+        $message = $message . "</tbody></table><hr/> <h3>Сумма товаров: " . $sum . "руб.</h3>";
 
-        // if (isset($request['boxesPrice'])) {
-        //     $sum += 1 * $request['boxesPrice'];
-        //     $message = $message . "<h3>Стоимость коробок: " . $request['boxesPrice'] . "руб.</h3>";
-        // }
+        if (isset($request['boxesPrice'])) {
+            $sum += 1 * $request['boxesPrice'];
+            $message = $message . "<h3>Стоимость коробок: " . $request['boxesPrice'] . "руб.</h3>";
+        }
 
-        // if (isset($request['deliveryPrice'])) {
-        //     $sum += 1 * $request['deliveryPrice'];
-        //     $message = $message . "<h3>Стоимость доставки: " . $request['deliveryPrice'] . "руб.</h3>";
-        // }
+        if (isset($request['deliveryPrice'])) {
+            $sum += 1 * $request['deliveryPrice'];
+            $message = $message . "<h3>Стоимость доставки: " . $request['deliveryPrice'] . "руб.</h3>";
+        }
 
-        // $this->mailer->mail->Body = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
-        // $this->mailer->mail->addAddress($request['email']);
-        // $this->mailer->mail->send();
+        $mailer->mail->Body = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
+        $mailer->mail->addAddress($request['email']);
+        $mailer->mail->send();
     }
 
     public function read($id)
