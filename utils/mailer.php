@@ -30,9 +30,8 @@ class Mailer
             $this->mail->setLanguage('ru');
             $this->mail->CharSet = 'UTF-8';
             //Recipients
-            $this->mail->setFrom('info@progoff.ru');
+            $this->mail->setFrom('flowervalley@mail.com');
             $this->mail->addAddress('lepingrapes@yandex.ru');
-            $this->mail->addReplyTo('info@progoff.ru');
             // $mail->addCC('cc@example.com');
             // $mail->addBCC('bcc@example.com');
 
