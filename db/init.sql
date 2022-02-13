@@ -239,6 +239,7 @@ CREATE TABLE `Media` (
   `img` VARCHAR(255) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `link` VARCHAR(255) NOT NULL,
+  `publishDate` DATE NOT NULL,
   PRIMARY KEY (`id`)
 );
 
