@@ -43,7 +43,7 @@ class Product
 
     public function getPopular($raw = false)
     {
-        $query = "SELECT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.isPopular ORDER BY p.popularOrder";
+        $query = "SELECT p.id, p.name, p.price, p.boxId, p.coefficient, p.popularOrder FROM Product p WHERE p.isPopular ORDER BY p.popularOrder";
 
         $stmt = $this->dataBase->db->query($query);
 
@@ -54,14 +54,11 @@ class Product
         $result = [];
 
         while ($p = $stmt->fetch()) {
-            $p['price'] = $p['price'] * 1;
-            $p['boxId'] = $p['boxId'] * 1;
             $p['prices'] = $this->getPrice($p['id']);
             $p['photos'] = $this->getPhotos($p['id'], true);
             $c = $this->category->readFirst($p['id']);
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
-            $p['coefficient'] = $p['coefficient'] * 1;
             $p['sale'] = $this->sale->getSale($p['id'], false);
             $result[] = $p;
         }
