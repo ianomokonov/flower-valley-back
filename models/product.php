@@ -41,11 +41,16 @@ class Product
         return $result;
     }
 
-    public function getPopular()
+    public function getPopular($raw = false)
     {
         $query = "SELECT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.isPopular ORDER BY p.popularOrder";
 
         $stmt = $this->dataBase->db->query($query);
+
+        if($raw){
+            return $stmt->fetchAll();
+        }
+
         $result = [];
 
         while ($p = $stmt->fetch()) {
@@ -118,10 +123,10 @@ class Product
 
         $mailer->mail->Body = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
         $mailer->mail->addAddress($request['email']);
-        if(isset($files['kp'])){
+        if (isset($files['kp'])) {
             $mailer->mail->addAttachment($files['kp']['tmp_name'], $files['kp']['name']);
         }
-        if(isset($files['estimate'])){
+        if (isset($files['estimate'])) {
             $mailer->mail->addAttachment($files['estimate']['tmp_name'], $files['estimate']['name']);
         }
         $mailer->mail->send();
@@ -159,14 +164,22 @@ class Product
         unset($request['categoryIds']);
         unset($request['prices']);
         $request = $this->dataBase->stripAll((array)$request);
-        $request['price'] = $request['price'] * 1;
-        $request['nds'] = $request['nds'] * 1;
-        $request['ndsMode'] = $request['ndsMode'] * 1;
-        $request['isPopular'] =  $request['isPopular'] == 'true';
-        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
-            throw new Exception("Ошибка добавления товара. Укажите порядковый номер популярного товара.", 409);
+        if (isset($request['price'])) {
+            $request['price'] = $request['price'] * 1;
         }
-        if (!$request['isPopular']) {
+        if (isset($request['nds'])) {
+            $request['nds'] = $request['nds'] * 1;
+        }
+        if (isset($request['ndsMode'])) {
+            $request['ndsMode'] = $request['ndsMode'] * 1;
+        }
+        if (isset($request['isPopular'])) {
+            $request['isPopular'] = $request['isPopular'] == 'true';
+        }
+        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
+            $request['popularOrder'] = count($this->getPopular(true));
+        }
+        if (isset($request['isPopular']) && !$request['isPopular']) {
             $request['popularOrder'] = null;
         }
         $query = $this->dataBase->genInsertQuery($request, $this->table);
@@ -346,20 +359,15 @@ class Product
 
     public function getPhotos($productId, $firstOnly = false)
     {
-        $res = [];
         $stmt = null;
         if ($firstOnly) {
-            $stmt = $this->dataBase->db->prepare("select src from ProductImage where productId=? LIMIT 1");
+            $stmt = $this->dataBase->db->prepare("select id, src from ProductImage where productId=? LIMIT 1");
         } else {
             $stmt = $this->dataBase->db->prepare("select id, src from ProductImage where productId=?");
         }
         $stmt->execute(array($productId));
-        while ($url = $stmt->fetch()) {
-            $url['id'] = $url['id'] * 1;
-            $res[] = $url;
-        }
 
-        return $res;
+        return $stmt->fetchAll();
     }
 
     public function getPrice($productId)
