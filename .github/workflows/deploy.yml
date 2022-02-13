@@ -15,7 +15,7 @@ jobs:
       - run: mkdir "$HOME/.ssh"
       - run: echo "${{ secrets.secret_key }}" > "$HOME/.ssh/secret_key" # secret_key - название секрета
       - run: chmod 600 "$HOME/.ssh/secret_key"
-      - run: ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no && rm -r -f nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand3/public_html/back/vendor
+      - run: ssh -i $HOME/.ssh/secret_key "rm -r -f /home/n/nomokoiw/stand3/public_html/back/vendor"
       # - run: composer install && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand3/public_html/back # полный путь до папки, куда нужно скопировать файлы
 
         # Deploy db
