@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../utils/database.php';
 require_once __DIR__ . '/../utils/filesUpload.php';
+require_once __DIR__ . '/../utils/mailer.php';
 require_once __DIR__ . '/category.php';
 require_once __DIR__ . '/sale.php';
 class Product
@@ -10,6 +11,7 @@ class Product
     private $fileUploader;
     private $sale;
     private $category;
+    private $mailer;
 
     public function __construct(DataBase $dataBase)
     {
@@ -17,6 +19,7 @@ class Product
         $this->fileUploader = new FilesUpload();
         $this->sale = new Sale($dataBase);
         $this->category = new Category($this->dataBase);
+        $this->mailer = new Mailer();
     }
 
     public function search($str)
@@ -69,7 +72,7 @@ class Product
 
     public function send($request)
     {
-        $subject = "Заказ цветов";
+        $this->mailer->mail->Subject = "Заказ цветов";
 
         $message = "
         <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
@@ -115,12 +118,9 @@ class Product
             $message = $message . "<h3>Стоимость доставки: " . $request['deliveryPrice'] . "руб.</h3>";
         }
 
-        $message = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
-        $headers  = "Content-type: text/html; charset=utf-8 \r\nFrom: info@progoff.ru\r\n";
-        // $headers  = "Content-type: text/html; charset=utf-8 \r\n";
-
-        mail($request['email'], $subject, $message, $headers);
-        mail('lepingrapes@yandex.ru', $subject, $message, $headers);
+        $this->mailer->mail->Body = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
+        $this->mailer->mail->addAddress($request['email']);
+        $this->mailer->mail->send();
     }
 
     public function read($id)
