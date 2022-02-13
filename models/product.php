@@ -23,7 +23,7 @@ class Product
     public function search($str)
     {
         $str = htmlspecialchars(strip_tags($str));
-        $query = "SELECT DISTINCT p.id, p.name, p.price, p.boxId FROM Product p WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
+        $query = "SELECT DISTINCT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
 
         $stmt = $this->dataBase->db->query($query);
 
@@ -33,8 +33,7 @@ class Product
             $c = $this->category->readFirst($p['id']);
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
-            $p['price'] = $p['price'] * 1;
-            $p['boxId'] = $p['boxId'] * 1;
+            $p['prices'] = $this->getPrice($p['id']);
             $p['sale'] = $this->sale->getSale($p['id'], false);
             $result[] = $p;
         }
