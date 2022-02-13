@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization");
@@ -224,7 +228,7 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
-$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale, $step) {
+$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale) {
 
     $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
         $productGroup->post('', function (Request $request, Response $response) use ($product) {

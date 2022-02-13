@@ -70,7 +70,7 @@ class Product
 
     public function send($request)
     {
-        /* $mailer = new Mailer();
+        $mailer = new Mailer();
         $mailer->mail->Subject = "Заказ цветов";
 
         $message = "
@@ -119,7 +119,7 @@ class Product
 
         $mailer->mail->Body = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
         $mailer->mail->addAddress($request['email']);
-        $mailer->mail->send(); */
+        $mailer->mail->send();
     }
 
     public function read($id)

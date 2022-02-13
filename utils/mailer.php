@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 class Mailer
 {
@@ -27,11 +27,12 @@ class Mailer
             // $mail->Password   = 'secret';                               //SMTP password
             // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             // $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
+            $this->mail->setLanguage('ru');
+            $this->mail->CharSet = 'UTF-8';
             //Recipients
-            $this->mail->setFrom('info@progoff.ru', 'Цветочная долина');
+            $this->mail->setFrom('info@progoff.ru');
             // $this->mail->addAddress('lepingrapes@yandex.ru');
-            $this->mail->addReplyTo('info@progoff.ru', 'Цветочная долина');
+            $this->mail->addReplyTo('info@progoff.ru');
             // $mail->addCC('cc@example.com');
             // $mail->addBCC('bcc@example.com');
 
