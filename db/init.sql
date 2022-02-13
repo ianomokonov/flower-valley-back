@@ -49,6 +49,7 @@ CREATE TABLE `Category` (
   `categoryOrder` INTEGER(10) DEFAULT 0,
   `categoryType` INTEGER(1) DEFAULT 0,
   `isBlocked` BIT(1) DEFAULT 0,
+  `hasNoDiscount` BIT(1) DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 
@@ -105,6 +106,20 @@ CREATE TABLE `Box` (
   `name` VARCHAR(255) NOT NULL,
   `volume` INTEGER(20) NOT NULL,
   `price` FLOAT NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'Discount'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `Discount`;
+		
+CREATE TABLE `Discount` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `discount` INTEGER(10) NOT NULL,
+  `sum` FLOAT NOT NULL,
   PRIMARY KEY (`id`)
 );
 

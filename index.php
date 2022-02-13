@@ -176,6 +176,30 @@ $app->get('/media/{id}', function (Request $request, Response $response) use ($s
     }
 });
 
+$app->get('/discount/list', function (Request $request, Response $response) use ($static) {
+    try {
+        $response->getBody()->write(json_encode($static->readDiscounts()));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(500);
+    }
+});
+
+$app->get('/discount/{id}', function (Request $request, Response $response) use ($static) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($static->readDiscountById($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(500);
+    }
+});
+
 $app->get('/contact-photos', function (Request $request, Response $response) use ($static) {
     try {
         $response->getBody()->write(json_encode($static->readContactPhotos()));
@@ -441,7 +465,43 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $response->getBody()->write(json_encode($static->deleteMedia($route->getArgument('id'))));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления фотографии")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления СМИ")));
+                return $response->withStatus(500);
+            }
+        });
+    });
+
+    $group->group('discount', function (RouteCollectorProxy $discountGroup) use ($static) {
+        $discountGroup->post('', function (Request $request, Response $response) use ($static) {
+            try {
+                $response->getBody()->write(json_encode($static->createDiscount($request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка добавления скидки")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $discountGroup->post('/{id}', function (Request $request, Response $response) use ($static) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($static->updateDiscount($route->getArgument('id'), $request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования скидки")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $discountGroup->delete('/{id}', function (Request $request, Response $response) use ($static) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($static->deleteDiscount($route->getArgument('id'))));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления скидки")));
                 return $response->withStatus(500);
             }
         });

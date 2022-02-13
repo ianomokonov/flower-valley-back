@@ -198,6 +198,60 @@ class StaticModel
         return true;
     }
 
+    public function readDiscounts()
+    {
+        $query = "SELECT * FROM Discount";
+        $stmt = $this->dataBase->db->query($query);
+
+        return $stmt->fetchAll();
+    }
+
+    public function readDiscountById($id)
+    {
+        $query = "SELECT * FROM Discount WHERE id = ?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+
+        $media = $stmt->fetch();
+
+        if (!$media) {
+            return null;
+        }
+
+        return $media;
+    }
+
+    public function createDiscount($request)
+    {
+        $request = $this->dataBase->stripAll((array)$request, true);
+        $query = $this->dataBase->genInsertQuery($request, 'Discount');
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        if ($query[1][0]) {
+            $stmt->execute($query[1]);
+        }
+
+        return $this->dataBase->db->lastInsertId();
+    }
+
+    public function updateDiscount($id, $request)
+    {
+        $request = $this->dataBase->stripAll((array)$request, true);
+
+        $query = $this->dataBase->genUpdateQuery($request, 'Discount', $id);
+        $stmt = $this->dataBase->db->prepare($query[0]);
+        $stmt->execute($query[1]);
+
+        return true;
+    }
+
+    public function deleteDiscount($id)
+    {
+        $query = "delete from Discount where id=?";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        return true;
+    }
+
     public function readContactPhotos()
     {
         $query = "SELECT * FROM ContactPhoto";
