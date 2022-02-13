@@ -76,7 +76,7 @@ $app->post('/delete-token', function (Request $request, Response $response) use 
 
 $app->post('/product/send-order', function (Request $request, Response $response) use ($product) {
     try {
-        $response->getBody()->write(json_encode($product->send($request->getParsedBody())));
+        $response->getBody()->write(json_encode($product->send($request->getParsedBody(), $_FILES)));
         return $response;
     } catch (Exception $e) {
         $response = new ResponseClass();

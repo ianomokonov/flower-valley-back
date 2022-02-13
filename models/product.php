@@ -67,7 +67,7 @@ class Product
 
 
 
-    public function send($request)
+    public function send($request, $files)
     {
         $mailer = new Mailer();
         $mailer->mail->Subject = "Заказ цветов";
@@ -91,8 +91,8 @@ class Product
         <tbody>
         ";
         $sum = 0;
-
         foreach ($request['products'] as $product) {
+            $product = json_decode($product, true);
             $stmt = $this->dataBase->db->prepare("SELECT * FROM Product where id=?");
             $stmt->execute(array($product['id']));
             $p = $stmt->fetch();
@@ -118,6 +118,12 @@ class Product
 
         $mailer->mail->Body = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
         $mailer->mail->addAddress($request['email']);
+        if(isset($files['kp'])){
+            $mailer->mail->addAttachment($files['kp']['tmp_name'], $files['kp']['name']);
+        }
+        if(isset($files['estimate'])){
+            $mailer->mail->addAttachment($files['estimate']['tmp_name'], $files['estimate']['name']);
+        }
         $mailer->mail->send();
     }
 
