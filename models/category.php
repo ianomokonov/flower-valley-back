@@ -172,8 +172,12 @@ class Category
     {
         $request = $this->dataBase->stripAll((array)$request);
         $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
-        $request['isBlocked'] = $request['isBlocked'] == 'true';
-        $request['hasNoDiscount'] = $request['hasNoDiscount'] == 'true';
+        if (isset($request['isBlocked'])) {
+            $request['isBlocked'] = $request['isBlocked'] == 'true';
+        }
+        if (isset($request['hasNoDiscount'])) {
+            $request['hasNoDiscount'] = $request['hasNoDiscount'] == 'true';
+        }
         $request['categoryOrder'] = count($this->getList(false));
         if (isset($request['isSeedling'])) {
             $request['categoryType'] = $request['isSeedling'] == 'true' ? CategoryType::Seedling : null;
@@ -195,8 +199,13 @@ class Category
     public function update($categoryId, $request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request, true);
-        $request['isBlocked'] = $request['isBlocked'] == 'true';
-        $request['hasNoDiscount'] = $request['hasNoDiscount'] == 'true';
+
+        if (isset($request['isBlocked'])) {
+            $request['isBlocked'] = $request['isBlocked'] == 'true';
+        }
+        if (isset($request['hasNoDiscount'])) {
+            $request['hasNoDiscount'] = $request['hasNoDiscount'] == 'true';
+        }
         if (isset($request['isSeedling'])) {
             $request['categoryType'] = $request['isSeedling'] == 'true' ? CategoryType::Seedling : null;
             unset($request['isSeedling']);
