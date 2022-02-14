@@ -213,14 +213,22 @@ class Product
         }
 
         $request = $this->dataBase->stripAll((array)$request);
-        $request['price'] = $request['price'] * 1;
-        $request['nds'] = $request['nds'] * 1;
-        $request['ndsMode'] = $request['ndsMode'] * 1;
-        $request['isPopular'] = $request['isPopular'] == 'true';
-        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
-            throw new Exception("Ошибка редактирования товара. Укажите порядковый номер популярного товара.", 409);
+        if (isset($request['price'])) {
+            $request['price'] = $request['price'] * 1;
         }
-        if (!$request['isPopular']) {
+        if (isset($request['nds'])) {
+            $request['nds'] = $request['nds'] * 1;
+        }
+        if (isset($request['ndsMode'])) {
+            $request['ndsMode'] = $request['ndsMode'] * 1;
+        }
+        if (isset($request['isPopular'])) {
+            $request['isPopular'] = $request['isPopular'] == 'true';
+        }
+        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
+            $request['popularOrder'] = count($this->getPopular(true));
+        }
+        if (isset($request['isPopular']) && !$request['isPopular']) {
             $request['popularOrder'] = null;
         }
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $productId);
