@@ -172,10 +172,12 @@ class Product
         }
         if (isset($request['isPopular'])) {
             $request['isPopular'] = $request['isPopular'] == 'true';
+
+            if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
+                $request['popularOrder'] = count($this->getPopular(true));
+            }
         }
-        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
-            $request['popularOrder'] = count($this->getPopular(true));
-        }
+
         if (isset($request['isPopular']) && !$request['isPopular']) {
             $request['popularOrder'] = null;
         }
@@ -224,10 +226,12 @@ class Product
         }
         if (isset($request['isPopular'])) {
             $request['isPopular'] = $request['isPopular'] == 'true';
+
+            if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
+                $request['popularOrder'] = count($this->getPopular(true));
+            }
         }
-        if ($request['isPopular'] && (!isset($request['popularOrder']) || $request['popularOrder'] == null)) {
-            $request['popularOrder'] = count($this->getPopular(true));
-        }
+
         if (isset($request['isPopular']) && !$request['isPopular']) {
             $request['popularOrder'] = null;
         }
