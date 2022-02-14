@@ -33,6 +33,7 @@ class Category
         $category['id'] = $category['id'] * 1;
         $category['isSeedling'] = $category['categoryType'] == CategoryType::Seedling;
         $category['isTulip'] = $category['categoryType'] == CategoryType::Tulip;
+        unset($category['categoryType']);
         if ($category['isTulip']) {
             $category['steps'] = $this->readSteps($category['id']);
         }
@@ -237,6 +238,7 @@ class Category
         while ($category = $stmt->fetch()) {
             $category['isTulip'] = $category['categoryType'] == CategoryType::Tulip;
             $category['isSeedling'] = $category['categoryType'] == CategoryType::Seedling;
+            unset($category['categoryType']);
             if ($withSale) {
                 $category['sale'] = $this->sale->getSale($category['id'], true);
             }
