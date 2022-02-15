@@ -402,4 +402,16 @@ class Product
         $price = $stmt->fetch();
         return $price['price'];
     }
+
+    public function readSimle($id)
+    {
+        $query = "SELECT p.id, p.name, p.coefficient, p.price FROM Product p WHERE p.id = ? LIMIT 1";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        $product = $stmt->fetch();
+        $product['category'] = $this->category->readFirst($product['id']);
+        $product['prices'] = $this->getPrice($product['id']);
+
+        return $product;
+    }
 }

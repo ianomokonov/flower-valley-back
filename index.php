@@ -32,6 +32,7 @@ $product = new Product($dataBase);
 $category = new Category($dataBase);
 $static = new StaticModel($dataBase);
 $box = new Box($dataBase);
+$order = new Order($dataBase);
 $token = new Token();
 $app = AppFactory::create();
 $app->setBasePath(rtrim($_SERVER['PHP_SELF'], '/index.php'));
@@ -228,7 +229,7 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
-$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale) {
+$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale, $order) {
 
     $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
         $productGroup->post('', function (Request $request, Response $response) use ($product) {
@@ -318,6 +319,56 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления коробки")));
                 return $response->withStatus(401);
+            }
+        });
+    });
+
+    $group->group('order', function (RouteCollectorProxy $orderGroup) use ($order) {
+        // $boxGroup->post('', function (Request $request, Response $response) use ($box) {
+        //     try {
+        //         $response->getBody()->write(json_encode($box->create($request->getParsedBody())));
+        //         return $response;
+        //     } catch (Exception $e) {
+        //         $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания коробки")));
+        //         return $response->withStatus(401);
+        //     }
+        // });
+
+        // $boxGroup->post('/{id}', function (Request $request, Response $response) use ($box) {
+        //     try {
+        //         $routeContext = RouteContext::fromRequest($request);
+        //         $route = $routeContext->getRoute();
+        //         $response->getBody()->write(json_encode($box->update($route->getArgument('id'), $request->getParsedBody())));
+        //         return $response;
+        //     } catch (Exception $e) {
+        //         $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования коробки")));
+        //         return $response->withStatus(500);
+        //     }
+        // });
+
+        $orderGroup->get('/list', function (Request $request, Response $response) use ($order) {
+            try {
+                $query = $request->getQueryParams();
+                $str = isset($query['searchString']) ? $query['searchString'] : '';
+                $response->getBody()->write(json_encode($order->getList($str, $query['skip'], $query['take'])));
+                return $response;
+            } catch (Exception $e) {
+                $response = new ResponseClass();
+                $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+                return $response->withStatus(500);
+            }
+        });
+
+        $orderGroup->get('/{id}', function (Request $request, Response $response) use ($order) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($order->read($route->getArgument('id'))));
+                return $response;
+            } catch (Exception $e) {
+                $response = new ResponseClass();
+                $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+                return $response->withStatus(500);
             }
         });
     });

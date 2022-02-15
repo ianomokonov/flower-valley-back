@@ -110,6 +110,57 @@ CREATE TABLE `Box` (
 );
 
 -- ---
+-- Table 'Order'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `Order`;
+		
+CREATE TABLE `Order` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `clientId` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NULL,
+  `clientInn` VARCHAR(255) NULL,
+  `clientName` VARCHAR(255) NOT NULL,
+  `clientPhone` VARCHAR(255) NOT NULL,
+  `clientEmail` VARCHAR(255) NOT NULL,
+  `clientAddress` VARCHAR(255) NULL,
+  `deliveryPrice` FLOAT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'OrderBox'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `OrderBox`;
+		
+CREATE TABLE `OrderBox` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `boxId` INTEGER(10) NOT NULL,
+  `orderId` INTEGER(10) NOT NULL,
+  `count` INTEGER(10) NOT NULL,
+  `price` FLOAT NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'OrderProduct'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `OrderProduct`;
+		
+CREATE TABLE `OrderProduct` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `orderId` INTEGER(10) NOT NULL,
+  `count` INTEGER(10) NOT NULL,
+  `price` FLOAT NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
 -- Table 'Discount'
 -- 
 -- ---
@@ -132,7 +183,7 @@ DROP TABLE IF EXISTS `ProductCategory`;
 		
 CREATE TABLE `ProductCategory` (
   `id` INTEGER(10) AUTO_INCREMENT,
-  `productId` VARCHAR(20) NOT NULL,
+  `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `categoryId` INTEGER(10) NOT NULL,
   `productOrder` INTEGER(10) NOT NULL,
   PRIMARY KEY (`id`)
@@ -147,7 +198,7 @@ DROP TABLE IF EXISTS `ProductPrice`;
 		
 CREATE TABLE `ProductPrice` (
   `id` INTEGER(10) AUTO_INCREMENT,
-  `productId` VARCHAR(20) NOT NULL,
+  `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `countFrom` INTEGER(10) NOT NULL,
   `price` FLOAT NOT NULL,
   PRIMARY KEY (`id`)
@@ -163,7 +214,7 @@ DROP TABLE IF EXISTS `ProductImage`;
 CREATE TABLE `ProductImage` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `src` VARCHAR(255) NOT NULL,
-  `productId` VARCHAR(20) NOT NULL,
+  `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -255,7 +306,7 @@ CREATE TABLE `Sale` (
   `img` VARCHAR(255) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NOT NULL,
-  `productId` VARCHAR(20) NULL,
+  `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NULL,
   `discount` FLOAT NOT NULL,
   `categoryId` INTEGER(10) NULL,
   PRIMARY KEY (`id`)
@@ -278,6 +329,11 @@ ALTER TABLE `ProductImage` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id
 ALTER TABLE `StaticPhoto` ADD FOREIGN KEY (staticId) REFERENCES `Static` (`id`) ON DELETE CASCADE;
 ALTER TABLE `ProductPrice` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`) ON DELETE CASCADE;
 ALTER TABLE `CategoryStep` ADD FOREIGN KEY (categoryId) REFERENCES `Category` (`id`) ON DELETE CASCADE;
+ALTER TABLE `OrderBox` ADD FOREIGN KEY (boxId) REFERENCES `Box` (`id`);
+ALTER TABLE `OrderBox` ADD FOREIGN KEY (orderId) REFERENCES `Order` (`id`) ON DELETE CASCADE;
+ALTER TABLE `OrderProduct` ADD FOREIGN KEY (productId) REFERENCES `Product` (`id`);
+ALTER TABLE `OrderProduct` ADD FOREIGN KEY (orderId) REFERENCES `Order` (`id`) ON DELETE CASCADE;
+
 
 
 --
