@@ -39,6 +39,16 @@ class Order
 
     public function update($id, $request)
     {
+        if (isset($request['boxes'])) {
+            $this->removeItems($id, 'OrderBox');
+            $this->addItems($request['boxes'], 'OrderBox', $id);
+            unset($request['boxes']);
+        }
+        if (isset($request['products'])) {
+            $this->removeItems($id, 'OrderProduct');
+            $this->addItems($request['products'], 'OrderProduct', $id);
+            unset($request['products']);
+        }
         $request = $this->dataBase->stripAll((array)$request, true);
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $id);
 
@@ -50,6 +60,16 @@ class Order
 
     public function create($request)
     {
+        $products = [];
+        $boxes = [];
+        if (isset($request['boxes'])) {
+            $boxes = $request['boxes'];
+            unset($request['boxes']);
+        }
+        if (isset($request['products'])) {
+            $products = $request['products'];
+            unset($request['products']);
+        }
         $request = $this->dataBase->stripAll((array)$request, true);
         $query = $this->dataBase->genInsertQuery($request, $this->table);
         $stmt = $this->dataBase->db->prepare($query[0]);
@@ -57,7 +77,9 @@ class Order
             $stmt->execute($query[1]);
         }
 
-        return $this->dataBase->db->lastInsertId();
+        $id = $this->dataBase->db->lastInsertId();
+        $this->addItems($boxes, 'OrderBox', $id);
+        $this->addItems($products, 'OrderProduct', $id);
     }
 
     private function getProducts($orderId)
@@ -86,5 +108,32 @@ class Order
         }
 
         return $result;
+    }
+
+    private function addItems($items, $table, $orderId)
+    {
+        if (!$items || count($items) == 0) {
+            return;
+        }
+        foreach ($items as $item) {
+            $item = $this->dataBase->stripAll((array)$item, true);
+            $item['orderId'] = $orderId;
+            $query = $this->dataBase->genInsertQuery($item, $table);
+            $stmt = $this->dataBase->db->prepare($query[0]);
+            if ($query[1][0]) {
+                $stmt->execute($query[1]);
+            }
+        }
+    }
+
+    private function removeItems($orderId, $table, $ids = [])
+    {
+        $query = "DELETE FROM $table WHERE orderId = ?";
+        if (count($ids) > 0) {
+            $ids = implode(", ", $ids);
+            $query .= " AND id IN ($ids);";
+        }
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($orderId));
     }
 }

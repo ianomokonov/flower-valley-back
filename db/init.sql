@@ -125,6 +125,8 @@ CREATE TABLE `Order` (
   `clientEmail` VARCHAR(255) NOT NULL,
   `clientAddress` VARCHAR(255) NULL,
   `deliveryPrice` FLOAT NULL,
+  `orderDate` DATETIME NOT NULL DEFAULT now(),
+  
   PRIMARY KEY (`id`)
 );
 

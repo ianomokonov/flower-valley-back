@@ -325,27 +325,27 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
     });
 
     $group->group('order', function (RouteCollectorProxy $orderGroup) use ($order) {
-        // $boxGroup->post('', function (Request $request, Response $response) use ($box) {
-        //     try {
-        //         $response->getBody()->write(json_encode($box->create($request->getParsedBody())));
-        //         return $response;
-        //     } catch (Exception $e) {
-        //         $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания коробки")));
-        //         return $response->withStatus(401);
-        //     }
-        // });
+        $orderGroup->post('', function (Request $request, Response $response) use ($order) {
+            try {
+                $response->getBody()->write(json_encode($order->create($request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания заказа")));
+                return $response->withStatus(401);
+            }
+        });
 
-        // $boxGroup->post('/{id}', function (Request $request, Response $response) use ($box) {
-        //     try {
-        //         $routeContext = RouteContext::fromRequest($request);
-        //         $route = $routeContext->getRoute();
-        //         $response->getBody()->write(json_encode($box->update($route->getArgument('id'), $request->getParsedBody())));
-        //         return $response;
-        //     } catch (Exception $e) {
-        //         $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования коробки")));
-        //         return $response->withStatus(500);
-        //     }
-        // });
+        $orderGroup->post('/{id}', function (Request $request, Response $response) use ($order) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($order->update($route->getArgument('id'), $request->getParsedBody())));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования заказа")));
+                return $response->withStatus(500);
+            }
+        });
 
         $orderGroup->get('/list', function (Request $request, Response $response) use ($order) {
             try {
