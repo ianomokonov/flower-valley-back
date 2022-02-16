@@ -16,6 +16,7 @@ require_once './models/category.php';
 require_once './models/box.php';
 require_once './models/static.php';
 require_once './models/sale.php';
+require_once './models/order.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Psr7\Response as ResponseClass;
