@@ -32,7 +32,7 @@ class Order
 
     public function getList($str, $skip, $take)
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE id LIKE '%$str%' OR clientInn LIKE '%$str%' OR clientPhone LIKE '%$str%' OR clientEmail LIKE '%$str%' OR clientName LIKE '%$str%' LIMIT $skip, $take ORDER BY orderDate DESC";
+        $query = "SELECT * FROM " . $this->table . " WHERE id LIKE '%$str%' OR clientInn LIKE '%$str%' OR clientPhone LIKE '%$str%' OR clientEmail LIKE '%$str%' OR clientName LIKE '%$str%' ORDER BY orderDate DESC LIMIT $skip, $take";
         $stmt = $this->dataBase->db->query($query);
         return $stmt->fetchAll();
     }
