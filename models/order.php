@@ -80,6 +80,7 @@ class Order
         $id = $this->dataBase->db->lastInsertId();
         $this->addItems($boxes, 'OrderBox', $id, 'boxId');
         $this->addItems($products, 'OrderProduct', $id, 'productId');
+        return $id;
     }
 
     private function getProducts($orderId)
