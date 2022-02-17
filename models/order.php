@@ -32,7 +32,7 @@ class Order
 
     public function getList($skip, $take, $str, $status)
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE (id LIKE '%$str%' OR clientInn LIKE '%$str%' OR clientPhone LIKE '%$str%' OR clientEmail LIKE '%$str%' OR clientName LIKE '%$str%)'";
+        $query = "SELECT * FROM " . $this->table . " WHERE (id LIKE '%$str%' OR clientInn LIKE '%$str%' OR clientPhone LIKE '%$str%' OR clientEmail LIKE '%$str%' OR clientName LIKE '%$str%')";
         if ($status) {
             $query .= " AND status = $status";
         }
