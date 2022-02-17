@@ -351,7 +351,8 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $query = $request->getQueryParams();
                 $str = isset($query['searchString']) ? $query['searchString'] : '';
-                $response->getBody()->write(json_encode($order->getList($str, $query['skip'], $query['take'])));
+                $status = isset($query['status']) ? $query['status'] : null;
+                $response->getBody()->write(json_encode($order->getList($query['skip'], $query['take'], $str, $status)));
                 return $response;
             } catch (Exception $e) {
                 $response = new ResponseClass();
