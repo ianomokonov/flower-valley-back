@@ -8,7 +8,7 @@ class Order
     private $dataBase;
     private $product;
     private $box;
-    private $table = 'Order';
+    private $table = '`Order`';
 
     public function __construct(DataBase $dataBase)
     {
@@ -41,12 +41,12 @@ class Order
     {
         if (isset($request['boxes'])) {
             $this->removeItems($id, 'OrderBox');
-            $this->addItems($request['boxes'], 'OrderBox', $id);
+            $this->addItems($request['boxes'], 'OrderBox', $id, 'boxId');
             unset($request['boxes']);
         }
         if (isset($request['products'])) {
             $this->removeItems($id, 'OrderProduct');
-            $this->addItems($request['products'], 'OrderProduct', $id);
+            $this->addItems($request['products'], 'OrderProduct', $id, 'productId');
             unset($request['products']);
         }
         $request = $this->dataBase->stripAll((array)$request, true);
@@ -78,8 +78,8 @@ class Order
         }
 
         $id = $this->dataBase->db->lastInsertId();
-        $this->addItems($boxes, 'OrderBox', $id);
-        $this->addItems($products, 'OrderProduct', $id);
+        $this->addItems($boxes, 'OrderBox', $id, 'boxId');
+        $this->addItems($products, 'OrderProduct', $id, 'productId');
     }
 
     private function getProducts($orderId)
@@ -110,12 +110,14 @@ class Order
         return $result;
     }
 
-    private function addItems($items, $table, $orderId)
+    private function addItems($items, $table, $orderId, $idCol)
     {
         if (!$items || count($items) == 0) {
             return;
         }
         foreach ($items as $item) {
+
+            $item[$idCol] = $item['id'];
             $item = $this->dataBase->stripAll((array)$item, true);
             $item['orderId'] = $orderId;
             $query = $this->dataBase->genInsertQuery($item, $table);
