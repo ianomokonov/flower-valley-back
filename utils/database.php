@@ -2,9 +2,9 @@
 //класс базы данных
 class DataBase
 {
-    private $dbname = "nomokoiw_flower";
-    private $login = "nomokoiw_flower";
-    private $password = "Cw11x&n1";
+    private $dbname = "nomokoiw_flower3";
+    private $login = "nomokoiw_flower3";
+    private $password = "x*bub3Zk";
     public $db;
     public $baseUrl = 'http://stand3.progoff.ru/back';
     public function __construct()

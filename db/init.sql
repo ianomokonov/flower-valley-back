@@ -110,6 +110,19 @@ CREATE TABLE `Box` (
 );
 
 -- ---
+-- Table 'StaticValue'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `StaticValue`;
+		
+CREATE TABLE `StaticValue` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `value` TEXT NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
 -- Table 'Order'
 -- 
 -- ---

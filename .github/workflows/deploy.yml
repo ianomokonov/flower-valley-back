@@ -22,4 +22,4 @@ jobs:
       # - name: Deploy database
       #   run: |
       #     sudo /etc/init.d/mysql start
-      #     mysql -h nomokoiw.beget.tech -unomokoiw_flower -pL7v4__YR nomokoiw_flower < db/init.sql
+      #     mysql -h nomokoiw.beget.tech -unomokoiw_flower3 -pL7v4__YR nomokoiw_flower3 < db/init.sql
