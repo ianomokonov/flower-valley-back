@@ -237,6 +237,7 @@ CREATE TABLE `ProductImage` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `src` VARCHAR(255) NOT NULL,
   `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `sortOrder` INTEGER(3) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -269,6 +270,7 @@ CREATE TABLE `StaticPhoto` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `src` VARCHAR(255) NOT NULL,
   `staticId` INTEGER(10) NOT NULL,
+  `sortOrder` INTEGER(3) NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -282,6 +284,7 @@ DROP TABLE IF EXISTS `ContactPhoto`;
 CREATE TABLE `ContactPhoto` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `img` VARCHAR(255) NOT NULL,
+  `sortOrder` INTEGER(3) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -297,6 +300,7 @@ CREATE TABLE `Video` (
   `src` VARCHAR(255) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NOT NULL,
+  `sortOrder` INTEGER(3) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -313,6 +317,7 @@ CREATE TABLE `Media` (
   `title` VARCHAR(255) NOT NULL,
   `link` VARCHAR(255) NOT NULL,
   `publishDate` DATE NOT NULL,
+  `sortOrder` INTEGER(3) NOT NULL,
   PRIMARY KEY (`id`)
 );
 

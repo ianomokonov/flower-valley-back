@@ -372,7 +372,7 @@ class Product
         if ($firstOnly) {
             $stmt = $this->dataBase->db->prepare("select id, src from ProductImage where productId=? LIMIT 1");
         } else {
-            $stmt = $this->dataBase->db->prepare("select id, src from ProductImage where productId=?");
+            $stmt = $this->dataBase->db->prepare("select id, src from ProductImage where productId=? ORDER BY sortOrder");
         }
         $stmt->execute(array($productId));
 

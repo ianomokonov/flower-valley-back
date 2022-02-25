@@ -10,6 +10,7 @@ header("Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Autho
 require_once 'vendor/autoload.php';
 require_once './utils/database.php';
 require_once './utils/token.php';
+require_once './utils/sorter.php';
 require_once './models/user.php';
 require_once './models/product.php';
 require_once './models/category.php';
@@ -275,6 +276,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
+        $productGroup->post('/sort-photos', function (Request $request, Response $response) {
+            try {
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'ProductImage', 'sortOrder')));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки фото продукта")));
+                return $response->withStatus(401);
+            }
+        });
+
         $productGroup->post('/{id}', function (Request $request, Response $response) use ($product) {
             try {
                 $routeContext = RouteContext::fromRequest($request);
@@ -465,7 +476,18 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования отзывов")));
-                return $response->withStatus(401);
+                return $response->withStatus(500);
+            }
+        });
+
+        
+        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+            try {
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder')));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки отзывов")));
+                return $response->withStatus(500);
             }
         });
     });
@@ -478,6 +500,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка редактирования клиентов")));
                 return $response->withStatus(401);
+            }
+        });
+
+        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+            try {
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder')));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки клиентов")));
+                return $response->withStatus(500);
             }
         });
     });
@@ -516,6 +548,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response->withStatus(500);
             }
         });
+
+        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+            try {
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'ContactPhoto', 'sortOrder')));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки фото")));
+                return $response->withStatus(500);
+            }
+        });
     });
 
     $group->group('media', function (RouteCollectorProxy $mediaGroup) use ($static) {
@@ -549,6 +591,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления СМИ")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $mediaGroup->post('/sort', function (Request $request, Response $response) {
+            try {
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Media', 'sortOrder')));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки медиа")));
                 return $response->withStatus(500);
             }
         });
@@ -622,6 +674,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка удаления видео")));
                 return $response->withStatus(401);
+            }
+        });
+
+        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+            try {
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Video', 'sortOrder')));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки видео")));
+                return $response->withStatus(500);
             }
         });
     });

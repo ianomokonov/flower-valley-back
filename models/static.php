@@ -77,7 +77,7 @@ class StaticModel
 
     private function readPhotos($id)
     {
-        $query = "SELECT id, src FROM StaticPhoto WHERE staticId=?";
+        $query = "SELECT id, src FROM StaticPhoto WHERE staticId=? ORDER BY sortOrder";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
 
@@ -86,7 +86,7 @@ class StaticModel
 
     private function readVideos()
     {
-        $query = "SELECT * FROM Video";
+        $query = "SELECT * FROM Video ORDER BY sortOrder";
         $stmt = $this->dataBase->db->query($query);
 
         return $this->setNumIds($stmt->fetchAll());
@@ -140,7 +140,7 @@ class StaticModel
 
     private function readMedia()
     {
-        $query = "SELECT * FROM Media";
+        $query = "SELECT * FROM Media ORDER BY sortOrder";
         $stmt = $this->dataBase->db->query($query);
 
         return $stmt->fetchAll();
@@ -257,7 +257,7 @@ class StaticModel
 
     public function readContactPhotos()
     {
-        $query = "SELECT * FROM ContactPhoto";
+        $query = "SELECT * FROM ContactPhoto ORDER BY sortOrder";
         $stmt = $this->dataBase->db->query($query);
 
         return $this->setNumIds($stmt->fetchAll());
