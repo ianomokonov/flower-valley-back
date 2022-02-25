@@ -307,9 +307,9 @@ class StaticModel
         $stmt->execute(array($id));
         $values = $stmt->fetchAll();
         if(count($values) > 0) {
-            $query = $this->dataBase->genUpdateQuery(array("value" => $value), 'StaticValue', $id);
+            $query = $this->dataBase->genUpdateQuery(array('value' => $value), 'StaticValue', $id);
         } else {
-            $query = $this->dataBase->genInsertQuery(array("value" => $value, $id => $id), 'StaticValue');
+            $query = $this->dataBase->genInsertQuery(array('value' => $value, 'id' => $id), 'StaticValue');
         }
 
         $stmt = $this->dataBase->db->prepare($query[0]);
@@ -323,7 +323,7 @@ class StaticModel
 
     public function getStaticValues($ids) {
         $ids = implode(", ", $ids);
-        $stmt = $this->dataBase->db->query("select src from StaticValue where id IN ($ids)");
+        $stmt = $this->dataBase->db->query("select * from StaticValue where id IN ($ids)");
         return $stmt->fetchAll();
     }
 

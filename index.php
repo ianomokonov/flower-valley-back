@@ -103,7 +103,7 @@ $app->get('/product/list', function (Request $request, Response $response) use (
 $app->get('/static-values', function (Request $request, Response $response) use ($static) {
     try {
         $query = $request->getQueryParams();
-        $response->getBody()->write(json_encode($static->getStaticValues(isset($query['staticIds']) ? $query['staticIds'] : [])));
+        $response->getBody()->write(json_encode($static->getStaticValues(isset($query['valueIds']) ? $query['valueIds'] : [])));
         return $response;
     } catch (Exception $e) {
         $response = new ResponseClass();
