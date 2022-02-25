@@ -303,7 +303,8 @@ class StaticModel
     public function updateStaticValue($id, $value)
     {
         $query = "select * from StaticValue WHERE id=?";
-        $stmt = $this->dataBase->db->prepare($query)->execute(array($id));
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
         $values = $stmt->fetchAll();
         if(count($values) > 0) {
             $query = $this->dataBase->genUpdateQuery(array("value" => $value), 'StaticValue', $id);
