@@ -142,6 +142,10 @@ CREATE TABLE `Order` (
   `requestNumber` VARCHAR(255) NULL,
   `deliveryPrice` FLOAT NULL,
   `orderDate` DATETIME NOT NULL DEFAULT now(),
+  `orderSum` FLOAT NOT NULL,
+  `deliveryWishDateFrom` DATETIME NULL,
+  `deliveryWishDateTo` DATETIME NULL,
+  `confirmedDeliveryDate` DATETIME NULL,
   
   PRIMARY KEY (`id`)
 );
