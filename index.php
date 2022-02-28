@@ -243,9 +243,9 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
-$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale, $order) {
+$app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale, $order, $dataBase) {
 
-    $group->group('product', function (RouteCollectorProxy $productGroup) use ($product) {
+    $group->group('product', function (RouteCollectorProxy $productGroup) use ($product, $dataBase) {
         $productGroup->post('', function (Request $request, Response $response) use ($product) {
             try {
                 $response->getBody()->write(json_encode($product->create($request->getParsedBody(), $_FILES)));
@@ -276,9 +276,9 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
-        $productGroup->post('/sort-photos', function (Request $request, Response $response) {
+        $productGroup->post('/sort-photos', function (Request $request, Response $response) use ($dataBase) {
             try {
-                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'ProductImage', 'sortOrder')));
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'ProductImage', 'sortOrder', $dataBase)));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки фото продукта")));
@@ -471,7 +471,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('comment', function (RouteCollectorProxy $categoryGroup) use ($static) {
+    $group->group('comment', function (RouteCollectorProxy $categoryGroup) use ($static, $dataBase) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
                 $response->getBody()->write(json_encode($static->updateStatic(2, $request->getParsedBody(), $_FILES)));
@@ -483,9 +483,9 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
 
 
-        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+        $categoryGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
             try {
-                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder')));
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder', $dataBase)));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки отзывов")));
@@ -494,7 +494,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('client', function (RouteCollectorProxy $categoryGroup) use ($static) {
+    $group->group('client', function (RouteCollectorProxy $categoryGroup) use ($static, $dataBase) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
                 $response->getBody()->write(json_encode($static->updateStatic(3, $request->getParsedBody(), $_FILES)));
@@ -505,9 +505,9 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
-        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+        $categoryGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
             try {
-                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder')));
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder', $dataBase)));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки клиентов")));
@@ -516,7 +516,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('contact-photo', function (RouteCollectorProxy $categoryGroup) use ($static) {
+    $group->group('contact-photo', function (RouteCollectorProxy $categoryGroup) use ($static, $dataBase) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
                 $response->getBody()->write(json_encode($static->createContactPhoto($request->getParsedBody(), isset($_FILES['img']) ? $_FILES['img'] : null)));
@@ -527,9 +527,9 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
-        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+        $categoryGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
             try {
-                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'ContactPhoto', 'sortOrder')));
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'ContactPhoto', 'sortOrder', $dataBase)));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки фото")));
@@ -562,7 +562,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('media', function (RouteCollectorProxy $mediaGroup) use ($static) {
+    $group->group('media', function (RouteCollectorProxy $mediaGroup) use ($static, $dataBase) {
         $mediaGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
                 $response->getBody()->write(json_encode($static->createMedia($request->getParsedBody(), isset($_FILES['img']) ? $_FILES['img'] : null)));
@@ -572,9 +572,9 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response->withStatus(500);
             }
         });
-        $mediaGroup->post('/sort', function (Request $request, Response $response) {
+        $mediaGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
             try {
-                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Media', 'sortOrder')));
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Media', 'sortOrder', $dataBase)));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки медиа")));
@@ -643,7 +643,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('video', function (RouteCollectorProxy $categoryGroup) use ($static) {
+    $group->group('video', function (RouteCollectorProxy $categoryGroup) use ($static, $dataBase) {
         $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
             try {
                 $response->getBody()->write(json_encode($static->createVideo($request->getParsedBody())));
@@ -653,9 +653,9 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response->withStatus(401);
             }
         });
-        $categoryGroup->post('/sort', function (Request $request, Response $response) {
+        $categoryGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
             try {
-                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Video', 'sortOrder')));
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Video', 'sortOrder', $dataBase)));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки видео")));

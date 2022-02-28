@@ -84,7 +84,9 @@ class DataBase
             unset($object['id']);
         }
         foreach (array_keys((array)$object) as $key) {
-            $object[$key] = strip_tags($object[$key], ['span', 'strong', 'p', 'i', 'b', 'div', 'a', 'u', 'em', 'ol', 'li', 'ul']);
+            if ($object[$key]) {
+                $object[$key] = strip_tags($object[$key], ['span', 'strong', 'p', 'i', 'b', 'div', 'a', 'u', 'em', 'ol', 'li', 'ul']);
+            }
         }
         return $object;
     }

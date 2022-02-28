@@ -141,7 +141,7 @@ CREATE TABLE `Order` (
   `accountNumber` VARCHAR(255) NULL,
   `requestNumber` VARCHAR(255) NULL,
   `deliveryPrice` FLOAT NULL,
-  `orderDate` DATETIME NOT NULL DEFAULT now(),
+  `orderDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `orderSum` FLOAT NOT NULL,
   `deliveryWishDateFrom` DATETIME NULL,
   `deliveryWishDateTo` DATETIME NULL,
