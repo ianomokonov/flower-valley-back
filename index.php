@@ -415,11 +415,13 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $routeContext = RouteContext::fromRequest($request);
                 $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($static->updateStaticValue($route->getArgument('id'), $request->getParsedBody()['value'])));
+                $body = $request->getParsedBody();
+                $value = isset($body['value']) ?  $body['value'] : null;
+                $response->getBody()->write(json_encode($static->updateStaticValue($route->getArgument('id'), $value, $_FILES)));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка измнения банера")));
-                return $response->withStatus(401);
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка измнения статической информации")));
+                return $response->withStatus(500);
             }
         });
     });
@@ -480,7 +482,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
-        
+
         $categoryGroup->post('/sort', function (Request $request, Response $response) {
             try {
                 $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder')));
@@ -603,7 +605,6 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response->withStatus(500);
             }
         });
-
     });
 
     $group->group('discount', function (RouteCollectorProxy $discountGroup) use ($static) {
@@ -651,7 +652,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания видео")));
                 return $response->withStatus(401);
             }
-        }); 
+        });
         $categoryGroup->post('/sort', function (Request $request, Response $response) {
             try {
                 $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Video', 'sortOrder')));
@@ -685,8 +686,6 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response->withStatus(401);
             }
         });
-
-       
     });
 
     $group->group('category', function (RouteCollectorProxy $categoryGroup) use ($category) {

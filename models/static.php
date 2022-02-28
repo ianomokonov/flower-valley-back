@@ -300,41 +300,48 @@ class StaticModel
         return true;
     }
 
-    public function updateStaticValue($id, $value)
+    public function updateStaticValue($id, $value, $files)
     {
         $query = "select * from StaticValue WHERE id=?";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
-        $values = $stmt->fetchAll();
-        if(count($values) > 0) {
+        $curValue = $stmt->fetch();
+        if (isset($files['value'])) {
+            $value = $this->fileUploader->upload($files['value'], 'StaticFiles', uniqid());
+        }
+        if ($curValue) {
             $query = $this->dataBase->genUpdateQuery(array('value' => $value), 'StaticValue', $id);
+            if (isset($files['value'])) {
+                $this->removeImg('StaticValue', $id, 'value');
+            }
         } else {
             $query = $this->dataBase->genInsertQuery(array('value' => $value, 'id' => $id), 'StaticValue');
         }
 
         $stmt = $this->dataBase->db->prepare($query[0]);
-        if($query[1][0] != null){
+        if ($query[1][0] != null) {
             $stmt->execute($query[1]);
         }
-        
+
 
         return true;
     }
 
-    public function getStaticValues($ids) {
+    public function getStaticValues($ids)
+    {
         $ids = implode(", ", $ids);
         $stmt = $this->dataBase->db->query("select * from StaticValue where id IN ($ids)");
         return $stmt->fetchAll();
     }
 
-    private function removeImg($table, $id)
+    private function removeImg($table, $id, $fileField = 'img')
     {
         $object = $this->readObj($table, $id);
-        if (!$object['img']) {
+        if (!$object[$fileField]) {
             return;
         }
 
-        $this->fileUploader->removeFile($object['img'], $this->dataBase->baseUrl);
+        $this->fileUploader->removeFile($object[$fileField], $this->dataBase->baseUrl);
     }
 
     private function readObj($table, $id)
