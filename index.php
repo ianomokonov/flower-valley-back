@@ -417,14 +417,24 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('main', function (RouteCollectorProxy $categoryGroup) use ($static) {
-        $categoryGroup->post('', function (Request $request, Response $response) use ($static) {
+    $group->group('main', function (RouteCollectorProxy $categoryGroup) use ($static, $dataBase) {
+        $categoryGroup->post('', function (Request $request, Response $response) use ($static, $dataBase) {
             try {
                 $response->getBody()->write(json_encode($static->updateStatic(1, $request->getParsedBody(), $_FILES)));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка измнения банера")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка изменения банера")));
                 return $response->withStatus(401);
+            }
+        });
+
+        $categoryGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
+            try {
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'StaticPhoto', 'sortOrder', $dataBase)));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировки фото банера")));
+                return $response->withStatus(500);
             }
         });
     });
