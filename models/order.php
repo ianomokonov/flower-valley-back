@@ -23,6 +23,9 @@ class Order
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $order = $stmt->fetch();
+        $order['deliveryWishDateFrom'] = $order['deliveryWishDateFrom'] ? date("Y-m-d\TH:i:00.000\Z", strtotime($order['deliveryWishDateFrom'])) : null;
+        $order['deliveryWishDateTo'] = $order['deliveryWishDateTo'] ? date("Y-m-d\TH:i:00.000\Z", strtotime($order['deliveryWishDateTo'])) : null;
+        $order['confirmedDeliveryDate'] = $order['confirmedDeliveryDate'] ? date("Y-m-d\TH:i:00.000\Z", strtotime($order['confirmedDeliveryDate'])) : null;
         $order['products'] = $this->getProducts($id);
         $order['boxes'] = $this->getBoxes($id);
 
