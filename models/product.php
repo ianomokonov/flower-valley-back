@@ -405,7 +405,7 @@ class Product
 
     public function readSimle($id)
     {
-        $query = "SELECT p.id, p.name, p.coefficient, p.price FROM Product p WHERE p.id = ? LIMIT 1";
+        $query = "SELECT p.id, p.boxId, p.name, p.coefficient, p.price FROM Product p WHERE p.id = ? LIMIT 1";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $product = $stmt->fetch();
