@@ -245,6 +245,25 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
 
 $app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale, $order, $dataBase) {
 
+    $group->post('save-file', function (Request $request, Response $response) use ($dataBase) {
+        try {
+            $fileUploader = new FilesUpload();
+            $body = $request->getParsedBody();
+            $result = null;
+            if (isset($body['removeUrl'])) {
+                $fileUploader->removeFile($body['removeUrl'], $dataBase->baseUrl);
+            }
+            if (isset($_FILES['file'])) {
+                $result = $dataBase->baseUrl . $fileUploader->upload($_FILES['file'], 'StaticFiles', uniqid());
+            }
+            $response->getBody()->write(json_encode($result));
+            return $response;
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сохранения файла")));
+            return $response->withStatus(500);
+        }
+    });
+
     $group->group('product', function (RouteCollectorProxy $productGroup) use ($product, $dataBase) {
         $productGroup->post('', function (Request $request, Response $response) use ($product) {
             try {
@@ -420,7 +439,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $response->getBody()->write(json_encode($static->updateStaticValue($route->getArgument('id'), $value, $_FILES)));
                 return $response;
             } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка измнения статической информации")));
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка изменения статической информации")));
                 return $response->withStatus(500);
             }
         });

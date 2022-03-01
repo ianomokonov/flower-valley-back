@@ -307,7 +307,7 @@ class StaticModel
         $stmt->execute(array($id));
         $curValue = $stmt->fetch();
         if (isset($files['value'])) {
-            $value = $this->fileUploader->upload($files['value'], 'StaticFiles', uniqid());
+            $value = $this->dataBase->baseUrl . $this->fileUploader->upload($files['value'], 'StaticFiles', uniqid());
         }
         if ($curValue) {
             $query = $this->dataBase->genUpdateQuery(array('value' => $value), 'StaticValue', $id);
@@ -324,7 +324,7 @@ class StaticModel
         }
 
 
-        return true;
+        return $value;
     }
 
     public function getStaticValues($ids)
