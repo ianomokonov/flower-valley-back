@@ -74,7 +74,7 @@ class Sale
     {
         $request = $this->dataBase->stripAll((array)$request);
         $request['discount'] = $request['discount'] * 1;
-        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
+        $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
         $query = $this->dataBase->genInsertQuery($request, 'Sale');
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
@@ -90,7 +90,7 @@ class Sale
         $request['discount'] = $request['discount'] * 1;
         if ($file) {
             $this->removeImg('Sale', $id);
-            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
+            $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
         }
         $query = $this->dataBase->genUpdateQuery($request, 'Sale', $id);
 
@@ -116,7 +116,7 @@ class Sale
             return;
         }
 
-        $this->fileUploader->removeFile($object['img'], $this->dataBase->baseUrl);
+        $this->fileUploader->removeFile($object['img'], DataBase::$baseUrl);
     }
 
     private function readObj($table, $id)

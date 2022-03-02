@@ -165,7 +165,7 @@ class StaticModel
     {
         $request = $this->dataBase->stripAll((array)$request, true);
         if ($file) {
-            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+            $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
         }
 
         $query = $this->dataBase->genInsertQuery($request, 'Media');
@@ -182,7 +182,7 @@ class StaticModel
         $request = $this->dataBase->stripAll((array)$request, true);
         if ($file) {
             $this->removeImg('Media', $id);
-            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+            $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
         }
 
         $query = $this->dataBase->genUpdateQuery($request, 'Media', $id);
@@ -266,7 +266,7 @@ class StaticModel
     public function createContactPhoto($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request);
-        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+        $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
         $query = $this->dataBase->genInsertQuery($request, 'ContactPhoto');
         $stmt = $this->dataBase->db->prepare($query[0]);
         if ($query[1][0]) {
@@ -281,7 +281,7 @@ class StaticModel
         $request = $this->dataBase->stripAll((array)$request, true);
         if ($file) {
             $this->removeImg('ContactPhoto', $id);
-            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
+            $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'MainImages', uniqid());
         }
         $query = $this->dataBase->genUpdateQuery($request, 'ContactPhoto', $id);
 
@@ -307,7 +307,7 @@ class StaticModel
         $stmt->execute(array($id));
         $curValue = $stmt->fetch();
         if (isset($files['value'])) {
-            $value = $this->dataBase->baseUrl . $this->fileUploader->upload($files['value'], 'StaticFiles', uniqid());
+            $value = DataBase::$baseUrl . $this->fileUploader->upload($files['value'], 'StaticFiles', uniqid());
         }
         if ($curValue) {
             $query = $this->dataBase->genUpdateQuery(array('value' => $value), 'StaticValue', $id);
@@ -341,7 +341,7 @@ class StaticModel
             return;
         }
 
-        $this->fileUploader->removeFile($object[$fileField], $this->dataBase->baseUrl);
+        $this->fileUploader->removeFile($object[$fileField], DataBase::$baseUrl);
     }
 
     private function readObj($table, $id)
@@ -365,7 +365,7 @@ class StaticModel
         $res = $this->fileUploader->upload($photos, 'MainImages', uniqid());
         if (is_array($res)) {
             foreach ($res as $imagePath) {
-                $values = array("staticId" => $id, "src" =>  $this->dataBase->baseUrl . $imagePath);
+                $values = array("staticId" => $id, "src" =>  DataBase::$baseUrl . $imagePath);
                 $query = $this->dataBase->genInsertQuery($values, "StaticPhoto");
                 $stmt = $this->dataBase->db->prepare($query[0]);
                 if ($query[1][0]) {
@@ -373,7 +373,7 @@ class StaticModel
                 }
             }
         } else {
-            $values = array("staticId" => 1, "src" =>  $this->dataBase->baseUrl . $res);
+            $values = array("staticId" => 1, "src" =>  DataBase::$baseUrl . $res);
             $query = $this->dataBase->genInsertQuery($values, "StaticPhoto");
             $stmt = $this->dataBase->db->prepare($query[0]);
             if ($query[1][0]) {
@@ -389,7 +389,7 @@ class StaticModel
         $ids = implode(", ", $ids);
         $stmt = $this->dataBase->db->query("select src from StaticPhoto where id IN ($ids)");
         while ($url = $stmt->fetch()) {
-            $this->fileUploader->removeFile($url['src'], $this->dataBase->baseUrl);
+            $this->fileUploader->removeFile($url['src'], DataBase::$baseUrl);
         }
 
         $stmt = $this->dataBase->db->query("delete from StaticPhoto where id IN ($ids)");

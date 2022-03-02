@@ -18,6 +18,7 @@ require_once './models/box.php';
 require_once './models/static.php';
 require_once './models/sale.php';
 require_once './models/order.php';
+require_once './models/mail.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Psr7\Response as ResponseClass;
@@ -79,7 +80,7 @@ $app->post('/delete-token', function (Request $request, Response $response) use 
 
 $app->post('/product/send-order', function (Request $request, Response $response) use ($product) {
     try {
-        $response->getBody()->write(json_encode($product->send($request->getParsedBody(), $_FILES)));
+        // $response->getBody()->write(json_encode($product->send($request->getParsedBody(), $_FILES)));
         return $response;
     } catch (Exception $e) {
         $response = new ResponseClass();
@@ -251,10 +252,10 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             $body = $request->getParsedBody();
             $result = null;
             if (isset($body['removeUrl'])) {
-                $fileUploader->removeFile($body['removeUrl'], $dataBase->baseUrl);
+                $fileUploader->removeFile($body['removeUrl'], Database::$baseUrl);
             }
             if (isset($_FILES['file'])) {
-                $result = $dataBase->baseUrl . $fileUploader->upload($_FILES['file'], 'StaticFiles', uniqid());
+                $result = Database::$baseUrl . $fileUploader->upload($_FILES['file'], 'StaticFiles', uniqid());
             }
             $response->getBody()->write(json_encode($result));
             return $response;
@@ -412,6 +413,80 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             } catch (Exception $e) {
                 $response = new ResponseClass();
                 $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+                return $response->withStatus(500);
+            }
+        });
+    });
+
+    $group->group('mails', function (RouteCollectorProxy $categoryGroup) {
+        $categoryGroup->post('/individual', function (Request $request, Response $response) {
+            try {
+                $mes = new Individual();
+                $mes->send($request->getParsedBody(), $_FILES);
+                $response->getBody()->write(true);
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+                return $response->withStatus(401);
+            }
+        });
+
+        $categoryGroup->post('/business', function (Request $request, Response $response) {
+            try {
+                $mes = new Business();
+                $mes->send($request->getParsedBody(), $_FILES);
+                $response->getBody()->write(true);
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $categoryGroup->post('/business-request', function (Request $request, Response $response) {
+            try {
+                $mes = new Business();
+                $mes->send($request->getParsedBody(), $_FILES);
+                $response->getBody()->write(true);
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $categoryGroup->post('/edit-order', function (Request $request, Response $response) {
+            try {
+                $mes = new OrderEdited();
+                $mes->send($request->getParsedBody(), $_FILES);
+                $response->getBody()->write(true);
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $categoryGroup->post('/admin', function (Request $request, Response $response) {
+            try {
+                $mes = new Admin();
+                $mes->send($request->getParsedBody(), $_FILES);
+                $response->getBody()->write(true);
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+                return $response->withStatus(500);
+            }
+        });
+
+        $categoryGroup->post('/price-list', function (Request $request, Response $response) {
+            try {
+                $mes = new PriceList();
+                $mes->send($request->getParsedBody(), $_FILES);
+                $response->getBody()->write(true);
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
                 return $response->withStatus(500);
             }
         });

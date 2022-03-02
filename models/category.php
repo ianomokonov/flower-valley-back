@@ -171,7 +171,7 @@ class Category
     public function create($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request);
-        $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
+        $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
         if (isset($request['isBlocked'])) {
             $request['isBlocked'] = $request['isBlocked'] == 'true';
         }
@@ -216,7 +216,7 @@ class Category
         }
         if ($file) {
             $this->removeCategoryImg($categoryId);
-            $request['img'] = $this->dataBase->baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
+            $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'CategoryImages', uniqid());
         }
         $query = $this->dataBase->genUpdateQuery($request, $this->table, $categoryId);
 
@@ -283,7 +283,7 @@ class Category
             return;
         }
 
-        $this->fileUploader->removeFile($category['img'], $this->dataBase->baseUrl);
+        $this->fileUploader->removeFile($category['img'], DataBase::$baseUrl);
     }
 
     private function isSpecial($id)

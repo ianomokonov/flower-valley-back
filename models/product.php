@@ -66,69 +66,6 @@ class Product
         return $result;
     }
 
-
-
-
-    public function send($request, $files)
-    {
-        $mailer = new Mailer();
-        $mailer->mail->Subject = "Заказ цветов";
-
-        $message = "
-        <h2>Заказ № " . strtoupper(uniqid()) . "</h2>
-        <h3>Данные клиента</h3>
-        <p>ФИО: " . $request['fullName'] . "</p>
-        <p>Телефон: " . $request['phone'] . "</p>
-        <p>Адрес доставки: " . $request['address'] . "</p>
-        <hr/>
-        <table>
-        <thead>
-        <tr>
-            <td style='padding: 5px 10px'>Товар</td>
-            <td style='padding: 5px 10px'>Цена</td>
-            <td style='padding: 5px 10px'>Кол-во</td>
-            <td style='padding: 5px 10px'>Стоимость</td>
-        </tr>
-        </thead>
-        <tbody>
-        ";
-        $sum = 0;
-        foreach ($request['products'] as $product) {
-            $product = json_decode($product, true);
-            $stmt = $this->dataBase->db->prepare("SELECT * FROM Product where id=?");
-            $stmt->execute(array($product['id']));
-            $p = $stmt->fetch();
-            $sum += 1 * $product['count'] * $product['price'];
-            $message = $message . "<tr>
-                <td style='padding: 5px 10px'>" . $p['name'] . "</td>
-                <td style='padding: 5px 10px'>" . $product['price'] . "</td>
-                <td style='padding: 5px 10px'>" . $product['count'] . "</td>
-                <td style='padding: 5px 10px'>" . $product['count'] * $product['price'] . "</td>
-            </tr>";
-        }
-        $message = $message . "</tbody></table><hr/> <h3>Сумма товаров: " . $sum . "руб.</h3>";
-
-        if (isset($request['boxesPrice'])) {
-            $sum += 1 * $request['boxesPrice'];
-            $message = $message . "<h3>Стоимость коробок: " . $request['boxesPrice'] . "руб.</h3>";
-        }
-
-        if (isset($request['deliveryPrice'])) {
-            $sum += 1 * $request['deliveryPrice'];
-            $message = $message . "<h3>Стоимость доставки: " . $request['deliveryPrice'] . "руб.</h3>";
-        }
-
-        $mailer->mail->Body = $message . "<h3>Сумма заказа: " . $sum . "руб.</h3>";
-        $mailer->mail->addAddress($request['email']);
-        if (isset($files['kp'])) {
-            $mailer->mail->addAttachment($files['kp']['tmp_name'], $files['kp']['name']);
-        }
-        if (isset($files['estimate'])) {
-            $mailer->mail->addAttachment($files['estimate']['tmp_name'], $files['estimate']['name']);
-        }
-        $mailer->mail->send();
-    }
-
     public function read($id)
     {
         $query = "SELECT * FROM Product p WHERE p.id=? ";
@@ -289,7 +226,7 @@ class Product
         $res = $this->fileUploader->upload($photos, 'Images', uniqid());
         if (is_array($res)) {
             foreach ($res as $key => $imagePath) {
-                $values = array("productId" => $productId, "src" =>  $this->dataBase->baseUrl . $imagePath);
+                $values = array("productId" => $productId, "src" =>  DataBase::$baseUrl . $imagePath);
                 $query = $this->dataBase->genInsertQuery($values, "ProductImage");
                 $stmt = $this->dataBase->db->prepare($query[0]);
                 if ($query[1][0]) {
@@ -297,7 +234,7 @@ class Product
                 }
             }
         } else {
-            $values = array("productId" => $productId, "src" =>  $this->dataBase->baseUrl . $res);
+            $values = array("productId" => $productId, "src" =>  DataBase::$baseUrl . $res);
             $query = $this->dataBase->genInsertQuery($values, "ProductImage");
             $stmt = $this->dataBase->db->prepare($query[0]);
             if ($query[1][0]) {
@@ -352,7 +289,7 @@ class Product
         }
 
         while ($url = $stmt->fetch()) {
-            $this->fileUploader->removeFile($url['src'], $this->dataBase->baseUrl);
+            $this->fileUploader->removeFile($url['src'], DataBase::$baseUrl);
         }
 
         if ($all) {
