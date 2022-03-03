@@ -15,8 +15,8 @@ abstract class Message
 
     protected function setFiles($files)
     {
-        foreach ($files as $key => $value) {
-            $this->mailer->mail->addAttachment($value['tmp_name'], $value['name']);
+        foreach (array_keys($files) as $key) {
+            $this->mailer->mail->addAttachment($files[$key]['tmp_name'], $files[$key]['name']);
         }
     }
 }
