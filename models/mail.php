@@ -52,7 +52,7 @@ class Business extends Message
             $message = "Заказ по запросу " . $request['requestNumber'] . " сформирован. ";
         }
 
-        $message .= "Выставляем" . "<a href='https://375.ru/" . $request['accountNumber'] . "'>счет к оплате.</a>" .
+        $message .= "Выставляем" . "<a href='https://375.ru/" . $request['accountNumber'] . "'> счет к оплате. </a>" .
         "Просим сообщить об оплате на нашу эл. почту или в Вацап по номеру 8(915)109-10-00 
         для скорейшего резервирования Вашего заказа на нужную Вам дату";
 
