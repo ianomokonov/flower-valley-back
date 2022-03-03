@@ -67,7 +67,7 @@ class Admin extends Message
 {
     public function send($request, $files)
     {
-        $client = $request['isBusiness'] ? 'ЮР' : 'ФИЗ';
+        $client = $request['isBusiness'] == 'true' ? 'ЮР' : 'ФИЗ';
         $this->mailer->mail->Subject = "[$client].[" . $request['sum'] . "].[" . $request['orderId'] . '].[' . $request['clientName'] . ']';
 
         $message = "
