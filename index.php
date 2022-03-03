@@ -423,7 +423,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $mes = new Individual();
                 $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write('Сообщение отправлено');
+                $response->$response->getBody()->write(json_encode('Сообщение отправлено'));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
@@ -435,7 +435,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $mes = new Business();
                 $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write('Сообщение отправлено');
+                $response->$response->getBody()->write(json_encode('Сообщение отправлено'));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
@@ -447,7 +447,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $mes = new Business();
                 $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write('Сообщение отправлено');
+                $response->$response->getBody()->write(json_encode('Сообщение отправлено'));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
@@ -459,7 +459,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $mes = new OrderEdited();
                 $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write('Сообщение отправлено');
+                $response->$response->getBody()->write(json_encode('Сообщение отправлено'));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
@@ -471,7 +471,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $mes = new Admin();
                 $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write('Сообщение отправлено');
+                $response->$response->getBody()->write(json_encode('Сообщение отправлено'));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
@@ -483,7 +483,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             try {
                 $mes = new PriceList();
                 $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write('Сообщение отправлено');
+                $response->$response->getBody()->write(json_encode('Сообщение отправлено'));
                 return $response;
             } catch (Exception $e) {
                 $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
