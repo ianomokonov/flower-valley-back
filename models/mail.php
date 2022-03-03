@@ -4,7 +4,7 @@ require_once __DIR__ . '/../utils/mailer.php';
 
 abstract class Message
 {
-    protected Mailer $mailer;
+    protected $mailer;
 
     public function __construct()
     {
