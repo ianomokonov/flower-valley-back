@@ -68,15 +68,24 @@ class Admin extends Message
 {
     public function send($request, $files)
     {
-        $client = $request['isBusiness'] ? 'ЮР' : 'ФИЗ';
+        $client = $request['isBusiness'] == 'true' ? 'ЮР' : 'ФИЗ';
+        $title = $request['isBusiness'] == 'true' ? 'ЮРЛИЦА' : 'ФИЗЛИЦА';
+        $link = DataBase::$host . 'admin/orders/' . $request['orderId'];
         $this->mailer->mail->Subject = "[$client].[" . $request['sum'] . "].[" . $request['orderId'] . '].[' . $request['clientName'] . ']';
-
         $message = "
-        <a href='" . DataBase::$host . 'admin/orders/' . $request['orderId'] . "'>Ссылка на заказ</a>
+        Заказ для $title <br/><br/>
+        Ссылка на заказ:<br/>
+        <a href='$link'>$link</a><br/><br/>
+        Клиент:<br/>
+        ФИО: " . $request['contactName'] . "<br/>
+        Почта: " . $request['contactEmail'] . "<br/>
+        Телефон: " . $request['contactPhone'] . "<br/>
+        Адрес доставки: " . $request['contactAddress'] . "<br/>
         ";
 
         $this->mailer->mail->Body = $message;
-        $this->mailer->mail->addAddress('lepingrapes@yandex.ru');
+        //$this->mailer->mail->addAddress('lepingrapes@yandex.ru');
+        $this->mailer->mail->addAddress('i.a.volik@gmail.com');
         $this->setFiles($files);
         $this->mailer->mail->send();
     }
