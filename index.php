@@ -244,21 +244,6 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
-
-
-$app->get('/order/{id}', function (Request $request, Response $response) use ($order) {
-    try {
-        $routeContext = RouteContext::fromRequest($request);
-        $route = $routeContext->getRoute();
-        $response->getBody()->write(json_encode($order->read($route->getArgument('id'))));
-        return $response;
-    } catch (Exception $e) {
-        $response = new ResponseClass();
-        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
-        return $response->withStatus(500);
-    }
-});
-
 $app->post('/order', function (Request $request, Response $response) use ($order) {
     try {
         $response->getBody()->write(json_encode($order->create($request->getParsedBody())));
@@ -872,6 +857,21 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         if ($e->getCode() && $e->getCode() != 0) {
             return $response->withStatus($e->getCode());
         }
+        return $response->withStatus(500);
+    }
+});
+
+
+
+$app->get('/order/{id}', function (Request $request, Response $response) use ($order) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($order->read($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
         return $response->withStatus(500);
     }
 });
