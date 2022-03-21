@@ -244,6 +244,31 @@ $app->get('/category/{id}', function (Request $request, Response $response) use 
     }
 });
 
+
+
+$app->get('/order/{id}', function (Request $request, Response $response) use ($order) {
+    try {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        $response->getBody()->write(json_encode($order->read($route->getArgument('id'))));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(500);
+    }
+});
+
+$app->post('/order', function (Request $request, Response $response) use ($order) {
+    try {
+        $response->getBody()->write(json_encode($order->create($request->getParsedBody())));
+        return $response;
+    } catch (Exception $e) {
+        $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания заказа")));
+        return $response->withStatus(401);
+    }
+});
+
 $app->group('/', function (RouteCollectorProxy $group) use ($product, $category, $box, $static, $sale, $order, $dataBase) {
 
     $group->post('save-file', function (Request $request, Response $response) use ($dataBase) {
@@ -368,15 +393,6 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
     });
 
     $group->group('order', function (RouteCollectorProxy $orderGroup) use ($order) {
-        $orderGroup->post('', function (Request $request, Response $response) use ($order) {
-            try {
-                $response->getBody()->write(json_encode($order->create($request->getParsedBody())));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка создания заказа")));
-                return $response->withStatus(401);
-            }
-        });
 
         $orderGroup->post('/{id}', function (Request $request, Response $response) use ($order) {
             try {
@@ -396,19 +412,6 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 $str = isset($query['searchString']) ? $query['searchString'] : '';
                 $status = isset($query['status']) ? $query['status'] : null;
                 $response->getBody()->write(json_encode($order->getList($query['skip'], $query['take'], $str, $status)));
-                return $response;
-            } catch (Exception $e) {
-                $response = new ResponseClass();
-                $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
-                return $response->withStatus(500);
-            }
-        });
-
-        $orderGroup->get('/{id}', function (Request $request, Response $response) use ($order) {
-            try {
-                $routeContext = RouteContext::fromRequest($request);
-                $route = $routeContext->getRoute();
-                $response->getBody()->write(json_encode($order->read($route->getArgument('id'))));
                 return $response;
             } catch (Exception $e) {
                 $response = new ResponseClass();
