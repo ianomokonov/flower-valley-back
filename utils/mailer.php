@@ -15,22 +15,21 @@ class Mailer
 
     public function __construct()
     {
-        $this->mail = new PHPMailer(true);
-
+        $this->mail = new PHPMailer;
         try {
             //Server settings
             // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-            // $mail->isSMTP();                                            //Send using SMTP
-            // $mail->Host       = 'smtp.example.com';                     //Set the SMTP server to send through
-            // $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            // $mail->Username   = 'user@example.com';                     //SMTP username
-            // $mail->Password   = 'secret';                               //SMTP password
-            // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-            // $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-            $this->mail->setLanguage('ru');
+            $this->mail->isSMTP();                                            //Send using SMTP
+            $this->mail->Host       = 'smtp.beget.com';                     //Set the SMTP server to send through
+            $this->mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+            $this->mail->Username   = 'flowervalley@progoff.ru';                     //SMTP username
+            $this->mail->Password   = 'QaZmLp1098';                               //SMTP password
+            $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+            $this->mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
             $this->mail->CharSet = 'UTF-8';
             //Recipients
-            $this->mail->setFrom('flowervalley@mail.com');
+            $this->mail->From = 'flowervalley@progoff.ru';
+            $this->mail->FromName = 'Агрофима Цветочная Долина';
             //$this->mail->addAddress('lepingrapes@yandex.ru');
             // $mail->addCC('cc@example.com');
             // $mail->addBCC('bcc@example.com');
