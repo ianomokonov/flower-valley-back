@@ -407,29 +407,6 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
     });
 
     $group->group('mails', function (RouteCollectorProxy $categoryGroup) {
-        $categoryGroup->post('/individual', function (Request $request, Response $response) {
-            try {
-                $mes = new Individual();
-                $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write(json_encode('Сообщение отправлено'));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
-                return $response->withStatus(401);
-            }
-        });
-
-        $categoryGroup->post('/business', function (Request $request, Response $response) {
-            try {
-                $mes = new Business();
-                $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write(json_encode('Сообщение отправлено'));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
-                return $response->withStatus(500);
-            }
-        });
 
         $categoryGroup->post('/business-request', function (Request $request, Response $response) {
             try {
@@ -446,18 +423,6 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         $categoryGroup->post('/edit-order', function (Request $request, Response $response) {
             try {
                 $mes = new OrderEdited();
-                $mes->send($request->getParsedBody(), $_FILES);
-                $response->getBody()->write(json_encode('Сообщение отправлено'));
-                return $response;
-            } catch (Exception $e) {
-                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
-                return $response->withStatus(500);
-            }
-        });
-
-        $categoryGroup->post('/admin', function (Request $request, Response $response) {
-            try {
-                $mes = new Admin();
                 $mes->send($request->getParsedBody(), $_FILES);
                 $response->getBody()->write(json_encode('Сообщение отправлено'));
                 return $response;
@@ -872,6 +837,42 @@ $app->get('/order/{id}', function (Request $request, Response $response) use ($o
     } catch (Exception $e) {
         $response = new ResponseClass();
         $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(500);
+    }
+});
+
+$app->post('/mails/individual', function (Request $request, Response $response) {
+    try {
+        $mes = new Individual();
+        $mes->send($request->getParsedBody(), $_FILES);
+        $response->getBody()->write(json_encode('Сообщение отправлено'));
+        return $response;
+    } catch (Exception $e) {
+        $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+        return $response->withStatus(401);
+    }
+});
+
+$app->post('/mails/business', function (Request $request, Response $response) {
+    try {
+        $mes = new Business();
+        $mes->send($request->getParsedBody(), $_FILES);
+        $response->getBody()->write(json_encode('Сообщение отправлено'));
+        return $response;
+    } catch (Exception $e) {
+        $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+        return $response->withStatus(500);
+    }
+});
+
+$app->post('/mails/admin', function (Request $request, Response $response) {
+    try {
+        $mes = new Admin();
+        $mes->send($request->getParsedBody(), $_FILES);
+        $response->getBody()->write(json_encode('Сообщение отправлено'));
+        return $response;
+    } catch (Exception $e) {
+        $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
         return $response->withStatus(500);
     }
 });
