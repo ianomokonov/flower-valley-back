@@ -94,7 +94,10 @@ class Product
     public function create($request, $photos)
     {
         $categoryIds = $request['categoryIds'];
-        $prices = $request['prices'];
+        $prices = null;
+        if (isset($request['prices'])) {
+            $prices = $request['prices'];
+        }
         unset($request['categoryIds']);
         unset($request['prices']);
         $request = $this->dataBase->stripAll((array)$request);
@@ -125,7 +128,9 @@ class Product
         }
         $this->setPhotos($request['id'], [], $photos);
         $this->setCategories($request['id'], $categoryIds);
-        $this->setPrices($request['id'], $prices);
+        if ($prices) {
+            $this->setPrices($request['id'], $prices);
+        }
 
 
         return $request['id'];
