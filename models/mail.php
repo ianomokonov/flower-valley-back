@@ -71,7 +71,7 @@ class Admin extends Message
         $client = $request['isBusiness'] == 'true' ? 'ЮР' : 'ФИЗ';
         $title = $request['isBusiness'] == 'true' ? 'ЮРЛИЦА' : 'ФИЗЛИЦА';
         $link = DataBase::$host . 'admin/orders/' . $request['orderId'];
-        $this->mailer->mail->Subject = "[$client].[" . $request['sum'] . "].[" . $request['orderId'] . '].[' . $request['clientName'] . ']';
+        $this->mailer->mail->Subject = "[$client].[СУММА: " . $request['sum'] . "].[№" . $request['orderId'] . '].[' . $request['clientName'] . ']';
         $message = "
         Заказ для $title <br/><br/>
         Ссылка на заказ:<br/>
