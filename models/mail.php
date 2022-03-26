@@ -29,7 +29,10 @@ class Individual extends Message
 
         $message = "
         Здравствуйте!<br/>
-        Ваш заказ принят. Для скорейшего резервирования на нужную Вам дату требуется предоплата в размере от 30% до 100% суммы заказа.<br/><br/>
+        Ваш заказ принят.<br/>
+        Номер Вашего заказа: "
+        .$request['orderId'].
+        "<br/>Для скорейшего резервирования на нужную Вам дату требуется предоплата в размере от 30% до 100% суммы заказа.<br/><br/>
         Оплата на карту Сбербанка 4274 2700 1927 5403, держатель карты Олег Валентинович Б.<br/>
         Просьба ничего не указывать в назначении платежа. Чек об оплате отправить на эту эл.почту ответным письмом или в Вацап по номеру +79151091000
         ";
@@ -47,10 +50,16 @@ class Business extends Message
     {
         $this->mailer->mail->Subject = "Счет №" . $request['billNumber'] . " от " . $request['billDate'];
 
-        $message = "Здравствуйте!<br/>Ваша заявка принята. ";
+        $message = "Здравствуйте!<br/>Ваша заявка принята.<br/>
+        Номер Вашей заявки: "
+        .$request['orderId'].
+        "<br/>";
 
         if (isset($request['requestNumber']) && $request['requestNumber']) {
-            $message = "Здравствуйте!<br/>Заказ по запросу " . $request['requestNumber'] . " сформирован. ";
+            $message = "Здравствуйте!<br/>Заказ по запросу " . $request['requestNumber'] . " сформирован.<br/>
+        Номер Вашего заказа: "
+        .$request['orderId'].
+        "<br/>";
         }
 
         $message .= "Выставляем " . "<a href='https://375.ru/" . $request['accountNumber'] . "'>счет к оплате.</a><br/><br/>" .
@@ -84,8 +93,8 @@ class Admin extends Message
         ";
 
         $this->mailer->mail->Body = $message;
-        $this->mailer->mail->addAddress('lepingrapes@yandex.ru');
-        //$this->mailer->mail->addAddress('i.a.volik@gmail.com');
+        //$this->mailer->mail->addAddress('lepingrapes@yandex.ru');
+        $this->mailer->mail->addAddress('i.a.volik@gmail.com');
         $this->setFiles($files);
         $this->mailer->mail->send();
     }
