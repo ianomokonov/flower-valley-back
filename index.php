@@ -207,6 +207,17 @@ $app->get('/discount/list', function (Request $request, Response $response) use 
     }
 });
 
+$app->get('/menu-items', function (Request $request, Response $response) use ($static) {
+    try {
+        $response->getBody()->write(json_encode($static->readMenuItems()));
+        return $response;
+    } catch (Exception $e) {
+        $response = new ResponseClass();
+        $response->getBody()->write(json_encode(array("message" => $e->getMessage())));
+        return $response->withStatus(500);
+    }
+});
+
 $app->get('/discount/{id}', function (Request $request, Response $response) use ($static) {
     try {
         $routeContext = RouteContext::fromRequest($request);
@@ -271,6 +282,17 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             return $response;
         } catch (Exception $e) {
             $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сохранения файла")));
+            return $response->withStatus(500);
+        }
+    });
+
+    $group->post('menu-items', function (Request $request, Response $response) use ($static) {
+        try {
+
+            $response->getBody()->write(json_encode($static->updateMenuItems($request->getParsedBody())));
+            return $response;
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сохранения меню")));
             return $response->withStatus(500);
         }
     });

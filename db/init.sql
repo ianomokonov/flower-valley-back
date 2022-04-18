@@ -146,6 +146,7 @@ CREATE TABLE `Order` (
   `deliveryWishDateFrom` DATETIME NULL,
   `deliveryWishDateTo` DATETIME NULL,
   `confirmedDeliveryDate` DATETIME NULL,
+  `comment` TEXT NULL,
   
   PRIMARY KEY (`id`)
 );
@@ -193,6 +194,7 @@ CREATE TABLE `Discount` (
   `id` INTEGER(10) AUTO_INCREMENT,
   `discount` INTEGER(10) NOT NULL,
   `sum` FLOAT NOT NULL,
+  `addToPriceList` BIT(1) DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 
@@ -238,6 +240,20 @@ CREATE TABLE `ProductImage` (
   `src` VARCHAR(255) NOT NULL,
   `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `sortOrder` INTEGER(3) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'MenuItem'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `MenuItem`;
+		
+CREATE TABLE `MenuItem` (
+  `id` INTEGER(10) AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `link` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
 );
 

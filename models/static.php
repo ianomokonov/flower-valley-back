@@ -255,6 +255,30 @@ class StaticModel
         return true;
     }
 
+    public function readMenuItems()
+    {
+        $query = "SELECT * FROM MenuItem";
+        $stmt = $this->dataBase->db->query($query);
+
+        return $stmt->fetchAll();
+    }
+
+    public function updateMenuItems($items)
+    {
+        $query = "delete from MenuItem";
+        $this->dataBase->db->query($query);
+
+        foreach ($items as $item) {
+            $query = $this->dataBase->genInsertQuery($item, 'MenuItem');
+            $stmt = $this->dataBase->db->prepare($query[0]);
+            if ($query[1][0]) {
+                $stmt->execute($query[1]);
+            }
+        }
+
+        return $this->readMenuItems();
+    }
+
     public function readContactPhotos()
     {
         $query = "SELECT * FROM ContactPhoto ORDER BY sortOrder";
