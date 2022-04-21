@@ -407,6 +407,12 @@ INSERT INTO `CategoryStep` (`id`, `categoryId`, `countFrom`) VALUES
 (1, 1, 500),
 (2, 1, 1000);
 
+INSERT INTO `MenuItem` (`id`, `title`, `link`) VALUES
+(1, 'О компании', '/#about'),
+(2, 'Тюльпаны оптом', '/catalog/tulips'),
+(3, 'Рассады цветов', '/catalog/seedlings'),
+(4, 'Контакты', '/contacts');
+
 INSERT INTO `ContactPhoto` (`id`, `img`) VALUES
 (1, 'http://stand3.progoff.ru/back/MainImages/61eae3a6cd804_whatsapp-image-2021-02-08-at-18.23.45.jpeg'),
 (2, 'http://stand3.progoff.ru/back/MainImages/61eae3a741595_whatsapp-image-2021-02-08-at-18.22.02.jpeg'),

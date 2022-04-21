@@ -69,7 +69,12 @@ class DataBase
                 $res[0] = $res[0] . $keys[$i] . '=now(), ';
             } else {
                 $res[0] = $res[0] . $keys[$i] . '=?, ';
-                $res[1][] = $values[$i] ? $values[$i] : null;
+                if($values[$i] == false){
+                    $res[1][] = false;
+                } else {
+                    $res[1][] = $values[$i] ? $values[$i] :  null;
+                }
+                
             }
         }
         $res[0] = rtrim($res[0], ', ');
