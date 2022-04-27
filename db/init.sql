@@ -76,7 +76,7 @@ DROP TABLE IF EXISTS `Product`;
 		
 CREATE TABLE `Product` (
   `id` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `boxId` INTEGER(10) NOT NULL,
+  `boxId` INTEGER(10) NULL,
   `name` VARCHAR(255) NOT NULL,
   `price` FLOAT NOT NULL,
   `nds` INTEGER(20) NULL,
