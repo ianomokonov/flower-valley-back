@@ -81,7 +81,9 @@ class Product
         $product['prices'] = $this->getPrice($product['id']);
         $product['nds'] = $product['nds'] * 1;
         $product['ndsMode'] = $product['ndsMode'] * 1;
-        $product['boxId'] = $product['boxId'] * 1;
+        if ($product['boxId']) {
+            $product['boxId'] = $product['boxId'] * 1;
+        }
         $product['coefficient'] = $product['coefficient'] * 1;
         $product['isPopular'] = $product['isPopular'] == '1';
         $product['photos'] = $this->getPhotos($id);
