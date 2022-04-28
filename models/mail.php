@@ -48,10 +48,10 @@ class Business extends Message
 {
     public function send($request, $files)
     {
-        $this->mailer->mail->Subject = "Счет №" . $request['billNumber'] . " от " . $request['billDate'];
+        $this->mailer->mail->Subject = "Счет №" . $request['billNumber'] . " от " . $request['billDate'] . " к заказу №" . $request['orderId'];
 
         $message = "Здравствуйте!<br/>Ваша заявка принята.<br/>
-        Номер Вашей заявки: "
+        Номер Вашего заказа: "
         .$request['orderId'].
         "<br/>";
 
@@ -93,8 +93,9 @@ class Admin extends Message
         ";
 
         $this->mailer->mail->Body = $message;
-        //$this->mailer->mail->addAddress('lepingrapes@yandex.ru');
-        $this->mailer->mail->addAddress('i.a.volik@gmail.com');
+        $this->mailer->mail->addAddress('9151091000@mail.ru');
+        $this->mailer->mail->addAddress('lepingrapes@yandex.ru');
+        //$this->mailer->mail->addAddress('i.a.volik@gmail.com');
         $this->setFiles($files);
         $this->mailer->mail->send();
     }
