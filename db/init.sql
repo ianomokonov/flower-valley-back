@@ -180,6 +180,7 @@ CREATE TABLE `OrderProduct` (
   `orderId` INTEGER(10) NOT NULL,
   `count` INTEGER(10) NOT NULL,
   `price` FLOAT NOT NULL,
+  `offerPrice` FLOAT NOT NULL,
   PRIMARY KEY (`id`)
 );
 
