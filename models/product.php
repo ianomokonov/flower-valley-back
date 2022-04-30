@@ -301,7 +301,7 @@ class Product
         $query = "delete from $table where productId=?";
         if ($activeCategoryIds && count($activeCategoryIds)) {
             $ids = implode(", ", $activeCategoryIds);
-            $query = $query + " AND categoryId NOT IN ($ids);";
+            $query = $query . " AND categoryId NOT IN ($ids);";
         }
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($productId));
