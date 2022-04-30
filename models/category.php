@@ -115,7 +115,7 @@ class Category
 
     public function readProductsSimple($id)
     {
-        $query = "SELECT * FROM ProductCategory WHERE categoryId=? ORDER BY pc.productOrder";
+        $query = "SELECT * FROM ProductCategory WHERE categoryId=? ORDER BY productOrder";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $products = $stmt->fetchAll();
