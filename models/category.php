@@ -113,6 +113,21 @@ class Category
         return $result;
     }
 
+    public function readProductsSimple($id)
+    {
+        $query = "SELECT * FROM ProductCategory WHERE categoryId=? ORDER BY pc.productOrder";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($id));
+        $products = $stmt->fetchAll();
+
+
+
+        if (!$products || count($products) == 0) {
+            return [];
+        }
+        return $products;
+    }
+
     public function setSteps($categoryId, $steps)
     {
         $categoryId = $this->readParentCategory($categoryId)['id'];

@@ -254,15 +254,32 @@ class Product
 
     private function setCategories($productId, $categoryIds)
     {
-        $this->unsetItems($productId, "ProductCategory");
+        $this->unsetItems($productId, "ProductCategory", $categoryIds);
         foreach ($categoryIds as $value) {
-            $values = array("productId" => $productId, "categoryId" =>  $value);
-            $query = $this->dataBase->genInsertQuery($values, "ProductCategory");
-            $stmt = $this->dataBase->db->prepare($query[0]);
-            if ($query[1][0]) {
-                $stmt->execute($query[1]);
+            $categoryProducts = $this->category->readProductsSimple($value);
+            $maxOrder = $this->max_attribute_in_array($categoryProducts, "productOrder");
+            $hasCategory = array_search($value, array_column($categoryProducts, 'categoryId'));
+            $addedCount = 0;
+            if ($hasCategory === false) {
+                $addedCount += 1;
+                $values = array("productId" => $productId, "categoryId" =>  $value, "productOrder" => $maxOrder + $addedCount);
+                $query = $this->dataBase->genInsertQuery($values, "ProductCategory");
+                $stmt = $this->dataBase->db->prepare($query[0]);
+                if ($query[1][0]) {
+                    $stmt->execute($query[1]);
+                }
             }
         }
+    }
+
+    private function max_attribute_in_array($array, $prop)
+    {
+        return max(array_map(
+            function ($o) use ($prop) {
+                return $o->$prop;
+            },
+            $array
+        ));
     }
 
     private function setPrices($productId, $prices)
@@ -279,9 +296,14 @@ class Product
         }
     }
 
-    private function unsetItems($productId, $table)
+    private function unsetItems($productId, $table, $activeCategoryIds = [])
     {
-        $stmt = $this->dataBase->db->prepare("delete from $table where productId=?");
+        $query = "delete from $table where productId=?";
+        if ($activeCategoryIds && count($activeCategoryIds)) {
+            $ids = implode(", ", $activeCategoryIds);
+            $query += " AND categoryId NOT IN ($ids);";
+        }
+        $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($productId));
     }
 
