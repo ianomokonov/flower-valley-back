@@ -813,7 +813,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
-        $categoryGroup->get('/{name}', function (Request $request, Response $response) use ($category) {
+        $categoryGroup->get('/is-exists/{name}', function (Request $request, Response $response) use ($category) {
             try {
                 $routeContext = RouteContext::fromRequest($request);
                 $route = $routeContext->getRoute();
