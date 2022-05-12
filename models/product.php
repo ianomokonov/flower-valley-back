@@ -277,12 +277,17 @@ class Product
 
     private function max_attribute_in_array($array, $prop)
     {
-        return max(array_map(
-            function ($o) use ($prop) {
-                return $o[$prop];
-            },
-            $array
-        ));
+        if($array && count($array) > 0){
+            return max(array_map(
+                function ($o) use ($prop) {
+                    return $o[$prop];
+                },
+                $array
+            ));
+        }
+
+        return 1;
+        
     }
 
     private function setPrices($productId, $prices)
