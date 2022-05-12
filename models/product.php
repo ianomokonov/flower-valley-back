@@ -258,7 +258,10 @@ class Product
         foreach ($categoryIds as $value) {
             $categoryProducts = $this->category->readProductsSimple($value);
             $maxOrder = $this->max_attribute_in_array($categoryProducts, "productOrder");
-            $hasCategory = array_search($value, array_column($categoryProducts, 'categoryId'));
+            // $hasCategory = array_search($value, array_column($categoryProducts, 'categoryId'));
+            $hasCategory = count(array_filter($categoryProducts, function ($p) use($value, $productId) {
+                return $p['categoryId'] == $value && $p['productId'] == $productId;
+            })) > 0;
             $addedCount = 0;
             if ($hasCategory === false) {
                 $addedCount += 1;
