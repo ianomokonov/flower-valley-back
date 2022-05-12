@@ -74,6 +74,15 @@ class Category
         return $category;
     }
 
+    public function readSimpleByName($name)
+    {
+        $query = "SELECT c.id, c.name FROM Category c WHERE LOWER(c.name) = ? LIMIT 1";
+        $stmt = $this->dataBase->db->prepare($query);
+        $stmt->execute(array($name));
+
+        return $stmt->fetch();
+    }
+
     public function sortCategories($categories)
     {
         foreach ($categories as $category) {

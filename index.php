@@ -813,6 +813,18 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
+        $categoryGroup->get('/{name}', function (Request $request, Response $response) use ($category) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode($category->readSimpleByName($route->getArgument('name'))));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Категория с таким именем уже есть")));
+                return $response->withStatus(500);
+            }
+        });
+
         $categoryGroup->delete('/{id}', function (Request $request, Response $response) use ($category) {
             try {
                 $routeContext = RouteContext::fromRequest($request);
