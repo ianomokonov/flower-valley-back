@@ -73,6 +73,26 @@ class Business extends Message
     }
 }
 
+class BusinessNotification extends Message
+{
+    public function send($request, $files)
+    {
+        $this->mailer->mail->Subject = "Заказ №" . $request['orderId'] . " оформлен";
+
+        $message = "Здравствуйте!<br/>Ваша заявка принята.<br/>
+        Номер Вашего заказа: "
+        .$request['orderId'].
+        "<br/>";
+
+        $message .= "Ожидайте подтверждения заказа менеджером. Вам будет выслана детальная информация по заказу.";
+
+        $this->mailer->mail->Body = $message;
+        $this->mailer->mail->addAddress($request['email']);
+        $this->setFiles($files);
+        $this->mailer->mail->send();
+    }
+}
+
 class Admin extends Message
 {
     public function send($request, $files)
