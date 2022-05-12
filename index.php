@@ -899,6 +899,18 @@ $app->post('/mails/business', function (Request $request, Response $response) {
     }
 });
 
+$app->post('/mails/business-notification', function (Request $request, Response $response) {
+    try {
+        $mes = new BusinessNotification();
+        $mes->send($request->getParsedBody(), $_FILES);
+        $response->getBody()->write(json_encode('Сообщение отправлено'));
+        return $response;
+    } catch (Exception $e) {
+        $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка отправки сообщения")));
+        return $response->withStatus(500);
+    }
+});
+
 $app->post('/mails/admin', function (Request $request, Response $response) {
     try {
         $mes = new Admin();
