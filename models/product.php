@@ -279,7 +279,7 @@ class Product
     {
         return max(array_map(
             function ($o) use ($prop) {
-                return $o->$prop;
+                return $o[$prop];
             },
             $array
         ));
