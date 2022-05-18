@@ -44,7 +44,7 @@ class Category
         if ($withProducts) {
             $category['products'] = $this->readProducts($id);
         }
-
+        $category['sale'] = $this->sale->getSale($category['id'], true);
 
         return $category;
     }
