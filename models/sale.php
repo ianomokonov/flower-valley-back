@@ -126,7 +126,7 @@ class Sale
         $category = $categoryModel->readSimle($categoryId);
         $sale = $this->getSale($categoryId, true);
 
-        if ($sale && $sale['isAclive']) {
+        if ($sale && $sale['isActive']) {
             $sales[] = $sale['discount'];
         }
 
@@ -188,7 +188,7 @@ class Sale
     {
         $query = "SELECT * FROM Sale ";
         if ($isCategory) {
-            $query = $query . "WHERE categoryId = ?";
+            $query = $query . "WHERE categoryId = ? AND productId IS NULL";
         } else {
             $query = $query . "WHERE productId = ?";
         }
