@@ -44,7 +44,7 @@ class Category
         if ($withProducts) {
             $category['products'] = $this->readProducts($id);
         }
-        $category['sale'] = $this->sale->getSale($category['id'], true);
+        $category['sale'] = $this->sale->getCategorySale($category['id']);
 
         return $category;
     }
@@ -63,7 +63,7 @@ class Category
 
     public function readSimle($id)
     {
-        $query = "SELECT c.id, c.name, c.categoryOrder FROM Category c WHERE c.id = ? LIMIT 1";
+        $query = "SELECT c.id, c.name, c.categoryOrder, c.parentId FROM Category c WHERE c.id = ? LIMIT 1";
         $stmt = $this->dataBase->db->prepare($query);
         $stmt->execute(array($id));
         $category = $stmt->fetch();
@@ -115,7 +115,7 @@ class Category
             $product['productOrder'] = $product['productOrder'] * 1;
             $product['productCategoryId'] = $product['productCategoryId'] * 1;
             $product['coefficient'] = $product['coefficient'] * 1;
-            $product['sale'] = $this->sale->getSale($product['id'], false);
+            $product['sale'] = $this->sale->getProductSale($product['id'], $product['price']);
             $product['photos'] = $productModel->getPhotos($product['id']);
             $result[] = $product;
         }
@@ -273,7 +273,7 @@ class Category
             $category['isSeedling'] = $category['categoryType'] == CategoryType::Seedling;
             unset($category['categoryType']);
             if ($withSale) {
-                $category['sale'] = $this->sale->getSale($category['id'], true);
+                $category['sale'] = $this->sale->getCategorySale($category['id']);
             }
             $result[] = $category;
         }

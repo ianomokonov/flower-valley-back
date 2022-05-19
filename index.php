@@ -505,7 +505,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
         });
     });
 
-    $group->group('sale', function (RouteCollectorProxy $saleGroup) use ($static, $sale) {
+    $group->group('sale', function (RouteCollectorProxy $saleGroup) use ($static, $sale, $dataBase) {
         $saleGroup->post('/config', function (Request $request, Response $response) use ($static) {
             try {
                 $response->getBody()->write(json_encode($static->updateStatic(4, $request->getParsedBody(), false)));
@@ -515,6 +515,20 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
                 return $response->withStatus(401);
             }
         });
+
+
+        $saleGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
+            try {
+                $routeContext = RouteContext::fromRequest($request);
+                $route = $routeContext->getRoute();
+                $response->getBody()->write(json_encode(sortItems($request->getParsedBody(), 'Sale', 'order', $dataBase)));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка сортировка акции")));
+                return $response->withStatus(500);
+            }
+        });
+
         $saleGroup->post('', function (Request $request, Response $response) use ($sale) {
             try {
                 $response->getBody()->write(json_encode($sale->createSale($request->getParsedBody(), isset($_FILES['img']) ? $_FILES['img'] : false)));

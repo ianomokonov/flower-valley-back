@@ -34,7 +34,7 @@ class Product
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
             $p['prices'] = $this->getPrice($p['id']);
-            $p['sale'] = $this->sale->getSale($p['id'], false);
+            $p['sale'] = $this->sale->getProductSale($p['id'], $p['price']);
             $result[] = $p;
         }
 
@@ -59,7 +59,7 @@ class Product
             $c = $this->category->readFirst($p['id']);
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
-            $p['sale'] = $this->sale->getSale($p['id'], false);
+            $p['sale'] = $this->sale->getProductSale($p['id'], $p['price']);
             $result[] = $p;
         }
 
@@ -88,7 +88,7 @@ class Product
         $product['isPopular'] = $product['isPopular'] == '1';
         $product['photos'] = $this->getPhotos($id);
         $product['categories'] = $this->category->getProductCategories($id);
-        $product['sale'] = $this->sale->getSale($product['id'], false);
+        $product['sale'] = $this->sale->getProductSale($product['id'], $product['price']);
 
         return $product;
     }
