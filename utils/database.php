@@ -48,7 +48,7 @@ class DataBase
         $res = array('INSERT INTO ' . $t . ' (', array());
         $q = '';
         for ($i = 0; $i < count(array_keys((array)$ins)); $i++) {
-            $res[0] = $res[0] . array_keys((array)$ins)[$i] . ',';
+            $res[0] = $res[0] . '`' . array_keys((array)$ins)[$i] . '`,';
             $res[1][] = $ins[array_keys((array)$ins)[$i]];
             $q = $q . '?,';
         }
