@@ -13,11 +13,15 @@ class Sale
         $this->fileUploader = new FilesUpload();
     }
 
-    public function getList()
+    public function getList($visible = true)
     {
         $category = new Category($this->dataBase);
         $product = new Product($this->dataBase);
-        $query = "SELECT * FROM Sale ORDER BY `order`";
+        $query = "SELECT * FROM Sale ";
+        if($visible){
+            $query .= "WHERE isVisible = true ";
+        }
+        $query .= 'ORDER BY `order`';
         $stmt = $this->dataBase->db->query($query);
 
         $result = [];
@@ -122,7 +126,7 @@ class Sale
         $category = $categoryModel->readSimle($categoryId);
         $sale = $this->getSale($categoryId, true);
 
-        if ($sale) {
+        if ($sale && $sale['isAclive']) {
             $sales[] = $sale['discount'];
         }
 

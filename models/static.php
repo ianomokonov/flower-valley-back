@@ -18,7 +18,7 @@ class StaticModel
         $product = new Product($this->dataBase);
         $sale = new Sale($this->dataBase);
         $sales = $this->readStatic(4, false);
-        $sales['items'] = $sale->getList();
+        $sales['items'] = $sale->getList(true);
         $result = array(
             'main' => $this->readStatic(1),
             'comments' => $this->readStatic(2),
