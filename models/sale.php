@@ -98,7 +98,9 @@ class Sale
     public function updateSale($id, $request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request, true);
-        $request['discount'] = $request['discount'] * 1;
+        if (isset($request['discount'])) {
+            $request['discount'] = $request['discount'] * 1;
+        }
         if (isset($request['isActive'])) {
             $request['isActive'] = $request['isActive'] == 'true';
         }
