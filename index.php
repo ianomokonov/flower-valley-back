@@ -517,7 +517,7 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
-        $saleGroup->post('/list', function (Request $request, Response $response) use ($sale) {
+        $saleGroup->get('/list', function (Request $request, Response $response) use ($sale) {
             try {
                 $response->getBody()->write(json_encode($sale->getList()));
                 return $response;
