@@ -13,7 +13,7 @@ class Sale
         $this->fileUploader = new FilesUpload();
     }
 
-    public function getList($visible = true)
+    public function getList($visible = false)
     {
         $category = new Category($this->dataBase);
         $product = new Product($this->dataBase);
