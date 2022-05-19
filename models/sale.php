@@ -44,6 +44,20 @@ class Sale
         return $result;
     }
 
+    public function getListSimple()
+    {
+        $query = "SELECT * FROM Sale ORDER BY `order`";
+        $stmt = $this->dataBase->db->query($query);
+
+        $res = $stmt->fetchAll();
+
+        if(!$res){
+            return [];
+        }
+
+        return $res;
+    }
+
     public function getSaleById($id)
     {
         $query = "SELECT * FROM Sale WHERE id = ?";
@@ -60,6 +74,7 @@ class Sale
     public function createSale($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request);
+        $request['order'] = count($this->getListSimple());
         if (isset($request['discount'])) {
             $request['discount'] = $request['discount'] * 1;
         }
