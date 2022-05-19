@@ -18,7 +18,7 @@ class Sale
         $category = new Category($this->dataBase);
         $product = new Product($this->dataBase);
         $query = "SELECT * FROM Sale ";
-        if($visible){
+        if ($visible) {
             $query .= "WHERE isVisible = true ";
         }
         $query .= 'ORDER BY `order`';
@@ -60,7 +60,10 @@ class Sale
     public function createSale($request, $file)
     {
         $request = $this->dataBase->stripAll((array)$request);
-        $request['discount'] = $request['discount'] * 1;
+        if (isset($request['discount'])) {
+            $request['discount'] = $request['discount'] * 1;
+        }
+
         $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
         if (isset($request['isActive'])) {
             $request['isActive'] = $request['isActive'] == 'true';
@@ -120,7 +123,7 @@ class Sale
 
     public function  getCategorySale($categoryId, $sales = [], $categoryModel = null)
     {
-        if(!$categoryModel){
+        if (!$categoryModel) {
             $categoryModel = new Category($this->dataBase);
         }
         $category = $categoryModel->readSimle($categoryId);
@@ -139,7 +142,7 @@ class Sale
 
     public function  getProductSale($productId, $productPrice, $categoryModel = null)
     {
-        if(!$categoryModel){
+        if (!$categoryModel) {
             $categoryModel = new Category($this->dataBase);
         }
         $productSale = $this->getSale($productId, false);

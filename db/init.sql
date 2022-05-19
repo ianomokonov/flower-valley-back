@@ -351,7 +351,7 @@ CREATE TABLE `Sale` (
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NOT NULL,
   `productId` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NULL,
-  `discount` FLOAT NOT NULL,
+  `discount` FLOAT NULL,
   `categoryId` INTEGER(10) NULL,
   `order` INTEGER(10) NULL,
   `isVisible` BIT(1) NOT NULL DEFAULT 1,
