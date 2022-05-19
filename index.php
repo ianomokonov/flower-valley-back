@@ -517,6 +517,16 @@ $app->group('/', function (RouteCollectorProxy $group) use ($product, $category,
             }
         });
 
+        $saleGroup->post('/list', function (Request $request, Response $response) use ($sale) {
+            try {
+                $response->getBody()->write(json_encode($sale->getList()));
+                return $response;
+            } catch (Exception $e) {
+                $response->getBody()->write(json_encode(array("e" => $e, "message" => "Ошибка получения акций")));
+                return $response->withStatus(401);
+            }
+        });
+
 
         $saleGroup->post('/sort', function (Request $request, Response $response) use ($dataBase) {
             try {

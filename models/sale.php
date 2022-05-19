@@ -159,7 +159,7 @@ class Sale
             return $productSale == $productPrice ? null : $productSale;
         }
 
-        return min([$productSale, max($categorySales) / 100 * $productPrice]);
+        return min([$productSale, (1 - (max($categorySales) / 100)) * $productPrice]);
     }
 
     private function removeImg($table, $id)
