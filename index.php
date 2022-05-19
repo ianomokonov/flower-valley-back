@@ -30,9 +30,10 @@ use Slim\Routing\RouteContext;
 
 $dataBase = new DataBase();
 $user = new User($dataBase);
-$sale = new Sale($dataBase);
 $product = new Product($dataBase);
 $category = new Category($dataBase);
+
+$sale = new Sale($dataBase, $category, $product);
 $static = new StaticModel($dataBase);
 $box = new Box($dataBase);
 $order = new Order($dataBase);

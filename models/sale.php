@@ -9,11 +9,11 @@ class Sale
     private $category;
     private $product;
 
-    public function __construct(DataBase $dataBase)
+    public function __construct(DataBase $dataBase, Category $category, Product $product)
     {
         $this->dataBase = $dataBase;
-        $this->category = new Category($this->dataBase);
-        $this->product = new Product($this->dataBase);
+        $this->category = $category;
+        $this->product = $product;
         $this->fileUploader = new FilesUpload();
     }
 
@@ -60,10 +60,10 @@ class Sale
         $request = $this->dataBase->stripAll((array)$request);
         $request['discount'] = $request['discount'] * 1;
         $request['img'] = DataBase::$baseUrl . $this->fileUploader->upload($file, 'SaleImages', uniqid());
-        if(isset($request['isActive'])){
+        if (isset($request['isActive'])) {
             $request['isActive'] = $request['isActive'] == 'true';
         }
-        if(isset($request['isVisible'])){
+        if (isset($request['isVisible'])) {
             $request['isVisible'] = $request['isVisible'] == 'true';
         }
         $query = $this->dataBase->genInsertQuery($request, 'Sale');
@@ -79,10 +79,10 @@ class Sale
     {
         $request = $this->dataBase->stripAll((array)$request, true);
         $request['discount'] = $request['discount'] * 1;
-        if(isset($request['isActive'])){
+        if (isset($request['isActive'])) {
             $request['isActive'] = $request['isActive'] == 'true';
         }
-        if(isset($request['isVisible'])){
+        if (isset($request['isVisible'])) {
             $request['isVisible'] = $request['isVisible'] == 'true';
         }
         if ($file) {
@@ -135,7 +135,7 @@ class Sale
     public function  getProductSale($productId, $productPrice)
     {
         $productSale = $this->getSale($productId, false);
-        if($productSale){
+        if ($productSale) {
             $productSale = min([$productPrice, $productSale['discount']]);
         } else {
             $productSale = $productPrice;
@@ -151,7 +151,7 @@ class Sale
             }
         }
 
-        if(count($categorySales) == 0){
+        if (count($categorySales) == 0) {
             return $productSale == $productPrice ? null : $productSale;
         }
 

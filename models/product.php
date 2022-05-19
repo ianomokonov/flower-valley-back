@@ -16,8 +16,8 @@ class Product
     {
         $this->dataBase = $dataBase;
         $this->fileUploader = new FilesUpload();
-        $this->sale = new Sale($dataBase);
         $this->category = new Category($this->dataBase);
+        $this->sale = new Sale($dataBase, $this->category, new Product($this->dataBase));
     }
 
     public function search($str)
@@ -259,7 +259,7 @@ class Product
             $categoryProducts = $this->category->readProductsSimple($value);
             $maxOrder = $this->max_attribute_in_array($categoryProducts, "productOrder");
             // $hasCategory = array_search($value, array_column($categoryProducts, 'categoryId'));
-            $hasCategory = count(array_filter($categoryProducts, function ($p) use($value, $productId) {
+            $hasCategory = count(array_filter($categoryProducts, function ($p) use ($value, $productId) {
                 return $p['categoryId'] == $value && $p['productId'] == $productId;
             })) > 0;
             $addedCount = 0;
@@ -277,7 +277,7 @@ class Product
 
     private function max_attribute_in_array($array, $prop)
     {
-        if($array && count($array) > 0){
+        if ($array && count($array) > 0) {
             return max(array_map(
                 function ($o) use ($prop) {
                     return $o[$prop];
@@ -287,7 +287,6 @@ class Product
         }
 
         return 1;
-        
     }
 
     private function setPrices($productId, $prices)
