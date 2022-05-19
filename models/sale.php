@@ -6,19 +6,17 @@ require_once __DIR__ . '/product.php';
 class Sale
 {
     private $dataBase;
-    private $category;
-    private $product;
 
-    public function __construct(DataBase $dataBase, Category $category, Product $product)
+    public function __construct(DataBase $dataBase)
     {
         $this->dataBase = $dataBase;
-        $this->category = $category;
-        $this->product = $product;
         $this->fileUploader = new FilesUpload();
     }
 
     public function getList()
     {
+        $category = new Category($this->dataBase);
+        $product = new Product($this->dataBase);
         $query = "SELECT * FROM Sale ORDER BY `order`";
         $stmt = $this->dataBase->db->query($query);
 
@@ -28,13 +26,13 @@ class Sale
             $sale['order'] = $sale['order'] * 1;
             $sale['discount'] = $sale['discount'] * 1;
             if ($sale['productId']) {
-                $sale['category'] = $this->category->readFirst($sale['productId']);
-                $sale['currentPrice'] = $this->product->getCurrentPrice($sale['productId']);
+                $sale['category'] = $category->readFirst($sale['productId']);
+                $sale['currentPrice'] = $product->getCurrentPrice($sale['productId']);
                 $result[] = $sale;
                 continue;
             }
             if ($sale['categoryId']) {
-                $sale['category'] = $this->category->readSimle($sale['categoryId']);
+                $sale['category'] = $category->readSimle($sale['categoryId']);
             }
             $result[] = $sale;
         }
@@ -116,9 +114,12 @@ class Sale
         return true;
     }
 
-    public function  getCategorySale($categoryId, $sales = [])
+    public function  getCategorySale($categoryId, $sales = [], $categoryModel = null)
     {
-        $category = $this->category->readSimle($categoryId);
+        if(!$categoryModel){
+            $categoryModel = new Category($this->dataBase);
+        }
+        $category = $categoryModel->readSimle($categoryId);
         $sale = $this->getSale($categoryId, true);
 
         if ($sale) {
@@ -126,21 +127,24 @@ class Sale
         }
 
         if ($category['parentId']) {
-            return $this->getCategorySale($category['parentId'], $sales);
+            return $this->getCategorySale($category['parentId'], $sales, $categoryModel);
         }
 
         return count($sales) ? max($sales) : null;
     }
 
-    public function  getProductSale($productId, $productPrice)
+    public function  getProductSale($productId, $productPrice, $categoryModel = null)
     {
+        if(!$categoryModel){
+            $categoryModel = new Category($this->dataBase);
+        }
         $productSale = $this->getSale($productId, false);
         if ($productSale) {
             $productSale = min([$productPrice, $productSale['discount']]);
         } else {
             $productSale = $productPrice;
         }
-        $categories = $this->category->getProductCategories($productId);
+        $categories = $categoryModel->getProductCategories($productId);
         $categorySales = [];
 
         foreach ($categories as $category) {

@@ -20,7 +20,7 @@ class Category
     {
         $this->dataBase = $dataBase;
         $this->fileUploader = new FilesUpload();
-        $this->sale = new Sale($this->dataBase, $this, new Product($dataBase));
+        $this->sale = new Sale($this->dataBase);
     }
 
     public function read($id, $withProducts = true)

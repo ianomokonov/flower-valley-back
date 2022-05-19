@@ -17,7 +17,7 @@ class Product
         $this->dataBase = $dataBase;
         $this->fileUploader = new FilesUpload();
         $this->category = new Category($this->dataBase);
-        $this->sale = new Sale($dataBase, $this->category, new Product($this->dataBase));
+        $this->sale = new Sale($dataBase);
     }
 
     public function search($str)
