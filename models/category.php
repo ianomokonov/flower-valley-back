@@ -117,6 +117,7 @@ class Category
             $product['coefficient'] = $product['coefficient'] * 1;
             $product['sale'] = $this->sale->getProductSale($product['id'], $product['price']);
             $product['photos'] = $productModel->getPhotos($product['id']);
+            $product['categories'] = $this->getProductCategories($product['id']);
             $result[] = $product;
         }
         return $result;
