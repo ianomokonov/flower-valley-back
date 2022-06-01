@@ -383,6 +383,7 @@ class Product
         $stmt->execute(array($id));
         $product = $stmt->fetch();
         $product['category'] = $this->category->readFirst($product['id']);
+        $product['categories'] = $this->category->getProductCategories($id);
         $product['prices'] = $this->getPrice($product['id']);
 
         return $product;
