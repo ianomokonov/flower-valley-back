@@ -165,9 +165,9 @@ class AdminNotification extends Message
         ";
 
         $this->mailer->mail->Body = $message;
-        //$this->mailer->mail->addAddress('9151091000@mail.ru');
-        //$this->mailer->mail->addAddress('lepingrapes@yandex.ru');
-        $this->mailer->mail->addAddress('i.a.volik@gmail.com');
+        $this->mailer->mail->addAddress('9151091000@mail.ru');
+        $this->mailer->mail->addAddress('lepingrapes@yandex.ru');
+        //$this->mailer->mail->addAddress('i.a.volik@gmail.com');
         $this->setFiles($files);
         $this->mailer->mail->send();
     }
