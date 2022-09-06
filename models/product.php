@@ -23,7 +23,7 @@ class Product
     public function search($str)
     {
         $str = htmlspecialchars(strip_tags($str));
-        $query = "SELECT DISTINCT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.name LIKE '%$str%' OR p.description LIKE '%$str%'";
+        $query = "SELECT DISTINCT p.id, p.name, p.price, p.boxId, p.coefficient FROM Product p WHERE p.name LIKE '%$str%'";
 
         $stmt = $this->dataBase->db->query($query);
 
