@@ -31,6 +31,8 @@ class Product
 
         while ($p = $stmt->fetch()) {
             $c = $this->category->readParentCategory($this->category->readFirst($p['id'])['id']);
+            $dc = $this->category->readParentCategory($this->category->readFirst($p['id'])['id']);
+            $p['discountCategoryId'] = $dc['id'];
             $p['categoryId'] = $c['id'];
             $p['categoryName'] = $c['name'];
             $p['prices'] = $this->getPrice($p['id']);
